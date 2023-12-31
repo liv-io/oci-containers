@@ -133,7 +133,7 @@ The following commands ought to be executed on the system running the container.
 
     ```
     podman run --detach --name woodpecker-server --network=host \
-        --env WOODPECKER_AGENT_SECRE="Gt4B9bC-6gGM-pERLdD5" \
+        --env WOODPECKER_AGENT_SECRET="Gt4B9bC-6gGM-pERLdD5" \
         --env WOODPECKER_GITHUB="true" \
         --env WOODPECKER_GITHUB_CLIENT="e21f97e5071061bf381d" \
         --env WOODPECKER_GITHUB_SECRET="6776f63f08408073838172059f412df2b4b95a5a" \
@@ -186,6 +186,12 @@ The following commands ought to be executed on the system running the container.
     ```
     podman run --user root -ti <checksum> /bin/bash
     podman run --user root -ti registry.example.com/woodpecker-server:latest /bin/bash
+    ```
+
+- Get woodpecker-server health:
+
+    ```
+    curl --silent --request GET --location http://localhost:8000/healthz
     ```
 
 - Get woodpecker-server metrics:
