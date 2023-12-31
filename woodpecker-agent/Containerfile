@@ -1,0 +1,102 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG WOODPECKER_AGENT_VERSION="${WOODPECKER_AGENT_VERSION:-2.1.1}"
+ARG WOODPECKER_PLUGIN_GIT="${WOODPECKER_PLUGIN_GIT:-2.4.0}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        tar
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/woodpecker-agent && \
+    install --directory --owner=root --group=root --mode=0755 /usr/local/src/plugin-git
+
+# Download woodpecker-agent archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/woodpecker-ci/woodpecker/releases/download/v${WOODPECKER_AGENT_VERSION}/woodpecker-agent_linux_amd64.tar.gz \
+        --output /usr/local/src/woodpecker-agent/woodpecker-agent_linux_amd64.tar.gz
+
+# Download woodpecker-agent checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/woodpecker-ci/woodpecker/releases/download/v${WOODPECKER_AGENT_VERSION}/checksums.txt \
+        --output /usr/local/src/woodpecker-agent/checksums.txt
+
+# Verify woodpecker-agent checksum
+WORKDIR /usr/local/src/woodpecker-agent
+RUN grep "woodpecker-agent_linux_amd64.tar.gz" /usr/local/src/woodpecker-agent/checksums.txt >/usr/local/src/woodpecker-agent/woodpecker-agent_linux_amd64.tar.gz.checksum && \
+    sha256sum -c /usr/local/src/woodpecker-agent/woodpecker-agent_linux_amd64.tar.gz.checksum || exit 1
+
+# Unarchive woodpecker-agent tarball
+RUN tar --extract --gzip --file=/usr/local/src/woodpecker-agent/woodpecker-agent_linux_amd64.tar.gz --directory=/usr/local/src/woodpecker-agent
+
+# Ensure woodpecker-agent is executable
+RUN chmod 0755 /usr/local/src/woodpecker-agent/woodpecker-agent
+
+# Download plugin-git archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/woodpecker-ci/plugin-git/releases/download/${WOODPECKER_AGENT_VERSION}/linux-amd64_plugin-git \
+        --output /usr/local/src/plugin-git/linux-amd64_plugin-git
+
+# Download plugin-git checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/woodpecker-ci/plugin-git/releases/download/${WOODPECKER_AGENT_VERSION}/checksums.txt \
+        --output /usr/local/src/plugin-git/checksums.txt
+
+# Verify plugin-git checksum
+WORKDIR /usr/local/src/plugin-git
+RUN grep "linux-amd64_plugin-git" /usr/local/src/plugin-git/checksums.txt >/usr/local/src/plugin-git/linux-amd64_plugin-git.checksum && \
+    sha256sum -c /usr/local/src/plugin-git/linux-amd64_plugin-git.checksum || exit 1
+
+# Ensure plugin-git is executable
+RUN chmod 0755 /usr/local/src/plugin-git/linux-amd64_plugin-git
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim as main
+
+# Set environment variables
+ENV WOODPECKER_BACKEND="local" \
+    WOODPECKER_BACKEND_LOCAL_TEMP_DIR="/var/local/woodpecker-agent/tmp"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        git \
+        git-lfs \
+        procps
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/src/woodpecker-agent/woodpecker-agent /usr/local/bin/woodpecker-agent
+COPY --from=build --chown=root:root /usr/local/src/plugin-git/linux-amd64_plugin-git /usr/local/bin/plugin-git
+
+# Create woodpecker group and user
+RUN groupadd --gid 10000 --system woodpecker && \
+    useradd --comment 'woodpecker' --create-home --gid 10000 --password '!' --system --shell '/bin/bash' --uid 10000 woodpecker
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/woodpecker-agent && \
+    install --directory --owner=woodpecker --group=woodpecker --mode=0750 /var/local/woodpecker-agent/tmp
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER woodpecker
+STOPSIGNAL SIGINT
+
+CMD ["/bin/bash", "/cmd.sh"]
