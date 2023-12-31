@@ -10,7 +10,7 @@
 - [Setup](#setup)
   - [Podman](#podman)
   - [User](#user)
-  - [Directory](#directory)
+  - [Storage](#storage)
   - [Container](#container)
     - [Build](#build)
     - [Run](#run)
@@ -75,7 +75,7 @@ The following commands ought to be executed on the system running the container.
     sudo usermod -a -G systemd-journal woodpecker
     ```
 
-### Directory
+### Storage
 
 - Create the directories for the persistant data:
 

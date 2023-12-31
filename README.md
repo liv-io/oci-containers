@@ -3,7 +3,9 @@
 ## Index
 
 - [About](#about)
+  - [Features](#features)
   - [Support](#support)
+  - [Dependencies](#dependencies)
 - [Setup](#setup)
   - [Podman](#podman)
 - [License](#license)
@@ -14,11 +16,24 @@
 
 `oci-containers` is a collection of well curated OCI containers.
 
+### Features
+
+- Containers follow the secure-by-default principle
+- Containers are mostly self-contained and dependencies avoided
+- Relevant settings are parameterized
+- Parameters are documented with examples
+- Containers contain a changelog
+
 ### Support
 
 The following operating system-level virtualization technologies are supported:
 - Docker `>= 20.0.0`
 - Podman `>= 3.0.0`
+
+### Dependencies
+
+All containers are built on-top of the latest official Debian Docker image:
+- [Debian](docker.io/debian) `stable-slim`
 
 ## Setup
 
