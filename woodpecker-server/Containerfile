@@ -1,0 +1,80 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG WOODPECKER_SERVER_VERSION="${WOODPECKER_SERVER_VERSION:-2.1.1}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        tar
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/woodpecker-server
+
+# Download woodpecker-server archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/woodpecker-ci/woodpecker/releases/download/v${WOODPECKER_SERVER_VERSION}/woodpecker-server_linux_amd64.tar.gz \
+        --output /usr/local/src/woodpecker-server/woodpecker-server_linux_amd64.tar.gz
+
+# Download woodpecker-server checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/woodpecker-ci/woodpecker/releases/download/v${WOODPECKER_SERVER_VERSION}/checksums.txt \
+        --output /usr/local/src/woodpecker-server/checksums.txt
+
+# Verify woodpecker-server checksum
+WORKDIR /usr/local/src/woodpecker-server
+RUN grep "woodpecker-server_linux_amd64.tar.gz" /usr/local/src/woodpecker-server/checksums.txt >/usr/local/src/woodpecker-server/woodpecker-server_linux_amd64.tar.gz.checksum && \
+    sha256sum -c /usr/local/src/woodpecker-server/woodpecker-server_linux_amd64.tar.gz.checksum || exit 1
+
+# Unarchive woodpecker-server tarball
+RUN tar --extract --gzip --file=/usr/local/src/woodpecker-server/woodpecker-server_linux_amd64.tar.gz --directory=/usr/local/src/woodpecker-server
+
+# Ensure woodpecker-server is executable
+RUN chmod 0755 /usr/local/src/woodpecker-server/woodpecker-server
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim as main
+
+# Set environment variables
+ENV WOODPECKER_DATABASE_DATASOURCE="/var/local/woodpecker-server/db/woodpecker.sqlite" \
+    WOODPECKER_DATABASE_DRIVER="sqlite3"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        git \
+        procps
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/src/woodpecker-server/woodpecker-server /usr/local/bin/woodpecker-server
+
+# Create woodpecker group and user
+RUN groupadd --gid 10000 --system woodpecker && \
+    useradd --comment 'woodpecker' --create-home --gid 10000 --password '!' --system --shell '/bin/bash' --uid 10000 woodpecker
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/woodpecker-server && \
+    install --directory --owner=woodpecker --group=woodpecker --mode=0750 /var/local/woodpecker-server/db
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER woodpecker
+STOPSIGNAL SIGINT
+
+CMD ["/bin/bash", "/cmd.sh"]
