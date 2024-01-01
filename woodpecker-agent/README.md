@@ -136,6 +136,7 @@ The following commands ought to be executed on the system running the container.
     podman run --detach --name woodpecker-agent --network=host \
         --env WOODPECKER_AGENT_SECRET="Gt4B9bC-6gGM-pERLdD5" \
         --volume /opt/woodpecker-agent/tmp:/var/local/woodpecker-agent/tmp \
+        --volume /run/podman/podman.sock:/run/podman/podman.sock \
         woodpecker-agent:latest
     ```
 
@@ -200,6 +201,95 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: "Ch4N.wtbm2,4G6MDt-XE" | "bdF-q5vwq,aeW3VmC.Sv"
       None    : ""
+
+`WOODPECKER_BACKEND`
+
+    Description: --backend-engine | WOODPECKER_BACKEND
+    Required   : False
+    Value      : Predetermined
+    Type       : String
+    Default    : "docker"
+    Options    : "docker" | "local"
+
+`WOODPECKER_BACKEND_DOCKER_API_VERSION`
+
+    Description: --backend-docker-api-version | WOODPECKER_BACKEND_DOCKER_API_VERSION
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    :
+    Options    :
+      Examples: "1.43"
+
+`WOODPECKER_BACKEND_DOCKER_CERT_PATH`
+
+    Description: --backend-docker-cert | WOODPECKER_BACKEND_DOCKER_CERT_PATH
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    :
+    Options    :
+      Examples: "/var/local/woodpecker-agent/cert"
+
+`WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6`
+
+    Description: --backend-docker-ipv6 | WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6
+    Required   : False
+    Value      : Predetermined
+    Type       : Boolean
+    Default    : false
+    Options    : true | false
+
+`WOODPECKER_BACKEND_DOCKER_HOST`
+
+    Description: --backend-docker-host | WOODPECKER_BACKEND_DOCKER_HOST
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "unix://run/podman/podman.sock"
+    Options    :
+      Examples: "unix://run/podman/podman.sock"
+
+`WOODPECKER_BACKEND_DOCKER_NETWORK`
+
+    Description: --backend-docker-network | WOODPECKER_BACKEND_DOCKER_NETWORK
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    :
+    Options    :
+      Examples: "existing-network-name"
+      None    : ""
+
+`WOODPECKER_BACKEND_DOCKER_TLS_VERIFY`
+
+    Description: --backend-docker-tls-verify | WOODPECKER_BACKEND_DOCKER_TLS_VERIFY
+    Required   : False
+    Value      : Predetermined
+    Type       : Boolean
+    Default    : true
+    Options    : true | false
+
+`WOODPECKER_BACKEND_DOCKER_VOLUMES`
+
+    Description: --backend-docker-volumes | WOODPECKER_BACKEND_DOCKER_VOLUMES
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    :
+    Options    :
+      Examples: "/etc/ssl/certs:/etc/ssl/certs:ro,/etc/timezone:/etc/timezone:ro"
+      None    : ""
+
+`WOODPECKER_BACKEND_LOCAL_TEMP_DIR`
+
+    Description: --backend-local-temp-dir | WOODPECKER_BACKEND_LOCAL_TEMP_DIR
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "/var/local/woodpecker-agent/tmp"
+    Options    :
+      Examples: "/var/local/woodpecker-agent/tmp"
 
 `WOODPECKER_GRPC_SECURE`
 

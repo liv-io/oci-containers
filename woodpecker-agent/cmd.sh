@@ -8,6 +8,15 @@ PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
 # Environment variables
 WOODPECKER_AGENT_SECRET="${WOODPECKER_AGENT_SECRET:-}"
+WOODPECKER_BACKEND="${WOODPECKER_BACKEND:-docker}"
+WOODPECKER_BACKEND_DOCKER_API_VERSION="${WOODPECKER_BACKEND_DOCKER_API_VERSION:-}"
+WOODPECKER_BACKEND_DOCKER_CERT_PATH="${WOODPECKER_BACKEND_DOCKER_CERT_PATH:-}"
+WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6="${WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6:-false}"
+WOODPECKER_BACKEND_DOCKER_HOST="${WOODPECKER_BACKEND_DOCKER_HOST:-unix://run/podman/podman.sock}"
+WOODPECKER_BACKEND_DOCKER_NETWORK="${WOODPECKER_BACKEND_DOCKER_NETWORK:-}"
+WOODPECKER_BACKEND_DOCKER_TLS_VERIFY="${WOODPECKER_BACKEND_DOCKER_TLS_VERIFY:-true}"
+WOODPECKER_BACKEND_DOCKER_VOLUMES="${WOODPECKER_BACKEND_DOCKER_VOLUMES:-}"
+WOODPECKER_BACKEND_LOCAL_TEMP_DIR="${WOODPECKER_BACKEND_LOCAL_TEMP_DIR:-/var/local/woodpecker-agent/tmp}"
 WOODPECKER_GRPC_SECURE="${WOODPECKER_GRPC_SECURE:-false}"
 WOODPECKER_GRPC_VERIFY="${WOODPECKER_GRPC_VERIFY:-true}"
 WOODPECKER_HEALTHCHECK="${WOODPECKER_HEALTHCHECK:-true}"
@@ -16,15 +25,6 @@ WOODPECKER_HOSTNAME="${WOODPECKER_HOSTNAME:-woodpecker-agent}"
 WOODPECKER_LOG_LEVEL="${WOODPECKER_LOG_LEVEL:-info}"
 WOODPECKER_SERVER="${WOODPECKER_SERVER:-}"
 
-# TODO
-#WOODPECKER_BACKEND_DOCKER_HOST
-#WOODPECKER_BACKEND_DOCKER_API_VERSION
-#WOODPECKER_BACKEND_DOCKER_CERT_PATH
-#WOODPECKER_BACKEND_DOCKER_TLS_VERIFY
-#WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6
-#WOODPECKER_BACKEND_DOCKER_NETWORK
-#WOODPECKER_BACKEND_DOCKER_VOLUMES
-
 function assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/woodpecker-agent)
@@ -32,6 +32,57 @@ function assemble_command() {
     # WOODPECKER_AGENT_SECRET
     if [ ! -z "${WOODPECKER_AGENT_SECRET}" ]; then
         cmd+=(--grpc-token ${WOODPECKER_AGENT_SECRET})
+    fi
+
+    # WOODPECKER_BACKEND
+    if [ "${WOODPECKER_BACKEND,,}" = "local" ]; then
+        cmd+=(--backend-engine local)
+
+        # WOODPECKER_BACKEND_LOCAL_TEMP_DIR
+        if [ ! -z "${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}" ]; then
+            cmd+=(--backend-local-temp-dir ${WOODPECKER_BACKEND_LOCAL_TEMP_DIR})
+        fi
+    else
+        cmd+=(--backend-engine docker)
+
+        # WOODPECKER_BACKEND_DOCKER_API_VERSION
+        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_API_VERSION}" ]; then
+            cmd+=(--backend-docker-api-version ${WOODPECKER_BACKEND_DOCKER_API_VERSION})
+        fi
+
+        # WOODPECKER_BACKEND_DOCKER_CERT_PATH
+        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_CERT_PATH}" ]; then
+            cmd+=(--backend-docker-cert ${WOODPECKER_BACKEND_DOCKER_CERT_PATH})
+        fi
+
+        # WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6
+        if [ "${WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6,,}" = "true" ]; then
+            cmd+=(--backend-docker-ipv6 true)
+        else
+            cmd+=(--backend-docker-ipv6 false)
+        fi
+
+        # WOODPECKER_BACKEND_DOCKER_HOST
+        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_HOST}" ]; then
+            cmd+=(--backend-docker-host ${WOODPECKER_BACKEND_DOCKER_HOST})
+        fi
+
+        # WOODPECKER_BACKEND_DOCKER_NETWORK
+        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_NETWORK}" ]; then
+            cmd+=(${WOODPECKER_BACKEND_DOCKER_NETWORK})
+        fi
+
+        # WOODPECKER_BACKEND_DOCKER_TLS_VERIFY
+        if [ "${WOODPECKER_BACKEND_DOCKER_TLS_VERIFY,,}" = "false" ]; then
+            cmd+=(--backend-docker-tls-verify true)
+        else
+            cmd+=(--backend-docker-tls-verify false)
+        fi
+
+        # WOODPECKER_BACKEND_DOCKER_VOLUMES
+        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_VOLUMES}" ]; then
+            cmd+=(${WOODPECKER_BACKEND_DOCKER_VOLUMES})
+        fi
     fi
 
     # WOODPECKER_GRPC_VERIFY

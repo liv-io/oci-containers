@@ -10,8 +10,8 @@ The headers are:
 - enhancements
 - features
 
-## 2.1.1-0 (2023-12-31)
+## 2.1.1-1 (2024-01-01)
 
 ### Features
 
-- Work in progress
+- Initial release
