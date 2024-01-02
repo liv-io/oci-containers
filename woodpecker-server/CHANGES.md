@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 2.1.1-2 (2024-01-02)
+
+### Features
+
+- Add parameter `WOODPECKER_ENVIRONMENT` (--environment)
+
 ## 2.1.1-1 (2023-12-31)
 
 ### Features

@@ -257,6 +257,17 @@ The following commands ought to be executed on the system running the container.
       Examples: "localhost 127.0.0.1 ::1" | "example.org example.com"
       None    : ""
 
+`WOODPECKER_ENVIRONMENT`
+
+    Description: --environment | WOODPECKER_ENVIRONMENT
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : ""
+    Options    :
+      Examples: "first_var:value1,second_var:value2"
+      None    : ""
+
 `WOODPECKER_GITHUB`
 
     Description: --github | WOODPECKER_GITHUB
@@ -278,7 +289,7 @@ The following commands ought to be executed on the system running the container.
 
 `WOODPECKER_GITHUB_SECRET`
 
-    Description: --github-client | WOODPECKER_GITHUB_CLIENT
+    Description: --github-secret | WOODPECKER_GITHUB_SECRET
     Required   : True
     Value      : Arbitrary
     Type       : String
