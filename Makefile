@@ -16,7 +16,7 @@ tag: DEPENDENCIES CONTAINER REGISTRY ## Build, tag single OCI container
 
 push: DEPENDENCIES CONTAINER REGISTRY ## Build, tag, push single OCI container
 	podman build $${container} --tag=$${registry}/$${container}:$$(cat $${container}/VERSION)
-	odman push $${registry}/$${container}:$$(cat $${container}/VERSION)
+	podman push $${registry}/$${container}:$$(cat $${container}/VERSION)
 
 build-all: DEPENDENCIES ## Build all OCI containers
 	@for container in $$(find * -type d); do podman build $${container}; done
