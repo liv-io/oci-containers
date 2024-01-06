@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 2.1.1-2 (2024-01-06)
+
+### Enhancements
+
+- Remove `--system` option from `groupadd` and `useradd` commands
+
 ## 2.1.1-1 (2024-01-01)
 
 ### Features

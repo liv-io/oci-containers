@@ -85,8 +85,8 @@ COPY --from=build --chown=root:root /usr/local/src/woodpecker-agent/woodpecker-a
 COPY --from=build --chown=root:root /usr/local/src/plugin-git/linux-amd64_plugin-git /usr/local/bin/plugin-git
 
 # Create woodpecker group and user
-RUN groupadd --gid 10000 --system woodpecker && \
-    useradd --comment 'woodpecker' --create-home --gid 10000 --password '!' --system --shell '/bin/bash' --uid 10000 woodpecker
+RUN groupadd --gid 10000 woodpecker && \
+    useradd --comment 'woodpecker' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 woodpecker
 
 # Create directories for variable data
 RUN install --directory --owner=root --group=root --mode=0755 /var/local/woodpecker-agent && \
