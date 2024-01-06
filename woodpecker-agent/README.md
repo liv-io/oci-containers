@@ -112,19 +112,13 @@ The following commands ought to be executed on the system running the container.
 - Build the `woodpecker-agent` container:
 
     ```
-    podman build --tag $(basename ${PWD}) .
+    podman build --tag $(basename ${PWD}):$(cat ./VERSION) .
     ```
 
-- Once complete, tag the newly created image with the checksum in the output of the previous command:
+- _Optional:_ Tag and push the image to a registry:
 
     ```
-    podman tag <checksum> $(basename ${PWD}):$(cat ./VERSION)
-    ```
-
-- _Optional:_ Push the image to a registry:
-
-    ```
-    podman tag <checksum> registry.example.com/$(basename ${PWD}):$(cat ./VERSION)
+    podman build --tag registry.example.com/$(basename ${PWD}):$(cat ./VERSION) .
     podman push registry.example.com/$(basename ${PWD}):$(cat ./VERSION)
     ```
 
