@@ -41,11 +41,9 @@ RUN gpg --no-default-keyring --keyring /root/btcd.gpg --fingerprint && \
     gpg --no-default-keyring --keyring /root/btcd.gpg --batch --import /root/f4fc70f07310028424efc20a8e4256593f177720.asc
 
 # Verify checksum signature
-WORKDIR /usr/local/src/btcd
 RUN gpg --no-default-keyring --keyring /root/btcd.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
 
 # Verify btcd checksum
-WORKDIR /usr/local/src/btcd
 RUN grep "btcd-linux-amd64-v${BTCD_VERSION}.tar.gz" /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt >/usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz.checksum && \
     sha256sum -c /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz.checksum || exit 1
 

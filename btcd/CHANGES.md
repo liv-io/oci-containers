@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.24.0-2 (2024-01-06)
+
+### Enhancements
+
+- Remove unnecessary `WORKDIR` commands
+
 ## 0.24.0-1 (2024-01-06)
 
 ### Features
