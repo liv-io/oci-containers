@@ -1,0 +1,96 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG BTCD_VERSION="${BTCD_VERSION:-0.24.0}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg \
+        tar
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/btcd
+
+# Download btcd archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz \
+        --output /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz
+
+# Download btcd checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-v${BTCD_VERSION}.txt \
+        --output /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
+
+# Download btcd signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-roasbeef-v${BTCD_VERSION}.sig \
+        --output /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig
+
+# Add keys to GPG keyring
+COPY --chown=root:root e4d85299674b2d31faa1892e372cbd7633c61696.asc /root/e4d85299674b2d31faa1892e372cbd7633c61696.asc
+COPY --chown=root:root f4fc70f07310028424efc20a8e4256593f177720.asc /root/f4fc70f07310028424efc20a8e4256593f177720.asc
+RUN gpg --no-default-keyring --keyring /root/btcd.gpg --fingerprint && \
+    gpg --no-default-keyring --keyring /root/btcd.gpg --batch --import /root/e4d85299674b2d31faa1892e372cbd7633c61696.asc && \
+    gpg --no-default-keyring --keyring /root/btcd.gpg --batch --import /root/f4fc70f07310028424efc20a8e4256593f177720.asc
+
+# Verify checksum signature
+WORKDIR /usr/local/src/btcd
+RUN gpg --no-default-keyring --keyring /root/btcd.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
+
+# Verify btcd checksum
+WORKDIR /usr/local/src/btcd
+RUN grep "btcd-linux-amd64-v${BTCD_VERSION}.tar.gz" /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt >/usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz.checksum && \
+    sha256sum -c /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz.checksum || exit 1
+
+# Unarchive btcd tarball
+RUN tar --extract --gzip --file=/usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz --directory=/usr/local/src/btcd
+
+# Move binaries
+RUN mv /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcd /usr/local/bin/btcd && \
+    mv /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcctl /usr/local/bin/btcctl
+
+# Ensure binaries are executable
+RUN chmod 0755 /usr/local/bin/btcd \
+               /usr/local/bin/btcctl
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim as main
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        procps
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/bin/btcd /usr/local/bin/btcd
+COPY --from=build --chown=root:root /usr/local/bin/btcctl /usr/local/bin/btcctl
+
+# Create btcd group and user
+RUN groupadd --gid 10000 btcd && \
+    useradd --comment 'btcd' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 btcd
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/btcd && \
+    install --directory --owner=btcd --group=btcd --mode=0750 /var/local/btcd/db
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER btcd
+STOPSIGNAL SIGINT
+
+CMD ["/bin/bash", "/cmd.sh"]
