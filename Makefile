@@ -19,15 +19,15 @@ push: DEPENDENCIES CONTAINER REGISTRY ## Build, tag, push single OCI container
 	podman push $${registry}/$${container}:$$(cat $${container}/VERSION)
 
 build-all: DEPENDENCIES ## Build all OCI containers
-	@for container in $$(find * -type d); do podman build $${container}; done
+	@for container in $$(find * -maxdepth 1 -type d); do podman build $${container}; done
 
 tag-all: DEPENDENCIES REGISTRY ## Build, tag all OCI containers
-	@for container in $$(find * -type d); do \
+	@for container in $$(find * -maxdepth 1 -type d); do \
 		podman build $${container} --tag=$${registry}/$${container}:$$(cat $${container}/VERSION); \
 	done
 
 push-all: DEPENDENCIES REGISTRY ## Build, tag, push all OCI containers
-	@for container in $$(find * -type d); do \
+	@for container in $$(find * -maxdepth 1 -type d); do \
 		podman build $${container} --tag=$${registry}/$${container}:$$(cat $${container}/VERSION); \
 		podman push $${registry}/$${container}:$$(cat $${container}/VERSION); \
 	done
