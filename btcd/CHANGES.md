@@ -10,6 +10,14 @@ The headers are:
 - enhancements
 - features
 
+## 0.24.0-3 (2024-01-07)
+
+### Enhancements
+
+- Move GPG keys to dedicated folder
+- Improve signature and checksum commands
+- Make `cmd.sh` executable
+
 ## 0.24.0-2 (2024-01-06)
 
 ### Enhancements

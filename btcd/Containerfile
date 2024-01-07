@@ -34,18 +34,19 @@ RUN curl --proto '=https' --tlsv1.2 \
         --output /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig
 
 # Add keys to GPG keyring
-COPY --chown=root:root e4d85299674b2d31faa1892e372cbd7633c61696.asc /root/e4d85299674b2d31faa1892e372cbd7633c61696.asc
-COPY --chown=root:root f4fc70f07310028424efc20a8e4256593f177720.asc /root/f4fc70f07310028424efc20a8e4256593f177720.asc
-RUN gpg --no-default-keyring --keyring /root/btcd.gpg --fingerprint && \
-    gpg --no-default-keyring --keyring /root/btcd.gpg --batch --import /root/e4d85299674b2d31faa1892e372cbd7633c61696.asc && \
-    gpg --no-default-keyring --keyring /root/btcd.gpg --batch --import /root/f4fc70f07310028424efc20a8e4256593f177720.asc
+# https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
+COPY --chown=root:root gpg /root/gpg
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
+RUN for key in /root/gpg/*; do \
+        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
+    done
 
 # Verify checksum signature
-RUN gpg --no-default-keyring --keyring /root/btcd.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
 
 # Verify btcd checksum
-RUN grep "btcd-linux-amd64-v${BTCD_VERSION}.tar.gz" /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt >/usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz.checksum && \
-    sha256sum -c /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz.checksum || exit 1
+WORKDIR /usr/local/src/btcd
+RUN grep "btcd-linux-amd64-v${BTCD_VERSION}.tar.gz" /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt | sha256sum --check || exit 1
 
 # Unarchive btcd tarball
 RUN tar --extract --gzip --file=/usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz --directory=/usr/local/src/btcd
