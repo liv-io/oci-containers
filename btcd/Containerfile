@@ -46,7 +46,7 @@ RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src
 
 # Verify btcd checksum
 WORKDIR /usr/local/src/btcd
-RUN grep "btcd-linux-amd64-v${BTCD_VERSION}.tar.gz" /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt | sha256sum --check || exit 1
+RUN sha256sum --ignore-missing --check manifest-v${BTCD_VERSION}.txt
 
 # Unarchive btcd tarball
 RUN tar --extract --gzip --file=/usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz --directory=/usr/local/src/btcd
