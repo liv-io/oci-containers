@@ -29,7 +29,7 @@ RUN curl --proto '=https' --tlsv1.2 \
 
 # Verify woodpecker-server checksum
 WORKDIR /usr/local/src/woodpecker-server
-RUN grep "woodpecker-server_linux_amd64.tar.gz" /usr/local/src/woodpecker-server/checksums.txt | sha256sum --check || exit 1
+RUN sha256sum --ignore-missing --check checksums.txt
 
 # Unarchive woodpecker-server tarball
 RUN tar --extract --gzip --file=/usr/local/src/woodpecker-server/woodpecker-server_linux_amd64.tar.gz --directory=/usr/local/src/woodpecker-server

@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 2.1.1-5 (2024-01-07)
+
+### Enhancements
+
+- Use `--ignore-missing` option in checksum command
+
 ## 2.1.1-4 (2024-01-07)
 
 ### Enhancements
