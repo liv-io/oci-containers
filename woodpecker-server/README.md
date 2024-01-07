@@ -399,7 +399,7 @@ See `LICENSE` file for more information.
 
 ## Credits
 
-See `CREDITS` file for more information.
+See `CREDITS.md` file for more information.
 
 ## Appendix
 
