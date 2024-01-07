@@ -10,6 +10,13 @@ The headers are:
 - enhancements
 - features
 
+## 2.1.1-3 (2024-01-07)
+
+### Enhancements
+
+- Improve checksum command
+- Make `cmd.sh` executable
+
 ## 2.1.1-2 (2024-01-06)
 
 ### Enhancements

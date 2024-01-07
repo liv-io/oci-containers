@@ -31,8 +31,7 @@ RUN curl --proto '=https' --tlsv1.2 \
 
 # Verify woodpecker-agent checksum
 WORKDIR /usr/local/src/woodpecker-agent
-RUN grep "woodpecker-agent_linux_amd64.tar.gz" /usr/local/src/woodpecker-agent/checksums.txt >/usr/local/src/woodpecker-agent/woodpecker-agent_linux_amd64.tar.gz.checksum && \
-    sha256sum -c /usr/local/src/woodpecker-agent/woodpecker-agent_linux_amd64.tar.gz.checksum || exit 1
+RUN grep "woodpecker-agent_linux_amd64.tar.gz" /usr/local/src/woodpecker-agent/checksums.txt | sha256sum --check || exit 1
 
 # Unarchive woodpecker-agent tarball
 RUN tar --extract --gzip --file=/usr/local/src/woodpecker-agent/woodpecker-agent_linux_amd64.tar.gz --directory=/usr/local/src/woodpecker-agent
