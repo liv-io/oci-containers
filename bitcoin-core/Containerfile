@@ -1,0 +1,96 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-25.1}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg \
+        tar
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/bitcoin-core
+
+# Download bitcoin-core archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz \
+        --output /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz
+
+# Download bitcoin-core checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/SHA256SUMS \
+        --output /usr/local/src/bitcoin-core/SHA256SUMS
+
+# Download bitcoin-core signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/SHA256SUMS.asc \
+        --output /usr/local/src/bitcoin-core/SHA256SUMS.asc
+
+# Add keys to GPG keyring
+# https://github.com/bitcoin-core/guix.sigs/tree/main/builder-keys
+COPY --chown=root:root gpg /root/gpg
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
+RUN for key in /root/gpg/*; do \
+        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
+    done
+
+# Verify checksum signature
+WORKDIR /usr/local/src/bitcoin-core
+RUN ["/bin/bash", "-c", "gpg --no-default-keyring --keyring /root/keyring.gpg --verify SHA256SUMS.asc 2> >(grep 'Good signature') || true"]
+
+# Verify bitcoin-core checksum
+WORKDIR /usr/local/src/bitcoin-core
+RUN sha256sum --ignore-missing --check SHA256SUMS
+
+# Unarchive bitcoin-core tarball
+RUN tar --extract --gzip --file=/usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz --directory=/usr/local/src/bitcoin-core
+
+# Move binaries
+RUN mv /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoin-cli /usr/local/bin/bitcoin-cli && \
+    mv /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoind /usr/local/bin/bitcoind
+
+# Ensure binaries are executable
+RUN chmod 0755 /usr/local/bin/bitcoin-cli \
+               /usr/local/bin/bitcoind
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim as main
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        procps
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
+COPY --from=build --chown=root:root /usr/local/bin/bitcoind /usr/local/bin/bitcoind
+
+# Create bitcoin-core group and user
+RUN groupadd --gid 10000 bitcoin-core && \
+    useradd --comment 'bitcoin-core' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 bitcoin-core
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/bitcoin-core && \
+    install --directory --owner=bitcoin-core --group=bitcoin-core --mode=0750 /var/local/bitcoin-core/db
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER bitcoin-core
+STOPSIGNAL SIGINT
+
+CMD ["/bin/bash", "/cmd.sh"]
