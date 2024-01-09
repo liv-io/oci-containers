@@ -80,10 +80,10 @@ The following commands ought to be executed on the system running the container.
 - Create the directories for the persistant data:
 
     ```
-    sudo mkdir -p /opt/btcd/db
+    sudo mkdir -p /opt/btcd/{config,db,log}
     sudo chown btcd:btcd /opt/btcd
     sudo chmod 0750 /opt/btcd
-    sudo chown -R 29999:29999 /opt/btcd/db
+    sudo chown -R 29999:29999 /opt/btcd/{config,db,log}
     ```
 
 ### Container
@@ -193,8 +193,20 @@ The following commands ought to be executed on the system running the container.
       Examples: "10.1.1.10:8333" | "btc.example.com:8333 btc.example.org:8333"
       None    : ""
 
+`CONFIGFILE`
+
+    Warning    : --configfile= is broken, needs fixing upstream
+    Description: --configfile
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "/var/local/btcd/config/btcd.conf"
+    Options    :
+      Examples: "/mnt/config/btcd.conf"
+
 `DATADIR`
 
+    Warning    : --datadir= is broken, needs fixing upstream
     Description: --datadir
     Required   : False
     Value      : Arbitrary
@@ -233,6 +245,17 @@ The following commands ought to be executed on the system running the container.
     Default    : "0.0.0.0:8333"
     Options    :
       Examples: "127.0.0.1:8333" | "1.2.3.4:8333 5.6.7.8:8333"
+
+`LOGDIR`
+
+    Warning    : --logdir= is broken, needs fixing upstream
+    Description: --logdir
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "/var/local/btcd/log"
+    Options    :
+      Examples: "/mnt/log"
 
 `RPCLISTEN`
 

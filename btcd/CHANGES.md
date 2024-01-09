@@ -10,6 +10,19 @@ The headers are:
 - enhancements
 - features
 
+## 0.24.0-5 (2024-01-09)
+
+### Bugs
+
+- Stop process with `SIGTERM` instead of `SIGINT`
+- Disable broken parameter `CONFIGFILE`
+- Disable broken parameter `DATADIR`
+- Disable broken parameter `LOGDIR`
+
+### Enhancements
+
+- Allow for `readOnlyRootFilesystem`
+
 ## 0.24.0-4 (2024-01-07)
 
 ### Enhancements
