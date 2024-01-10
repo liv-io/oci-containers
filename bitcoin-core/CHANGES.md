@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 26.0-2 (2024-01-10)
+
+### Enhancements
+
+- Apply `shellcheck` and `shfmt`
+
 ## 26.0-1 (2024-01-08)
 
 ### Features

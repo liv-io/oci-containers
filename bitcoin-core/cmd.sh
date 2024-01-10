@@ -36,38 +36,38 @@ function assemble_command() {
     cmd+=(-txindex=1)
 
     # ADDNODE
-    for item in ${ADDNODE[@]}; do
-        cmd+=(-addnode=${item})
+    for item in "${ADDNODE[@]}"; do
+        cmd+=(-addnode="${item}")
     done
 
     # BIND
-    if [ ! -z "${BIND}" ]; then
-        cmd+=(-bind=${BIND})
+    if [ -n "${BIND}" ]; then
+        cmd+=(-bind="${BIND}")
     fi
 
     # DATADIR
-    if [ ! -z "${DATADIR}" ]; then
-        cmd+=(-datadir=${DATADIR})
+    if [ -n "${DATADIR}" ]; then
+        cmd+=(-datadir="${DATADIR}")
     fi
 
     # DBCACHE
-    if [ ! -z "${DBCACHE}" ]; then
-        cmd+=(-dbcache=${DBCACHE})
+    if [ -n "${DBCACHE}" ]; then
+        cmd+=(-dbcache="${DBCACHE}")
     fi
 
     # EXTERNALIP
-    if [ ! -z "${EXTERNALIP}" ]; then
-        cmd+=(-externalip=${EXTERNALIP})
+    if [ -n "${EXTERNALIP}" ]; then
+        cmd+=(-externalip="${EXTERNALIP}")
     fi
 
     # ONLYNET
-    for item in ${ONLYNET[@]}; do
-        cmd+=(-onlynet=${item})
+    for item in "${ONLYNET[@]}"; do
+        cmd+=(-onlynet="${item}")
     done
 
     # PORT
-    if [ ! -z "${PORT}" ]; then
-        cmd+=(-port=${PORT})
+    if [ -n "${PORT}" ]; then
+        cmd+=(-port="${PORT}")
     fi
 
     # REST
@@ -75,43 +75,43 @@ function assemble_command() {
         cmd+=(-rest=1)
 
         # RPCALLOWIP
-        for item in ${RPCALLOWIP[@]}; do
-            cmd+=(-rpcallowip=${item})
+        for item in "${RPCALLOWIP[@]}"; do
+            cmd+=(-rpcallowip="${item}")
         done
 
         # RPCAUTH
-        for item in ${RPCAUTH[@]}; do
-            cmd+=(-rpcauth=${item})
+        for item in "${RPCAUTH[@]}"; do
+            cmd+=(-rpcauth="${item}")
         done
 
         # RPCBIND
-        for item in ${RPCBIND[@]}; do
-            cmd+=(-rpcbind=${item})
+        for item in "${RPCBIND[@]}"; do
+            cmd+=(-rpcbind="${item}")
         done
 
         # RPCPORT
-        if [ ! -z "${RPCPORT}" ]; then
-            cmd+=(-rpcport=${RPCPORT})
+        if [ -n "${RPCPORT}" ]; then
+            cmd+=(-rpcport="${RPCPORT}")
         fi
 
         # ZMQPUBHASHBLOCK
-        if [ ! -z "${ZMQPUBHASHBLOCK}" ]; then
-            cmd+=(-zmqpubhashblock=${ZMQPUBHASHBLOCK})
+        if [ -n "${ZMQPUBHASHBLOCK}" ]; then
+            cmd+=(-zmqpubhashblock="${ZMQPUBHASHBLOCK}")
         fi
 
         # ZMQPUBHASHTX
-        if [ ! -z "${ZMQPUBHASHTX}" ]; then
-            cmd+=(-zmqpubhashtx=${ZMQPUBHASHTX})
+        if [ -n "${ZMQPUBHASHTX}" ]; then
+            cmd+=(-zmqpubhashtx="${ZMQPUBHASHTX}")
         fi
 
         # ZMQPUBRAWBLOCK
-        if [ ! -z "${ZMQPUBRAWBLOCK}" ]; then
-            cmd+=(-zmqpubrawblock=${ZMQPUBRAWBLOCK})
+        if [ -n "${ZMQPUBRAWBLOCK}" ]; then
+            cmd+=(-zmqpubrawblock="${ZMQPUBRAWBLOCK}")
         fi
 
         # ZMQPUBRAWTX
-        if [ ! -z "${ZMQPUBRAWTX}" ]; then
-            cmd+=(-zmqpubrawtx=${ZMQPUBRAWTX})
+        if [ -n "${ZMQPUBRAWTX}" ]; then
+            cmd+=(-zmqpubrawtx="${ZMQPUBRAWTX}")
         fi
     else
         cmd+=(-rest=0)
