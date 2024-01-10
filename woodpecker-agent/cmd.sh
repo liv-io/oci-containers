@@ -30,8 +30,8 @@ function assemble_command() {
     cmd+=(/usr/local/bin/woodpecker-agent)
 
     # WOODPECKER_AGENT_SECRET
-    if [ ! -z "${WOODPECKER_AGENT_SECRET}" ]; then
-        cmd+=(--grpc-token ${WOODPECKER_AGENT_SECRET})
+    if [ -n "${WOODPECKER_AGENT_SECRET}" ]; then
+        cmd+=(--grpc-token "${WOODPECKER_AGENT_SECRET}")
     fi
 
     # WOODPECKER_BACKEND
@@ -39,20 +39,20 @@ function assemble_command() {
         cmd+=(--backend-engine local)
 
         # WOODPECKER_BACKEND_LOCAL_TEMP_DIR
-        if [ ! -z "${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}" ]; then
-            cmd+=(--backend-local-temp-dir ${WOODPECKER_BACKEND_LOCAL_TEMP_DIR})
+        if [ -n "${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}" ]; then
+            cmd+=(--backend-local-temp-dir "${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}")
         fi
     else
         cmd+=(--backend-engine docker)
 
         # WOODPECKER_BACKEND_DOCKER_API_VERSION
-        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_API_VERSION}" ]; then
-            cmd+=(--backend-docker-api-version ${WOODPECKER_BACKEND_DOCKER_API_VERSION})
+        if [ -n "${WOODPECKER_BACKEND_DOCKER_API_VERSION}" ]; then
+            cmd+=(--backend-docker-api-version "${WOODPECKER_BACKEND_DOCKER_API_VERSION}")
         fi
 
         # WOODPECKER_BACKEND_DOCKER_CERT_PATH
-        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_CERT_PATH}" ]; then
-            cmd+=(--backend-docker-cert ${WOODPECKER_BACKEND_DOCKER_CERT_PATH})
+        if [ -n "${WOODPECKER_BACKEND_DOCKER_CERT_PATH}" ]; then
+            cmd+=(--backend-docker-cert "${WOODPECKER_BACKEND_DOCKER_CERT_PATH}")
         fi
 
         # WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6
@@ -63,13 +63,13 @@ function assemble_command() {
         fi
 
         # WOODPECKER_BACKEND_DOCKER_HOST
-        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_HOST}" ]; then
-            cmd+=(--backend-docker-host ${WOODPECKER_BACKEND_DOCKER_HOST})
+        if [ -n "${WOODPECKER_BACKEND_DOCKER_HOST}" ]; then
+            cmd+=(--backend-docker-host "${WOODPECKER_BACKEND_DOCKER_HOST}")
         fi
 
         # WOODPECKER_BACKEND_DOCKER_NETWORK
-        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_NETWORK}" ]; then
-            cmd+=(${WOODPECKER_BACKEND_DOCKER_NETWORK})
+        if [ -n "${WOODPECKER_BACKEND_DOCKER_NETWORK}" ]; then
+            cmd+=(--backend-docker-network "${WOODPECKER_BACKEND_DOCKER_NETWORK}")
         fi
 
         # WOODPECKER_BACKEND_DOCKER_TLS_VERIFY
@@ -80,8 +80,8 @@ function assemble_command() {
         fi
 
         # WOODPECKER_BACKEND_DOCKER_VOLUMES
-        if [ ! -z "${WOODPECKER_BACKEND_DOCKER_VOLUMES}" ]; then
-            cmd+=(${WOODPECKER_BACKEND_DOCKER_VOLUMES})
+        if [ -n "${WOODPECKER_BACKEND_DOCKER_VOLUMES}" ]; then
+            cmd+=(--backend-docker-volumes "${WOODPECKER_BACKEND_DOCKER_VOLUMES}")
         fi
     fi
 
@@ -100,23 +100,23 @@ function assemble_command() {
     fi
 
     # WOODPECKER_HEALTHCHECK_ADDR
-    if [ ! -z "${WOODPECKER_HEALTHCHECK_ADDR}" ]; then
-        cmd+=(--healthcheck-addr ${WOODPECKER_HEALTHCHECK_ADDR})
+    if [ -n "${WOODPECKER_HEALTHCHECK_ADDR}" ]; then
+        cmd+=(--healthcheck-addr "${WOODPECKER_HEALTHCHECK_ADDR}")
     fi
 
     # WOODPECKER_HOSTNAME
-    if [ ! -z "${WOODPECKER_HOSTNAME}" ]; then
-        cmd+=(--hostname ${WOODPECKER_HOSTNAME})
+    if [ -n "${WOODPECKER_HOSTNAME}" ]; then
+        cmd+=(--hostname "${WOODPECKER_HOSTNAME}")
     fi
 
     # WOODPECKER_LOG_LEVEL
-    if [ ! -z "${WOODPECKER_LOG_LEVEL}" ]; then
-        cmd+=(--log-level ${WOODPECKER_LOG_LEVEL})
+    if [ -n "${WOODPECKER_LOG_LEVEL}" ]; then
+        cmd+=(--log-level "${WOODPECKER_LOG_LEVEL}")
     fi
 
     # WOODPECKER_SERVER
-    if [ ! -z "${WOODPECKER_SERVER}" ]; then
-        cmd+=(--server ${WOODPECKER_SERVER})
+    if [ -n "${WOODPECKER_SERVER}" ]; then
+        cmd+=(--server "${WOODPECKER_SERVER}")
     fi
 
     # NOTE: For some reason, the order of the --grpc-secure option matters.

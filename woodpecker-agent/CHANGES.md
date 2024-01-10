@@ -10,6 +10,17 @@ The headers are:
 - enhancements
 - features
 
+## 2.1.1-5 (2024-01-10)
+
+### Bugs
+
+- Fix parameter `WOODPECKER_BACKEND_DOCKER_NETWORK`
+- Fix parameter `WOODPECKER_BACKEND_DOCKER_VOLUMES`
+
+### Enhancements
+
+- Apply `shellcheck` and `shfmt`
+
 ## 2.1.1-4 (2024-01-07)
 
 ### Enhancements
