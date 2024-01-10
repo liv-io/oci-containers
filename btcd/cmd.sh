@@ -23,56 +23,56 @@ function assemble_command() {
     cmd+=(/usr/local/bin/btcd)
 
     # ADDPEER
-    for item in ${ADDPEER[@]}; do
-        cmd+=(--addpeer=${item})
+    for item in "${ADDPEER[@]}"; do
+        cmd+=(--addpeer="${item}")
     done
 
-# FIXME: --configfile is broken, needs fixing upstream
-#    # CONFIGFILE
-#    if [ ! -z "${CONFIGFILE}" ]; then
-#        cmd+=(--configfile=${CONFIGFILE})
-#    fi
+    ## FIXME: --configfile is broken, needs fixing upstream
+    #    # CONFIGFILE
+    #    if [ -n "${CONFIGFILE}" ]; then
+    #        cmd+=(--configfile="${CONFIGFILE}")
+    #    fi
 
-# FIXME: --datadir= is broken, needs fixing upstream
-#    # DATADIR
-#    if [ ! -z "${DATADIR}" ]; then
-#        cmd+=(--datadir=${DATADIR})
-#    fi
+    ## FIXME: --datadir= is broken, needs fixing upstream
+    #    # DATADIR
+    #    if [ -n "${DATADIR}" ]; then
+    #        cmd+=(--datadir="${DATADIR}")
+    #    fi
 
     # DEBUGLEVEL
-    if [ ! -z "${DEBUGLEVEL}" ]; then
-        cmd+=(--debuglevel=${DEBUGLEVEL})
+    if [ -n "${DEBUGLEVEL}" ]; then
+        cmd+=(--debuglevel="${DEBUGLEVEL}")
     fi
 
     # EXTERNALIP
-    for item in ${EXTERNALIP[@]}; do
-        cmd+=(--externalip=${item})
+    for item in "${EXTERNALIP[@]}"; do
+        cmd+=(--externalip="${item}")
     done
 
     # LISTEN
-    for item in ${LISTEN[@]}; do
-        cmd+=(--listen=${item})
+    for item in "${LISTEN[@]}"; do
+        cmd+=(--listen="${item}")
     done
 
-# FIXME: --logdir= is broken, needs fixing upstream
-#    # LOGDIR
-#    if [ ! -z "${LOGDIR}" ]; then
-#        cmd+=(--logdir=${LOGDIR})
-#    fi
+    ## FIXME: --logdir= is broken, needs fixing upstream
+    #    # LOGDIR
+    #    if [ -n "${LOGDIR}" ]; then
+    #        cmd+=(--logdir="${LOGDIR}")
+    #    fi
 
     # RPCLISTEN
-    for item in ${RPCLISTEN[@]}; do
-        cmd+=(--rpclisten=${item})
+    for item in "${RPCLISTEN[@]}"; do
+        cmd+=(--rpclisten="${item}")
     done
 
     # RPCPASS
-    if [ ! -z "${DEBUGLEVEL}" ]; then
-        cmd+=(--rpcpass=${DEBUGLEVEL})
+    if [ -n "${DEBUGLEVEL}" ]; then
+        cmd+=(--rpcpass="${DEBUGLEVEL}")
     fi
 
     # RPCUSER
-    if [ ! -z "${RPCUSER}" ]; then
-        cmd+=(--rpcuser=${RPCUSER})
+    if [ -n "${RPCUSER}" ]; then
+        cmd+=(--rpcuser="${RPCUSER}")
     fi
 }
 
