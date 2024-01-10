@@ -32,33 +32,33 @@ function assemble_command() {
     cmd+=(/usr/local/bin/woodpecker-server)
 
     # WOODPECKER_ADMIN
-    if [ ! -z "${WOODPECKER_ADMIN}" ]; then
-        cmd+=(--admin ${WOODPECKER_ADMIN})
+    if [ -n "${WOODPECKER_ADMIN}" ]; then
+        cmd+=(--admin "${WOODPECKER_ADMIN}")
     fi
 
     # WOODPECKER_AGENT_SECRET
-    if [ ! -z "${WOODPECKER_AGENT_SECRET}" ]; then
-        cmd+=(--agent-secret ${WOODPECKER_AGENT_SECRET})
+    if [ -n "${WOODPECKER_AGENT_SECRET}" ]; then
+        cmd+=(--agent-secret "${WOODPECKER_AGENT_SECRET}")
     fi
 
     # WOODPECKER_BACKEND_HTTPS_PROXY
-    if [ ! -z "${WOODPECKER_BACKEND_HTTPS_PROXY}" ]; then
-        cmd+=(--backend-https-proxy ${WOODPECKER_BACKEND_HTTPS_PROXY})
+    if [ -n "${WOODPECKER_BACKEND_HTTPS_PROXY}" ]; then
+        cmd+=(--backend-https-proxy "${WOODPECKER_BACKEND_HTTPS_PROXY}")
     fi
 
     # WOODPECKER_BACKEND_HTTP_PROXY
-    if [ ! -z "${WOODPECKER_BACKEND_HTTP_PROXY}" ]; then
-        cmd+=(--backend-http-proxy ${WOODPECKER_BACKEND_HTTP_PROXY})
+    if [ -n "${WOODPECKER_BACKEND_HTTP_PROXY}" ]; then
+        cmd+=(--backend-http-proxy "${WOODPECKER_BACKEND_HTTP_PROXY}")
     fi
 
     # WOODPECKER_BACKEND_NO_PROXY
-    if [ ! -z "${WOODPECKER_BACKEND_NO_PROXY}" ]; then
-        cmd+=(--backend-no-proxy ${WOODPECKER_BACKEND_NO_PROXY})
+    if [ -n "${WOODPECKER_BACKEND_NO_PROXY}" ]; then
+        cmd+=(--backend-no-proxy "${WOODPECKER_BACKEND_NO_PROXY}")
     fi
 
     # WOODPECKER_ENVIRONMENT
-    if [ ! -z "${WOODPECKER_ENVIRONMENT}" ]; then
-        cmd+=(--environment ${WOODPECKER_ENVIRONMENT})
+    if [ -n "${WOODPECKER_ENVIRONMENT}" ]; then
+        cmd+=(--environment "${WOODPECKER_ENVIRONMENT}")
     fi
 
     # WOODPECKER_GITHUB
@@ -69,43 +69,43 @@ function assemble_command() {
     fi
 
     # WOODPECKER_GITHUB_CLIENT
-    if [ ! -z "${WOODPECKER_GITHUB_CLIENT}" ]; then
-        cmd+=(--github-client ${WOODPECKER_GITHUB_CLIENT})
+    if [ -n "${WOODPECKER_GITHUB_CLIENT}" ]; then
+        cmd+=(--github-client "${WOODPECKER_GITHUB_CLIENT}")
     fi
 
     # WOODPECKER_GITHUB_SECRET
-    if [ ! -z "${WOODPECKER_GITHUB_SECRET}" ]; then
-        cmd+=(--github-secret ${WOODPECKER_GITHUB_SECRET})
+    if [ -n "${WOODPECKER_GITHUB_SECRET}" ]; then
+        cmd+=(--github-secret "${WOODPECKER_GITHUB_SECRET}")
     fi
 
     # WOODPECKER_GITHUB_URL
-    if [ ! -z "${WOODPECKER_GITHUB_URL}" ]; then
-        cmd+=(--github-server ${WOODPECKER_GITHUB_URL})
+    if [ -n "${WOODPECKER_GITHUB_URL}" ]; then
+        cmd+=(--github-server "${WOODPECKER_GITHUB_URL}")
     fi
 
     # WOODPECKER_GRPC_ADDR
-    if [ ! -z "${WOODPECKER_GRPC_ADDR}" ]; then
-        cmd+=(--grpc-addr ${WOODPECKER_GRPC_ADDR})
+    if [ -n "${WOODPECKER_GRPC_ADDR}" ]; then
+        cmd+=(--grpc-addr "${WOODPECKER_GRPC_ADDR}")
     fi
 
     # WOODPECKER_GRPC_SECRET
-    if [ ! -z "${WOODPECKER_GRPC_SECRET}" ]; then
-        cmd+=(--grpc-secret ${WOODPECKER_GRPC_SECRET})
+    if [ -n "${WOODPECKER_GRPC_SECRET}" ]; then
+        cmd+=(--grpc-secret "${WOODPECKER_GRPC_SECRET}")
     fi
 
     # WOODPECKER_HOST
-    if [ ! -z "${WOODPECKER_HOST}" ]; then
-        cmd+=(--server-host ${WOODPECKER_HOST})
+    if [ -n "${WOODPECKER_HOST}" ]; then
+        cmd+=(--server-host "${WOODPECKER_HOST}")
     fi
 
     # WOODPECKER_LOG_LEVEL
-    if [ ! -z "${WOODPECKER_LOG_LEVEL}" ]; then
-        cmd+=(--log-level ${WOODPECKER_LOG_LEVEL})
+    if [ -n "${WOODPECKER_LOG_LEVEL}" ]; then
+        cmd+=(--log-level "${WOODPECKER_LOG_LEVEL}")
     fi
 
     # WOODPECKER_METRICS_SERVER_ADDR
-    if [ ! -z "${WOODPECKER_METRICS_SERVER_ADDR}" ]; then
-        cmd+=(--metrics-server-addr ${WOODPECKER_METRICS_SERVER_ADDR})
+    if [ -n "${WOODPECKER_METRICS_SERVER_ADDR}" ]; then
+        cmd+=(--metrics-server-addr "${WOODPECKER_METRICS_SERVER_ADDR}")
     fi
 
     # WOODPECKER_OPEN
@@ -116,18 +116,18 @@ function assemble_command() {
     fi
 
     # WOODPECKER_ORGS
-    if [ ! -z "${WOODPECKER_ORGS}" ]; then
-        cmd+=(--orgs ${WOODPECKER_ORGS})
+    if [ -n "${WOODPECKER_ORGS}" ]; then
+        cmd+=(--orgs "${WOODPECKER_ORGS}")
     fi
 
     # WOODPECKER_REPO_OWNERS
-    if [ ! -z "${WOODPECKER_REPO_OWNERS}" ]; then
-        cmd+=(--repo-owners ${WOODPECKER_REPO_OWNERS})
+    if [ -n "${WOODPECKER_REPO_OWNERS}" ]; then
+        cmd+=(--repo-owners "${WOODPECKER_REPO_OWNERS}")
     fi
 
     # WOODPECKER_SERVER_ADDR
-    if [ ! -z "${WOODPECKER_SERVER_ADDR}" ]; then
-        cmd+=(--server-addr ${WOODPECKER_SERVER_ADDR})
+    if [ -n "${WOODPECKER_SERVER_ADDR}" ]; then
+        cmd+=(--server-addr "${WOODPECKER_SERVER_ADDR}")
     fi
 }
 
