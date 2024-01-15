@@ -1,0 +1,98 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG LND_VERSION="${LND_VERSION:-0.17.3-beta}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg \
+        tar
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/lnd
+
+# Download lnd archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/lnd-linux-amd64-v${LND_VERSION}.tar.gz \
+        --output /usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}.tar.gz
+
+# Download lnd checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-v${LND_VERSION}.txt \
+        --output /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
+
+# Download lnd signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-guggero-v${LND_VERSION}.sig \
+        --output /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig &&\
+    curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-roasbeef-v${LND_VERSION}.sig \
+        --output /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig
+
+# Add keys to GPG keyring
+# https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
+COPY --chown=root:root gpg /root/gpg
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
+RUN for key in /root/gpg/*; do \
+        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
+    done
+
+# Verify checksum signature
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig /usr/local/src/lnd/manifest-v${LND_VERSION}.txt && \
+    gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
+
+# Verify lnd checksum
+WORKDIR /usr/local/src/lnd
+RUN sha256sum --ignore-missing --check manifest-v${LND_VERSION}.txt
+
+# Unarchive lnd tarball
+RUN tar --extract --gzip --file=/usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}.tar.gz --directory=/usr/local/src/lnd
+
+# Move binaries
+RUN mv /usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}/lncli /usr/local/bin/lncli && \
+    mv /usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}/lnd /usr/local/bin/lnd
+
+# Ensure binaries are executable
+RUN chmod 0755 /usr/local/bin/lncli \
+               /usr/local/bin/lnd
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim as main
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        procps
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/bin/lncli /usr/local/bin/lncli
+COPY --from=build --chown=root:root /usr/local/bin/lnd /usr/local/bin/lnd
+
+# Create lnd group and user
+RUN groupadd --gid 10000 lnd && \
+    useradd --comment 'lnd' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 lnd
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        vim
+
+USER lnd
+
+CMD ["/bin/bash", "/cmd.sh"]
