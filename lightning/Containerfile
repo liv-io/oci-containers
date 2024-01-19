@@ -1,0 +1,145 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-26.0}"
+ARG LIGHTNING_VERSION="${LIGHTNING_VERSION:-23.11.2}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg \
+        tar \
+        xz-utils
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/lightning
+
+# Download lightning archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/clightning-v${LIGHTNING_VERSION}-Ubuntu-22.04.tar.xz \
+        --output /usr/local/src/lightning/clightning-v${LIGHTNING_VERSION}-Ubuntu-22.04.tar.xz
+
+# Download lightning checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/SHA256SUMS \
+        --output /usr/local/src/lightning/SHA256SUMS
+
+# Download lightning signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/SHA256SUMS.asc \
+        --output /usr/local/src/lightning/SHA256SUMS.asc
+
+# Add keys to GPG lightning
+# https://github.com/ElementsProject/lightning/blob/master/SECURITY.md
+COPY --chown=root:root gpg/lightning /root/gpg/lightning
+RUN gpg --no-default-keyring --keyring /root/lightning.gpg --fingerprint
+RUN for key in /root/gpg/lightning/*; do \
+        gpg --no-default-keyring --keyring /root/lightning.gpg --batch --import ${key}; \
+    done
+
+# Verify checksum signature
+WORKDIR /usr/local/src/lightning
+RUN ["/bin/bash", "-c", "gpg --no-default-keyring --keyring /root/lightning.gpg --verify SHA256SUMS.asc 2> >(grep 'Good signature') || true"]
+
+# Verify lightning checksum
+WORKDIR /usr/local/src/lightning
+RUN sha256sum --ignore-missing --check SHA256SUMS
+
+# Unarchive lightning tarball
+RUN tar --extract --xz --file=/usr/local/src/lightning/clightning-v${LIGHTNING_VERSION}-Ubuntu-22.04.tar.xz --directory=/usr/local/src/lightning
+
+# Ensure binaries are executable
+RUN chmod 0755 /usr/local/src/lightning/usr/bin/lightning-cli \
+               /usr/local/src/lightning/usr/bin/lightning-hsmtool \
+               /usr/local/src/lightning/usr/bin/lightningd
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/bitcoin-core
+
+# Download bitcoin-core archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz \
+        --output /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz
+
+# Download bitcoin-core checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/SHA256SUMS \
+        --output /usr/local/src/bitcoin-core/SHA256SUMS
+
+# Download bitcoin-core signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/SHA256SUMS.asc \
+        --output /usr/local/src/bitcoin-core/SHA256SUMS.asc
+
+# Add keys to GPG bitcoin-core
+# https://github.com/bitcoin-core/guix.sigs/tree/main/builder-keys
+COPY --chown=root:root gpg/bitcoin-core /root/gpg/bitcoin-core
+RUN gpg --no-default-keyring --keyring /root/bitcoin-core.gpg --fingerprint
+RUN for key in /root/gpg/bitcoin-core/*; do \
+        gpg --no-default-keyring --keyring /root/bitcoin-core.gpg --batch --import ${key}; \
+    done
+
+# Verify checksum signature
+WORKDIR /usr/local/src/bitcoin-core
+RUN ["/bin/bash", "-c", "gpg --no-default-keyring --keyring /root/bitcoin-core.gpg --verify SHA256SUMS.asc 2> >(grep 'Good signature') || true"]
+
+# Verify bitcoin-core checksum
+WORKDIR /usr/local/src/bitcoin-core
+RUN sha256sum --ignore-missing --check SHA256SUMS
+
+# Unarchive bitcoin-core tarball
+RUN tar --extract --gzip --file=/usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz --directory=/usr/local/src/bitcoin-core
+
+# Move binaries
+RUN mv /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
+
+# Ensure binaries are executable
+RUN chmod 0755 /usr/local/bin/bitcoin-cli
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim as main
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        libpq5 \
+        libsqlite3-0 \
+        procps \
+        python3
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/src/lightning/usr/bin/lightning-cli /usr/local/bin/lightning-cli
+COPY --from=build --chown=root:root /usr/local/src/lightning/usr/bin/lightning-hsmtool /usr/local/bin/lightning-hsmtool
+COPY --from=build --chown=root:root /usr/local/src/lightning/usr/bin/lightningd /usr/local/bin/lightningd
+COPY --from=build --chown=root:root /usr/local/src/lightning/usr/libexec /usr/local/libexec
+COPY --from=build --chown=root:root /usr/local/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
+
+# Create lightning group and user
+RUN groupadd --gid 10000 lightning && \
+    useradd --comment 'lightning' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 lightning
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/lightning && \
+    install --directory --owner=lightning --group=lightning --mode=0750 /var/local/lightning/bitcoin-cli && \
+    install --directory --owner=lightning --group=lightning --mode=0750 /var/local/lightning/data && \
+    install --directory --owner=lightning --group=lightning --mode=0750 /var/local/lightning/key
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER lightning
+
+CMD ["/bin/bash", "/cmd.sh"]
