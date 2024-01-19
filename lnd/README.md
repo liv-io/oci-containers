@@ -305,7 +305,7 @@ The following commands ought to be executed on the system running the container.
     Type       : String
     Default    : "#000000"
     Options    :
-      Examples: "#f2a900" | "cc9900"
+      Examples: "#f2a900" | "#cc9900"
 
 `DATADIR`
 
