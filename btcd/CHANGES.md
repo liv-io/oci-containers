@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.24.0-7 (2024-01-20)
+
+### Bugs
+
+- Fix parameter `RPCPASS`
+
 ## 0.24.0-6 (2024-01-10)
 
 ### Enhancements

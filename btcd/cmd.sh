@@ -66,8 +66,8 @@ function assemble_command() {
     done
 
     # RPCPASS
-    if [ -n "${DEBUGLEVEL}" ]; then
-        cmd+=(--rpcpass="${DEBUGLEVEL}")
+    if [ -n "${RPCPASS}" ]; then
+        cmd+=(--rpcpass="${RPCPASS}")
     fi
 
     # RPCUSER
