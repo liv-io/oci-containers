@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.24.0-8 (2024-01-22)
+
+### Enhancements
+
+- Remove parameters `CONFIGFILE`, `DATADIR`, `LOGDIR`
+
 ## 0.24.0-7 (2024-01-20)
 
 ### Bugs

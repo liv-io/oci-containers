@@ -82,7 +82,6 @@ RUN groupadd --gid 10000 btcd && \
     useradd --comment 'btcd' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 btcd
 
 # Create directories for variable data
-# FIXME: --configfile=, --datadir=, --logdir= are broken, needs fixing upstream
 RUN install --directory --owner=btcd --group=btcd --mode=0750 /home/btcd/.btcd
 
 # Create symlink for dummy 'sample-btcd.conf' configuration file

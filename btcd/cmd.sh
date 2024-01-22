@@ -8,12 +8,9 @@ PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
 # Environment variables
 ADDPEER="${ADDPEER:-}"
-#CONFIGFILE="${CONFIGFILE:-/var/local/btcd/config/btcd.conf}"
-#DATADIR="${DATADIR:-/var/local/btcd/db}"
 DEBUGLEVEL="${DEBUGLEVEL:-info}"
 EXTERNALIP="${EXTERNALIP:-}"
 LISTEN="${LISTEN:-0.0.0.0:8333}"
-#LOGDIR="${LOGDIR:-/var/local/btcd/log}"
 RPCLISTEN="${RPCLISTEN:-127.0.0.1:8334}"
 RPCPASS="${RPCPASS:-}"
 RPCUSER="${RPCUSER:-}"
@@ -26,18 +23,6 @@ function assemble_command() {
     for item in "${ADDPEER[@]}"; do
         cmd+=(--addpeer="${item}")
     done
-
-    ## FIXME: --configfile is broken, needs fixing upstream
-    #    # CONFIGFILE
-    #    if [ -n "${CONFIGFILE}" ]; then
-    #        cmd+=(--configfile="${CONFIGFILE}")
-    #    fi
-
-    ## FIXME: --datadir= is broken, needs fixing upstream
-    #    # DATADIR
-    #    if [ -n "${DATADIR}" ]; then
-    #        cmd+=(--datadir="${DATADIR}")
-    #    fi
 
     # DEBUGLEVEL
     if [ -n "${DEBUGLEVEL}" ]; then
@@ -53,12 +38,6 @@ function assemble_command() {
     for item in "${LISTEN[@]}"; do
         cmd+=(--listen="${item}")
     done
-
-    ## FIXME: --logdir= is broken, needs fixing upstream
-    #    # LOGDIR
-    #    if [ -n "${LOGDIR}" ]; then
-    #        cmd+=(--logdir="${LOGDIR}")
-    #    fi
 
     # RPCLISTEN
     for item in "${RPCLISTEN[@]}"; do
