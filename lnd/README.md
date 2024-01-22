@@ -196,16 +196,6 @@ The following commands ought to be executed on the system running the container.
       Examples: "lnd-node" | "lnd-node-alias"
       None    : ""
 
-`BITCOIND_DIR`
-
-    Description: --bitcoind.dir
-    Required   : False
-    Value      : Arbitrary
-    Type       : String
-    Default    : "/var/local/lnd/bitcoind"
-    Options    :
-      Examples: "/mnt/bitcoind"
-
 `BITCOIND_ESTIMATEMODE`
 
     Description: --bitcoind.estimatemode
@@ -287,16 +277,6 @@ The following commands ought to be executed on the system running the container.
     Default    : "bitcoind"
     Options    : "btcd" | "bitcoind"
 
-`BTCD_DIR`
-
-    Description: --btcd.dir
-    Required   : False
-    Value      : Arbitrary
-    Type       : String
-    Default    : "/var/local/lnd/btcd"
-    Options    :
-      Examples: "/mnt/btcd"
-
 `COLOR`
 
     Description: --color
@@ -306,16 +286,6 @@ The following commands ought to be executed on the system running the container.
     Default    : "#000000"
     Options    :
       Examples: "#f2a900" | "#cc9900"
-
-`DATADIR`
-
-    Description: --datadir
-    Required   : False
-    Value      : Arbitrary
-    Type       : String
-    Default    : "/var/local/lnd/data"
-    Options    :
-      Examples: "/mnt/data"
 
 `EXTERNALIP`
 
@@ -327,16 +297,6 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: "1.2.3.4" | "5.6.7.8"
       None    : ""
-
-`LETSENCRYPTDIR`
-
-    Description: --letsencryptdir
-    Required   : False
-    Value      : Arbitrary
-    Type       : String
-    Default    : "/var/local/lnd/letsencrypt"
-    Options    :
-      Examples: "/mnt/letsencrypt"
 
 `LISTEN`
 
@@ -357,16 +317,6 @@ The following commands ought to be executed on the system running the container.
     Default    : "/var/local/lnd/data"
     Options    :
       Examples: "/mnt/lnd"
-
-`LOGDIR`
-
-    Description: --logdir
-    Required   : False
-    Value      : Arbitrary
-    Type       : String
-    Default    : "/var/local/lnd/log"
-    Options    :
-      Examples: "/mnt/log"
 
 `RESTLISTEN`
 

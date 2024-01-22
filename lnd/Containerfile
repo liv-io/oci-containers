@@ -85,6 +85,10 @@ COPY --from=build --chown=root:root /usr/local/bin/lnd /usr/local/bin/lnd
 RUN groupadd --gid 10000 lnd && \
     useradd --comment 'lnd' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 lnd
 
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/lnd && \
+    install --directory --owner=lnd --group=lnd --mode=0750 /var/local/lnd/data
+
 # Copy cmd.sh
 COPY --chown=root:root cmd.sh /
 RUN chmod 0755 /cmd.sh

@@ -8,7 +8,6 @@ PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
 # Environment variables
 ALIAS="${ALIAS:-}"
-#BITCOIND_DIR="${BITCOIND_DIR:-/var/local/lnd/bitcoin}"
 BITCOIND_ESTIMATEMODE="${BITCOIND_ESTIMATEMODE:-ECONOMICAL}"
 BITCOIND_RPCHOST="${BITCOIND_RPCHOST:-127.0.0.1:8332}"
 BITCOIND_RPCPASS="${BITCOIND_RPCPASS:-}"
@@ -17,14 +16,10 @@ BITCOIND_ZMQPUBRAWBLOCK="${BITCOIND_ZMQPUBRAWBLOCK:-tcp://127.0.0.1:5557}"
 BITCOIND_ZMQPUBRAWTX="${BITCOIND_ZMQPUBRAWTX:-tcp://127.0.0.1:5558}"
 BITCOIN_NETWORK="${BITCOIN_NETWORK:-mainnet}"
 BITCOIN_NODE="${BITCOIN_NODE:-bitcoind}"
-#BTCD_DIR="${BTCD_DIR:-/var/local/lnd/btcd}"
 COLOR="${COLOR:-#000000}"
-#DATADIR="${DATADIR:-/var/local/lnd/data}"
 EXTERNALIP="${EXTERNALIP:-}"
-#LETSENCRYPTDIR="${LETSENCRYPTDIR:-/var/local/lnd/letsencrypt}"
 LISTEN="${LISTEN:-0.0.0.0:9735}"
 LNDDIR="${LNDDIR:-/var/local/lnd/data}"
-#LOGDIR="${LOGDIR:-/var/local/lnd/log}"
 RESTLISTEN="${RESTLISTEN:-}"
 RPCLISTEN="${RPCLISTEN:-}"
 
@@ -37,12 +32,6 @@ function assemble_command() {
     if [ -n "${ALIAS}" ]; then
         cmd+=(--alias="${ALIAS}")
     fi
-
-    ## FIXME: --bitcoind.dir is broken, needs fixing upstream
-    ## BITCOIND_DIR
-    #if [ -n "${BITCOIND_DIR}" ]; then
-    #    cmd+=(--bitcoind.dir="${BITCOIND_DIR}")
-    #fi
 
     # BITCOIND_ESTIMATEMODE
     if [ "${BITCOIND_ESTIMATEMODE^^}" = "ECONOMICAL" ]; then
@@ -90,33 +79,15 @@ function assemble_command() {
         cmd+=(--bitcoin.node=bitcoind)
     fi
 
-    ## FIXME: --btcd.dir is broken, needs fixing upstream
-    ## BTCD_DIR
-    #if [ -n "${BTCD_DIR}" ]; then
-    #    cmd+=(--btcd.dir="${BTCD_DIR}")
-    #fi
-
     # COLOR
     if [ -n "${COLOR}" ]; then
         cmd+=(--color="${COLOR}")
     fi
 
-    ## FIXME: --datadir is broken, needs fixing upstream
-    ## DATADIR
-    #if [ -n "${DATADIR}" ]; then
-    #    cmd+=(--datadir="${DATADIR}")
-    #fi
-
     # EXTERNALIP
     if [ -n "${EXTERNALIP}" ]; then
         cmd+=(--externalip="${EXTERNALIP}")
     fi
-
-    ## FIXME: --letsencryptdir is broken, needs fixing upstream
-    ## LETSENCRYPTDIR
-    #if [ -n "${LETSENCRYPTDIR}" ]; then
-    #    cmd+=(--letsencryptdir="${LETSENCRYPTDIR}")
-    #fi
 
     # LISTEN
     if [ -n "${LISTEN}" ]; then
@@ -127,12 +98,6 @@ function assemble_command() {
     if [ -n "${LNDDIR}" ]; then
         cmd+=(--lnddir="${LNDDIR}")
     fi
-
-    ## FIXME: --logdir is broken, needs fixing upstream
-    ## LOGDIR
-    #if [ -n "${LOGDIR}" ]; then
-    #    cmd+=(--logdir="${LOGDIR}")
-    #fi
 
     # RESTLISTEN
     if [ -n "${RESTLISTEN}" ]; then
