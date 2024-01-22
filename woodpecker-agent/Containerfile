@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim as build
 
-ARG WOODPECKER_AGENT_VERSION="${WOODPECKER_AGENT_VERSION:-2.1.1}"
+ARG WOODPECKER_AGENT_VERSION="${WOODPECKER_AGENT_VERSION:-2.2.2}"
 ARG WOODPECKER_PLUGIN_GIT="${WOODPECKER_PLUGIN_GIT:-2.4.0}"
 
 # Set time zone
@@ -41,12 +41,12 @@ RUN chmod 0755 /usr/local/src/woodpecker-agent/woodpecker-agent
 
 # Download plugin-git archive
 RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/woodpecker-ci/plugin-git/releases/download/${WOODPECKER_AGENT_VERSION}/linux-amd64_plugin-git \
+        --location https://github.com/woodpecker-ci/plugin-git/releases/download/${WOODPECKER_PLUGIN_GIT}/linux-amd64_plugin-git \
         --output /usr/local/src/plugin-git/linux-amd64_plugin-git
 
 # Download plugin-git checksum
 RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/woodpecker-ci/plugin-git/releases/download/${WOODPECKER_AGENT_VERSION}/checksums.txt \
+        --location https://github.com/woodpecker-ci/plugin-git/releases/download/${WOODPECKER_PLUGIN_GIT}/checksums.txt \
         --output /usr/local/src/plugin-git/checksums.txt
 
 # Verify plugin-git checksum

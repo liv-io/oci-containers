@@ -35,7 +35,7 @@ The following operating system-level virtualization technologies are supported:
 #### Archives
 
 - [plugin-git](https://github.com/woodpecker-ci/plugin-git/releases/download/2.4.0/linux-amd64_plugin-git) `2.4.0`
-- [woodpecker-agent](https://github.com/woodpecker-ci/woodpecker/releases/download/v2.1.1/woodpecker-agent_linux_arm64.tar.gz) `2.1.1`
+- [woodpecker-agent](https://github.com/woodpecker-ci/woodpecker/releases/download/v2.2.2/woodpecker-agent_linux_arm64.tar.gz) `2.2.2`
 
 #### Images
 
