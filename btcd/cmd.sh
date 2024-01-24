@@ -15,7 +15,7 @@ RPCLISTEN="${RPCLISTEN:-127.0.0.1:8334}"
 RPCPASS="${RPCPASS:-}"
 RPCUSER="${RPCUSER:-}"
 
-function assemble_command() {
+assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/btcd)
 

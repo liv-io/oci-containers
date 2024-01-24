@@ -27,7 +27,7 @@ WOODPECKER_ORGS="${WOODPECKER_ORGS:-}"
 WOODPECKER_REPO_OWNERS="${WOODPECKER_REPO_OWNERS:-}"
 WOODPECKER_SERVER_ADDR="${WOODPECKER_SERVER_ADDR:-}"
 
-function assemble_command() {
+assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/woodpecker-server)
 

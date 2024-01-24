@@ -26,7 +26,7 @@ LOG_TIMESTAMPS="${LOG_TIMESTAMPS:-true}"
 NETWORK="${NETWORK:-mainnet}"
 RGB="${RGB:-000000}"
 
-function assemble_command() {
+assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/lightningd)
 

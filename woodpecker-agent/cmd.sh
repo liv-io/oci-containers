@@ -25,7 +25,7 @@ WOODPECKER_HOSTNAME="${WOODPECKER_HOSTNAME:-woodpecker-agent}"
 WOODPECKER_LOG_LEVEL="${WOODPECKER_LOG_LEVEL:-info}"
 WOODPECKER_SERVER="${WOODPECKER_SERVER:-}"
 
-function assemble_command() {
+assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/woodpecker-agent)
 

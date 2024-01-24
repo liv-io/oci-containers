@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 23.11.2-2 (2024-01-24)
+
+### Enhancements
+
+- Minor cosmetic script change
+
 ## 23.11.2-1 (2024-01-19)
 
 ### Features

@@ -14,7 +14,7 @@ PID="${PID:-}"
 PORT="${PORT:-3000}"
 WORK_PATH="${WORK_PATH:-/var/local/forgejo/work}"
 
-function assemble_command() {
+assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/forgejo)
     cmd+=(web)

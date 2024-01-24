@@ -23,7 +23,7 @@ LNDDIR="${LNDDIR:-/var/local/lnd/data}"
 RESTLISTEN="${RESTLISTEN:-}"
 RPCLISTEN="${RPCLISTEN:-}"
 
-function assemble_command() {
+assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/lnd)
     cmd+=(--bitcoin.active)

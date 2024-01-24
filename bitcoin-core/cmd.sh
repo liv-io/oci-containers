@@ -24,7 +24,7 @@ ZMQPUBHASHTX="${ZMQPUBHASHTX:-tcp://127.0.0.1:5556}"
 ZMQPUBRAWBLOCK="${ZMQPUBRAWBLOCK:-tcp://127.0.0.1:5557}"
 ZMQPUBRAWTX="${ZMQPUBRAWTX:-tcp://127.0.0.1:5558}"
 
-function assemble_command() {
+assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/bitcoind)
     cmd+=(-assumevalid=0)

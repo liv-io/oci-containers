@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 2.2.2-2 (2024-01-24)
+
+### Enhancements
+
+- Minor cosmetic script change
+
 ## 2.2.2-1 (2024-01-22)
 
 ### Features

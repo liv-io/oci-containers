@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.17.3-beta-3 (2024-01-24)
+
+### Enhancements
+
+- Minor cosmetic script change
+
 ## 0.17.3-beta-2 (2024-01-22)
 
 ### Enhancements
