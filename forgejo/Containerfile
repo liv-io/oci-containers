@@ -1,0 +1,94 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG FORGEJO_VERSION="${FORGEJO_VERSION:-1.21.4-0}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/forgejo
+
+# Download forgejo binary
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64 \
+        --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
+
+# Download forgejo checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64.sha256 \
+        --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.sha256
+
+# Download forgejo signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64.asc \
+        --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.asc
+
+# Add keys to GPG keyring
+# https://codeberg.org/forgejo/gitea_proof
+COPY --chown=root:root gpg /root/gpg
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
+RUN for key in /root/gpg/*; do \
+        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
+    done
+
+# Verify checksum signature
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.asc /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
+
+# Verify forgejo checksum
+WORKDIR /usr/local/src/forgejo
+RUN sha256sum --ignore-missing --check forgejo-${FORGEJO_VERSION}-linux-amd64.sha256
+
+# Move binaries
+RUN mv /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64 /usr/local/bin/forgejo
+
+# Ensure forgejo is executable
+RUN chmod 0755 /usr/local/bin/forgejo
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim as main
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        git \
+        git-lfs \
+        procps
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/bin/forgejo /usr/local/bin/forgejo
+
+# Create forgejo group and user
+RUN groupadd --gid 10000 forgejo && \
+    useradd --comment 'forgejo' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 forgejo
+
+# Create symlink for '.ssh' directory
+RUN ln -snf /var/local/forgejo/ssh /home/forgejo/.ssh
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/forgejo && \
+    install --directory --owner=forgejo --group=forgejo --mode=0700 /var/local/forgejo/ssh && \
+    install --directory --owner=forgejo --group=forgejo --mode=0750 /var/local/forgejo/work
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER forgejo
+STOPSIGNAL SIGINT
+
+CMD ["/bin/bash", "/cmd.sh"]
