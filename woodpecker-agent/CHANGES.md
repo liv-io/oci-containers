@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 2.3.0-1 (2024-01-31)
+
+### Features
+
+- Update woodpecker-agent to version 2.3.0
+
 ## 2.2.2-3 (2024-01-28)
 
 - Update plugin-git to version 2.5.0
