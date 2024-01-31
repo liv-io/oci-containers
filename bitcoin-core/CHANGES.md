@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 26.0-4 (2024-01-31)
+
+### Bugs
+
+- Fix arrays, disable shellcheck SC2068
+
 ## 26.0-3 (2024-01-24)
 
 ### Enhancements

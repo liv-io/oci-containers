@@ -24,6 +24,7 @@ ZMQPUBHASHTX="${ZMQPUBHASHTX:-tcp://127.0.0.1:5556}"
 ZMQPUBRAWBLOCK="${ZMQPUBRAWBLOCK:-tcp://127.0.0.1:5557}"
 ZMQPUBRAWTX="${ZMQPUBRAWTX:-tcp://127.0.0.1:5558}"
 
+# shellcheck disable=SC2068
 assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/bitcoind)
@@ -36,7 +37,7 @@ assemble_command() {
     cmd+=(-txindex=1)
 
     # ADDNODE
-    for item in "${ADDNODE[@]}"; do
+    for item in ${ADDNODE[@]}; do
         cmd+=(-addnode="${item}")
     done
 
@@ -61,7 +62,7 @@ assemble_command() {
     fi
 
     # ONLYNET
-    for item in "${ONLYNET[@]}"; do
+    for item in ${ONLYNET[@]}; do
         cmd+=(-onlynet="${item}")
     done
 
@@ -75,17 +76,17 @@ assemble_command() {
         cmd+=(-rest=1)
 
         # RPCALLOWIP
-        for item in "${RPCALLOWIP[@]}"; do
+        for item in ${RPCALLOWIP[@]}; do
             cmd+=(-rpcallowip="${item}")
         done
 
         # RPCAUTH
-        for item in "${RPCAUTH[@]}"; do
+        for item in ${RPCAUTH[@]}; do
             cmd+=(-rpcauth="${item}")
         done
 
         # RPCBIND
-        for item in "${RPCBIND[@]}"; do
+        for item in ${RPCBIND[@]}; do
             cmd+=(-rpcbind="${item}")
         done
 
