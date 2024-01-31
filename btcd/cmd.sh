@@ -15,12 +15,13 @@ RPCLISTEN="${RPCLISTEN:-127.0.0.1:8334}"
 RPCPASS="${RPCPASS:-}"
 RPCUSER="${RPCUSER:-}"
 
+# shellcheck disable=SC2068
 assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/btcd)
 
     # ADDPEER
-    for item in "${ADDPEER[@]}"; do
+    for item in ${ADDPEER[@]}; do
         cmd+=(--addpeer="${item}")
     done
 
@@ -30,17 +31,17 @@ assemble_command() {
     fi
 
     # EXTERNALIP
-    for item in "${EXTERNALIP[@]}"; do
+    for item in ${EXTERNALIP[@]}; do
         cmd+=(--externalip="${item}")
     done
 
     # LISTEN
-    for item in "${LISTEN[@]}"; do
+    for item in ${LISTEN[@]}; do
         cmd+=(--listen="${item}")
     done
 
     # RPCLISTEN
-    for item in "${RPCLISTEN[@]}"; do
+    for item in ${RPCLISTEN[@]}; do
         cmd+=(--rpclisten="${item}")
     done
 
