@@ -1,0 +1,64 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG RUSTY_KASPA_VERSION="${RUSTY_KASPA_VERSION:-0.13.4}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg \
+        unzip
+
+# Create directories for upstream source files
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/rusty-kaspa
+
+# Download rusty-kaspa archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/kaspanet/rusty-kaspa/releases/download/v${RUSTY_KASPA_VERSION}/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-gnu-amd64.zip \
+        --output /usr/local/src/rusty-kaspa/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-gnu-amd64.zip
+
+# Unarchive rusty-kaspa archive
+RUN unzip /usr/local/src/rusty-kaspa/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-gnu-amd64.zip -d /usr/local/src/rusty-kaspa/
+
+# Ensure rusty-kaspa is executable
+RUN chmod 0755 /usr/local/src/rusty-kaspa/bin/kaspad
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim as main
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        procps
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/src/rusty-kaspa/bin/kaspad /usr/local/bin/kaspad
+
+# Create rusty-kaspa group and user
+RUN groupadd --gid 10000 rusty-kaspa && \
+    useradd --comment 'rusty-kaspa' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 rusty-kaspa
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/rusty-kaspa && \
+    install --directory --owner=rusty-kaspa --group=rusty-kaspa --mode=0700 /var/local/rusty-kaspa/data
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER rusty-kaspa
+STOPSIGNAL SIGINT
+
+CMD ["/bin/bash", "/cmd.sh"]
