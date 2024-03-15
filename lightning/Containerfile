@@ -1,7 +1,7 @@
 FROM docker.io/debian:stable-slim as build
 
 ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-26.0}"
-ARG LIGHTNING_VERSION="${LIGHTNING_VERSION:-24.02}"
+ARG LIGHTNING_VERSION="${LIGHTNING_VERSION:-24.02.1}"
 
 # Set time zone
 ENV TZ="UTC"
@@ -27,13 +27,13 @@ RUN curl --proto '=https' --tlsv1.2 \
 
 # Download lightning checksum
 RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/SHA256SUMS-v24.02 \
-        --output /usr/local/src/lightning/SHA256SUMS-v24.02
+        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/SHA256SUMS-v${LIGHTNING_VERSION} \
+        --output /usr/local/src/lightning/SHA256SUMS-v${LIGHTNING_VERSION}
 
 # Download lightning signature
 RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/SHA256SUMS-v24.02.asc \
-        --output /usr/local/src/lightning/SHA256SUMS-v24.02.asc
+        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/SHA256SUMS-v${LIGHTNING_VERSION}.asc \
+        --output /usr/local/src/lightning/SHA256SUMS-v${LIGHTNING_VERSION}.asc
 
 # Add keys to GPG lightning
 # https://github.com/ElementsProject/lightning/blob/master/SECURITY.md
@@ -45,11 +45,11 @@ RUN for key in /root/gpg/lightning/*; do \
 
 # Verify checksum signature
 WORKDIR /usr/local/src/lightning
-RUN ["/bin/bash", "-c", "gpg --no-default-keyring --keyring /root/lightning.gpg --verify SHA256SUMS-v24.02.asc 2> >(grep 'Good signature') || true"]
+RUN ["/bin/bash", "-c", "gpg --no-default-keyring --keyring /root/lightning.gpg --verify SHA256SUMS-v${LIGHTNING_VERSION}.asc 2> >(grep 'Good signature') || true"]
 
 # Verify lightning checksum
 WORKDIR /usr/local/src/lightning
-RUN sha256sum --ignore-missing --check SHA256SUMS-v24.02
+RUN sha256sum --ignore-missing --check SHA256SUMS-v${LIGHTNING_VERSION}
 
 # Unarchive lightning tarball
 RUN tar --extract --xz --file=/usr/local/src/lightning/clightning-v${LIGHTNING_VERSION}-Ubuntu-22.04.tar.xz --directory=/usr/local/src/lightning
