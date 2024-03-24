@@ -241,6 +241,17 @@ The following commands ought to be executed on the system running the container.
       Examples: "1.2.3.4" | "5.6.7.8"
       None    : ""
 
+`MAXUPLOADTARGET`
+
+    Description: -maxuploadtarget (MiB per day)
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : ""
+    Options    :
+      Examples: "25787" | "103148" | "515738" | "1031475"
+      None    : ""
+
 `ONLYNET`
 
     Description: -onlynet

@@ -12,6 +12,7 @@ BIND="${BIND:-0.0.0.0}"
 DATADIR="${DATADIR:-/var/local/bitcoin-core/db}"
 DBCACHE="${DBCACHE:-2048}"
 EXTERNALIP="${EXTERNALIP:-}"
+MAXUPLOADTARGET="${MAXUPLOADTARGET:-}"
 ONLYNET="${ONLYNET:-ipv4}"
 PORT="${PORT:-8333}"
 REST="${REST:-false}"
@@ -59,6 +60,11 @@ assemble_command() {
     # EXTERNALIP
     if [ -n "${EXTERNALIP}" ]; then
         cmd+=(-externalip="${EXTERNALIP}")
+    fi
+
+    # MAXUPLOADTARGET
+    if [ -n "${MAXUPLOADTARGET}" ]; then
+        cmd+=(-maxuploadtarget="${MAXUPLOADTARGET}")
     fi
 
     # ONLYNET

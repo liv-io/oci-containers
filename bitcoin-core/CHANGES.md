@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 26.0-5 (2024-03-24)
+
+### Enhancements
+
+- Add parameter `MAXUPLOADTARGET`
+
 ## 26.0-4 (2024-01-31)
 
 ### Bugs
