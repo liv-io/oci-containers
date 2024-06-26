@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim as build
 
-ARG BTCD_VERSION="${BTCD_VERSION:-0.24.0}"
+ARG BTCD_VERSION="${BTCD_VERSION:-0.24.2}"
 
 # Set time zone
 ENV TZ="UTC"
@@ -30,8 +30,8 @@ RUN curl --proto '=https' --tlsv1.2 \
 
 # Download btcd signature
 RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-roasbeef-v${BTCD_VERSION}.sig \
-        --output /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig
+        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-v${BTCD_VERSION}.sig \
+        --output /usr/local/src/btcd/manifest-v${BTCD_VERSION}.sig
 
 # Add keys to GPG keyring
 # https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
@@ -42,7 +42,7 @@ RUN for key in /root/gpg/*; do \
     done
 
 # Verify checksum signature
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
 
 # Verify btcd checksum
 WORKDIR /usr/local/src/btcd
