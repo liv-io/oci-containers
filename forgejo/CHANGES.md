@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 7.0.5-1 (2024-07-04)
+
+### Bugs
+
+- Update forgejo to version 7.0.5
+
 ## 7.0.3-1 (2024-05-28)
 
 ### Changes
