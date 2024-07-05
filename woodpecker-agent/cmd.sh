@@ -57,9 +57,9 @@ assemble_command() {
 
         # WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6
         if [ "${WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6,,}" = "true" ]; then
-            cmd+=(--backend-docker-ipv6 true)
+            cmd+=(--backend-docker-ipv6=true)
         else
-            cmd+=(--backend-docker-ipv6 false)
+            cmd+=(--backend-docker-ipv6=false)
         fi
 
         # WOODPECKER_BACKEND_DOCKER_HOST
@@ -74,9 +74,9 @@ assemble_command() {
 
         # WOODPECKER_BACKEND_DOCKER_TLS_VERIFY
         if [ "${WOODPECKER_BACKEND_DOCKER_TLS_VERIFY,,}" = "false" ]; then
-            cmd+=(--backend-docker-tls-verify true)
+            cmd+=(--backend-docker-tls-verify=true)
         else
-            cmd+=(--backend-docker-tls-verify false)
+            cmd+=(--backend-docker-tls-verify=false)
         fi
 
         # WOODPECKER_BACKEND_DOCKER_VOLUMES
@@ -85,18 +85,25 @@ assemble_command() {
         fi
     fi
 
+    # WOODPECKER_GRPC_SECURE
+    if [ "${WOODPECKER_GRPC_SECURE,,}" = "true" ]; then
+        cmd+=(--grpc-secure=true)
+    else
+        cmd+=(--grpc-secure=false)
+    fi
+
     # WOODPECKER_GRPC_VERIFY
     if [ "${WOODPECKER_GRPC_VERIFY,,}" = "true" ]; then
-        cmd+=(--grpc-skip-insecure true)
+        cmd+=(--grpc-skip-insecure=true)
     else
-        cmd+=(--grpc-skip-insecure false)
+        cmd+=(--grpc-skip-insecure=false)
     fi
 
     # WOODPECKER_HEALTHCHECK
     if [ "${WOODPECKER_HEALTHCHECK,,}" = "true" ]; then
-        cmd+=(--healthcheck true)
+        cmd+=(--healthcheck=true)
     else
-        cmd+=(--healthcheck false)
+        cmd+=(--healthcheck=false)
     fi
 
     # WOODPECKER_HEALTHCHECK_ADDR
@@ -117,15 +124,6 @@ assemble_command() {
     # WOODPECKER_SERVER
     if [ -n "${WOODPECKER_SERVER}" ]; then
         cmd+=(--server "${WOODPECKER_SERVER}")
-    fi
-
-    # NOTE: For some reason, the order of the --grpc-secure option matters.
-
-    # WOODPECKER_GRPC_SECURE
-    if [ "${WOODPECKER_GRPC_SECURE,,}" = "true" ]; then
-        cmd+=(--grpc-secure true)
-    else
-        cmd+=(--grpc-secure false)
     fi
 }
 

@@ -10,6 +10,14 @@ The headers are:
 - enhancements
 - features
 
+## 2.6.0-1 (2024-07-05)
+
+### Enhancements
+
+- Remove hard-coded environment variable `DOCKER_HOST`
+- Sort option `--grpc-secure` alphabetically
+- Add equal sign to boolean options
+
 ## 2.6.0-1 (2024-06-14)
 
 ### Features

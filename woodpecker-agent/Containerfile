@@ -60,10 +60,6 @@ RUN chmod 0755 /usr/local/src/plugin-git/linux-amd64_plugin-git
 
 FROM docker.io/debian:stable-slim as main
 
-# Set environment variables
-# NOTE: The environment variable WOODPECKER_BACKEND_DOCKER_HOST and CLI option --backend-docker-host do not work.
-ENV DOCKER_HOST="unix://run/podman/podman.sock"
-
 # Set time zone
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
