@@ -10,6 +10,14 @@ The headers are:
 - enhancements
 - features
 
+## 0.14.1-1 (2024-07-26)
+
+### Features
+
+- Update rusty-kaspa to version 0.14.1
+- Add parameter `NODNSSEED`
+- Add parameter `RAM_SCALE`
+
 ## 0.13.4-1 (2024-02-25)
 
 ### Features

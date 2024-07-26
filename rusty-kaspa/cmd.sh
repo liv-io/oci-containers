@@ -13,8 +13,10 @@ DISABLE_UPNP="${DISABLE_UPNP:-true}"
 EXTERNALIP="${EXTERNALIP:-}"
 LISTEN="${LISTEN:-}"
 LOGLEVEL="${LOGLEVEL:-info}"
+NODNSSEED="${NODNSSEED:-false}"
 NOGRPC="${NOGRPC:-true}"
 NOLOGFILES="${NOLOGFILES:-true}"
+RAM_SCALE="${RAM_SCALE:-0.3}"
 SANITY="${SANITY:-false}"
 UTXOINDEX="${UTXOINDEX:-false}"
 
@@ -53,6 +55,11 @@ assemble_command() {
         cmd+=(--loglevel="${LOGLEVEL,,}")
     fi
 
+    # NODNSSEED
+    if [ "${NODNSSEED,,}" = "true" ]; then
+        cmd+=(--nodnsseed)
+    fi
+
     # NOGRPC
     if [ "${NOGRPC,,}" = "true" ]; then
         cmd+=(--nogrpc)
@@ -61,6 +68,11 @@ assemble_command() {
     # NOLOGFILES
     if [ "${NOLOGFILES,,}" = "true" ]; then
         cmd+=(--nologfiles)
+    fi
+
+    # RAM_SCALE
+    if [ -n "${RAM_SCALE}" ]; then
+        cmd+=(--ram-scale="${RAM_SCALE}")
     fi
 
     # SANITY

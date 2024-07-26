@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [rusty-kaspa](https://github.com/kaspanet/rusty-kaspa/releases/download/v0.13.4/rusty-kaspa-v0.13.4-linux-gnu-amd64.zip) `0.13.4`
+- [rusty-kaspa](https://github.com/kaspanet/rusty-kaspa/releases/download/v0.14.1/rusty-kaspa-v0.14.1-linux-gnu-amd64.zip) `0.14.1`
 
 #### Images
 
@@ -237,6 +237,15 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: "off" | "error" | "warn" | "info" | "debug" | "trace"
 
+`NODNSSEED`
+
+    Description: --nodnsseed
+    Required   : False
+    Value      : Predetermined
+    Type       : Boolean
+    Default    : false
+    Options    : true | false
+
 `NOGRPC`
 
     Description: --nogrpc
@@ -254,6 +263,16 @@ The following commands ought to be executed on the system running the container.
     Type       : Boolean
     Default    : true
     Options    : true | false
+
+`RAM_SCALE`
+
+    Description: --ram-scale
+    Required   : False
+    Value      : Arbitrary
+    Type       : Float
+    Default    : 0.3
+    Options    :
+      Examples: 0.3 | 0.4 | 1.0
 
 `SANITY`
 
