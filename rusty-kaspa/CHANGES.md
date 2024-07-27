@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 0.14.1-2 (2024-07-26)
+
+### Bugs
+
+- Add `/tmp/rusty-kaspa` directory to support read-only file system
+
+### Features
+
+- Add parameter `RPCLISTEN`
+
 ## 0.14.1-1 (2024-07-26)
 
 ### Features

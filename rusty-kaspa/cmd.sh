@@ -17,6 +17,7 @@ NODNSSEED="${NODNSSEED:-false}"
 NOGRPC="${NOGRPC:-true}"
 NOLOGFILES="${NOLOGFILES:-true}"
 RAM_SCALE="${RAM_SCALE:-0.3}"
+RPCLISTEN="${RPCLISTEN:-}"
 SANITY="${SANITY:-false}"
 UTXOINDEX="${UTXOINDEX:-false}"
 
@@ -73,6 +74,11 @@ assemble_command() {
     # RAM_SCALE
     if [ -n "${RAM_SCALE}" ]; then
         cmd+=(--ram-scale="${RAM_SCALE}")
+    fi
+
+    # RPCLISTEN
+    if [ -n "${RPCLISTEN}" ]; then
+        cmd+=(--rpclisten="${RPCLISTEN}")
     fi
 
     # SANITY

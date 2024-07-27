@@ -274,6 +274,16 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: 0.3 | 0.4 | 1.0
 
+`RPCLISTEN`
+
+    Description: --rpclisten
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "0.0.0.0"
+    Options    :
+      Examples: "127.0.0.1" | "1.2.3.4" | "5.6.7.8:16110"
+
 `SANITY`
 
     Description: --sanity

@@ -52,7 +52,8 @@ RUN groupadd --gid 10000 rusty-kaspa && \
 
 # Create directories for variable data
 RUN install --directory --owner=root --group=root --mode=0755 /var/local/rusty-kaspa && \
-    install --directory --owner=rusty-kaspa --group=rusty-kaspa --mode=0700 /var/local/rusty-kaspa/data
+    install --directory --owner=rusty-kaspa --group=rusty-kaspa --mode=0700 /var/local/rusty-kaspa/data && \
+    install --directory --owner=rusty-kaspa --group=rusty-kaspa --mode=0700 /tmp/rusty-kaspa
 
 # Copy cmd.sh
 COPY --chown=root:root cmd.sh /
