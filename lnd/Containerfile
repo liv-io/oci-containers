@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim as build
 
-ARG LND_VERSION="${LND_VERSION:-0.18.2-beta}"
+ARG LND_VERSION="${LND_VERSION:-0.18.3-beta}"
 
 # Set time zone
 ENV TZ="UTC"
