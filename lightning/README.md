@@ -35,7 +35,7 @@ The following operating system-level virtualization technologies are supported:
 #### Archives
 
 - [bitcoin-core](https://bitcoincore.org/bin/bitcoin-core-27.1/bitcoin-27.1-x86_64-linux-gnu.tar.gz) `27.1`
-- [lightning](https://github.com/ElementsProject/lightning/releases/download/v24.08/clightning-v24.08-Ubuntu-22.04.tar.xz) `24.08`
+- [lightning](https://github.com/ElementsProject/lightning/releases/download/v24.08.1/clightning-v24.08.1-Ubuntu-22.04.tar.xz) `24.08.1`
 
 #### Images
 
