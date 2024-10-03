@@ -31,28 +31,28 @@ assemble_command() {
 
     # WOODPECKER_AGENT_SECRET
     if [ -n "${WOODPECKER_AGENT_SECRET}" ]; then
-        cmd+=(--grpc-token "${WOODPECKER_AGENT_SECRET}")
+        cmd+=(--grpc-token="${WOODPECKER_AGENT_SECRET}")
     fi
 
     # WOODPECKER_BACKEND
     if [ "${WOODPECKER_BACKEND,,}" = "local" ]; then
-        cmd+=(--backend-engine local)
+        cmd+=(--backend-engine=local)
 
         # WOODPECKER_BACKEND_LOCAL_TEMP_DIR
         if [ -n "${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}" ]; then
-            cmd+=(--backend-local-temp-dir "${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}")
+            cmd+=(--backend-local-temp-dir="${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}")
         fi
     else
-        cmd+=(--backend-engine docker)
+        cmd+=(--backend-engine=docker)
 
         # WOODPECKER_BACKEND_DOCKER_API_VERSION
         if [ -n "${WOODPECKER_BACKEND_DOCKER_API_VERSION}" ]; then
-            cmd+=(--backend-docker-api-version "${WOODPECKER_BACKEND_DOCKER_API_VERSION}")
+            cmd+=(--backend-docker-api-version="${WOODPECKER_BACKEND_DOCKER_API_VERSION}")
         fi
 
         # WOODPECKER_BACKEND_DOCKER_CERT_PATH
         if [ -n "${WOODPECKER_BACKEND_DOCKER_CERT_PATH}" ]; then
-            cmd+=(--backend-docker-cert "${WOODPECKER_BACKEND_DOCKER_CERT_PATH}")
+            cmd+=(--backend-docker-cert="${WOODPECKER_BACKEND_DOCKER_CERT_PATH}")
         fi
 
         # WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6
@@ -64,12 +64,12 @@ assemble_command() {
 
         # WOODPECKER_BACKEND_DOCKER_HOST
         if [ -n "${WOODPECKER_BACKEND_DOCKER_HOST}" ]; then
-            cmd+=(--backend-docker-host "${WOODPECKER_BACKEND_DOCKER_HOST}")
+            cmd+=(--backend-docker-host="${WOODPECKER_BACKEND_DOCKER_HOST}")
         fi
 
         # WOODPECKER_BACKEND_DOCKER_NETWORK
         if [ -n "${WOODPECKER_BACKEND_DOCKER_NETWORK}" ]; then
-            cmd+=(--backend-docker-network "${WOODPECKER_BACKEND_DOCKER_NETWORK}")
+            cmd+=(--backend-docker-network="${WOODPECKER_BACKEND_DOCKER_NETWORK}")
         fi
 
         # WOODPECKER_BACKEND_DOCKER_TLS_VERIFY
@@ -81,7 +81,7 @@ assemble_command() {
 
         # WOODPECKER_BACKEND_DOCKER_VOLUMES
         if [ -n "${WOODPECKER_BACKEND_DOCKER_VOLUMES}" ]; then
-            cmd+=(--backend-docker-volumes "${WOODPECKER_BACKEND_DOCKER_VOLUMES}")
+            cmd+=(--backend-docker-volumes="${WOODPECKER_BACKEND_DOCKER_VOLUMES}")
         fi
     fi
 
@@ -108,22 +108,22 @@ assemble_command() {
 
     # WOODPECKER_HEALTHCHECK_ADDR
     if [ -n "${WOODPECKER_HEALTHCHECK_ADDR}" ]; then
-        cmd+=(--healthcheck-addr "${WOODPECKER_HEALTHCHECK_ADDR}")
+        cmd+=(--healthcheck-addr="${WOODPECKER_HEALTHCHECK_ADDR}")
     fi
 
     # WOODPECKER_HOSTNAME
     if [ -n "${WOODPECKER_HOSTNAME}" ]; then
-        cmd+=(--hostname "${WOODPECKER_HOSTNAME}")
+        cmd+=(--hostname="${WOODPECKER_HOSTNAME}")
     fi
 
     # WOODPECKER_LOG_LEVEL
     if [ -n "${WOODPECKER_LOG_LEVEL}" ]; then
-        cmd+=(--log-level "${WOODPECKER_LOG_LEVEL}")
+        cmd+=(--log-level="${WOODPECKER_LOG_LEVEL}")
     fi
 
     # WOODPECKER_SERVER
     if [ -n "${WOODPECKER_SERVER}" ]; then
-        cmd+=(--server "${WOODPECKER_SERVER}")
+        cmd+=(--server="${WOODPECKER_SERVER}")
     fi
 }
 

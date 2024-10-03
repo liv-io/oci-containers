@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 2.7.1-2 (2024-09-20)
+
+### Enhancements
+
+- Add equal sign to all long options
+
+### Features
+
+- Update plugin-git to version 2.6.0
+
 ## 2.7.1-1 (2024-09-16)
 
 ### Bugs
