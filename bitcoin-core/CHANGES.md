@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 28.0-1 (2024-10-05)
+
+### Features
+
+- Update bitcoin-core to version 28.0
+
 ## 27.1-1 (2024-06-18)
 
 ### Features
