@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 9.0.0-1 (2024-10-17)
+
+### Features
+
+- Update forgejo to version 9.0.0
+
 ## 8.0.3-1 (2024-09-11)
 
 ### Bugs
