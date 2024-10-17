@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 28.0-2 (2024-10-17)
+
+### Features
+
+- Add parameter `RPCWORKQUEUE`
+
 ## 28.0-1 (2024-10-05)
 
 ### Features

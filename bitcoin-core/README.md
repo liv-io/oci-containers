@@ -325,6 +325,16 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: "8332" | "18332"
 
+`RPCWORKQUEUE`
+
+    Description: -rpcworkqueue
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "32"
+    Options    :
+      Examples: "16" | "32" | "64"
+
 `ZMQPUBHASHBLOCK`
 
     Description: -zmqpubhashblock

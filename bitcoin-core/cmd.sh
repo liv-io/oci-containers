@@ -20,6 +20,7 @@ RPCALLOWIP="${RPCALLOWIP:-127.0.0.0/8}"
 RPCAUTH="${RPCAUTH:-}"
 RPCBIND="${RPCBIND:-127.0.0.1}"
 RPCPORT="${RPCPORT:-8332}"
+RPCWORKQUEUE="${RPCWORKQUEUE:-32}"
 ZMQPUBHASHBLOCK="${ZMQPUBHASHBLOCK:-tcp://127.0.0.1:5555}"
 ZMQPUBHASHTX="${ZMQPUBHASHTX:-tcp://127.0.0.1:5556}"
 ZMQPUBRAWBLOCK="${ZMQPUBRAWBLOCK:-tcp://127.0.0.1:5557}"
@@ -99,6 +100,11 @@ assemble_command() {
         # RPCPORT
         if [ -n "${RPCPORT}" ]; then
             cmd+=(-rpcport="${RPCPORT}")
+        fi
+
+        # RPCWORKQUEUE
+        if [ -n "${RPCWORKQUEUE}" ]; then
+            cmd+=(-rpcworkqueue="${RPCWORKQUEUE}")
         fi
 
         # ZMQPUBHASHBLOCK
