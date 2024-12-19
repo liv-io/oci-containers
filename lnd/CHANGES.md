@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 0.18.4-beta-1 (2024-12-18)
+
+### Bugs
+
+- Update lnd to version 0.18.4-beta
+
+### Changes
+
+- Missing signature from `roasbeef`, temporarily disable GPG check
+
 ## 0.18.3-beta-1 (2024-09-16)
 
 ### Bugs
