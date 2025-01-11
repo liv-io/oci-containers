@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 2.8.2-1 (2025-01-11)
+
+### Features
+
+- Update woodpecker-server to version 2.8.2
+
 ## 2.7.1-1 (2024-09-16)
 
 ### Features
