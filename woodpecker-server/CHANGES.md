@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 2.8.3-2 (2025-01-14)
+
+### Features
+
+- Add support for forge GitHub and Forgejo
+
 ## 2.8.3-1 (2025-01-12)
 
 ### Bugs

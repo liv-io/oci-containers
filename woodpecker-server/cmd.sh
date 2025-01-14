@@ -13,9 +13,16 @@ WOODPECKER_BACKEND_HTTPS_PROXY="${WOODPECKER_BACKEND_HTTPS_PROXY:-}"
 WOODPECKER_BACKEND_HTTP_PROXY="${WOODPECKER_BACKEND_HTTP_PROXY:-}"
 WOODPECKER_BACKEND_NO_PROXY="${WOODPECKER_BACKEND_NO_PROXY:-}"
 WOODPECKER_ENVIRONMENT="${WOODPECKER_ENVIRONMENT:-}"
+WOODPECKER_FORGEJO="${WOODPECKER_FORGEJO:-true}"
+WOODPECKER_FORGEJO_CLIENT="${WOODPECKER_FORGEJO_CLIENT:-}"
+WOODPECKER_FORGEJO_SECRET="${WOODPECKER_FORGEJO_SECRET:-}"
+WOODPECKER_FORGEJO_SKIP_VERIFY="${WOODPECKER_FORGEJO_SKIP_VERIFY:-}"
+WOODPECKER_FORGEJO_URL="${WOODPECKER_FORGEJO_URL:-}"
 WOODPECKER_GITHUB="${WOODPECKER_GITHUB:-true}"
 WOODPECKER_GITHUB_CLIENT="${WOODPECKER_GITHUB_CLIENT:-}"
+WOODPECKER_GITHUB_PUBLIC_ONLY="${WOODPECKER_GITHUB_PUBLIC_ONLY:-}"
 WOODPECKER_GITHUB_SECRET="${WOODPECKER_GITHUB_SECRET:-}"
+WOODPECKER_GITHUB_SKIP_VERIFY="${WOODPECKER_GITHUB_SKIP_VERIFY:-}"
 WOODPECKER_GITHUB_URL="${WOODPECKER_GITHUB_URL:-https://github.com}"
 WOODPECKER_GRPC_ADDR="${WOODPECKER_GRPC_ADDR:-}"
 WOODPECKER_GRPC_SECRET="${WOODPECKER_GRPC_SECRET:-}"
@@ -61,26 +68,59 @@ assemble_command() {
         cmd+=(--environment "${WOODPECKER_ENVIRONMENT}")
     fi
 
+    # WOODPECKER_FORGEJO
+    if [ "${WOODPECKER_FORGEJO,,}" = "true" ]; then
+        cmd+=(--forgejo)
+
+        # WOODPECKER_FORGEJO_CLIENT
+        if [ -n "${WOODPECKER_FORGEJO_CLIENT}" ]; then
+            cmd+=(--forge-oauth-client "${WOODPECKER_FORGEJO_CLIENT}")
+        fi
+
+        # WOODPECKER_FORGEJO_SECRET
+        if [ -n "${WOODPECKER_FORGEJO_SECRET}" ]; then
+            cmd+=(--forge-oauth-secret "${WOODPECKER_FORGEJO_SECRET}")
+        fi
+
+        # WOODPECKER_FORGEJO_SKIP_VERIFY
+        if [ "${WOODPECKER_FORGEJO_SKIP_VERIFY,,}" = "true" ]; then
+            cmd+=(--forge-skip-verify)
+        fi
+
+        # WOODPECKER_FORGEJO_URL
+        if [ -n "${WOODPECKER_FORGEJO_URL}" ]; then
+            cmd+=(--forge-url "${WOODPECKER_FORGEJO_URL}")
+        fi
+
+        # WOODPECKER_GITHUB_PUBLIC_ONLY
+        if [ "${WOODPECKER_GITHUB_PUBLIC_ONLY,,}" = "true" ]; then
+            cmd+=(--github-public-only)
+        fi
+    fi
+
     # WOODPECKER_GITHUB
     if [ "${WOODPECKER_GITHUB,,}" = "true" ]; then
-        cmd+=(--github true)
-    else
-        cmd+=(--github false)
-    fi
+        cmd+=(--github)
 
-    # WOODPECKER_GITHUB_CLIENT
-    if [ -n "${WOODPECKER_GITHUB_CLIENT}" ]; then
-        cmd+=(--github-client "${WOODPECKER_GITHUB_CLIENT}")
-    fi
+        # WOODPECKER_GITHUB_CLIENT
+        if [ -n "${WOODPECKER_GITHUB_CLIENT}" ]; then
+            cmd+=(--forge-oauth-client "${WOODPECKER_GITHUB_CLIENT}")
+        fi
 
-    # WOODPECKER_GITHUB_SECRET
-    if [ -n "${WOODPECKER_GITHUB_SECRET}" ]; then
-        cmd+=(--github-secret "${WOODPECKER_GITHUB_SECRET}")
-    fi
+        # WOODPECKER_GITHUB_SECRET
+        if [ -n "${WOODPECKER_GITHUB_SECRET}" ]; then
+            cmd+=(--forge-oauth-secret "${WOODPECKER_GITHUB_SECRET}")
+        fi
 
-    # WOODPECKER_GITHUB_URL
-    if [ -n "${WOODPECKER_GITHUB_URL}" ]; then
-        cmd+=(--github-server "${WOODPECKER_GITHUB_URL}")
+        # WOODPECKER_GITHUB_SKIP_VERIFY
+        if [ "${WOODPECKER_GITHUB_SKIP_VERIFY,,}" = "true" ]; then
+            cmd+=(--forge-skip-verify)
+        fi
+
+        # WOODPECKER_GITHUB_URL
+        if [ -n "${WOODPECKER_GITHUB_URL}" ]; then
+            cmd+=(--forge-url "${WOODPECKER_GITHUB_URL}")
+        fi
     fi
 
     # WOODPECKER_GRPC_ADDR
