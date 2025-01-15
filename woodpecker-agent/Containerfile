@@ -90,7 +90,7 @@ RUN install --directory --owner=root --group=root --mode=0755 /var/local/woodpec
 COPY --chown=root:root cmd.sh /
 RUN chmod 0755 /cmd.sh
 
-USER woodpecker
+USER root
 STOPSIGNAL SIGINT
 
 CMD ["/bin/bash", "/cmd.sh"]

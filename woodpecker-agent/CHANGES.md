@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 2.8.3-2 (2025-01-15)
+
+### Bugs
+
+- Run woodpecker-agent as `root` to build container images inside of containerized woodpecker-agent
+
 ## 2.8.3-1 (2025-01-12)
 
 ### Bugs
