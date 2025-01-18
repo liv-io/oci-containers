@@ -10,17 +10,11 @@ The headers are:
 - enhancements
 - features
 
-## 2.8.3-2 (2025-01-14)
+## 2.8.2-2 (2025-01-18)
 
 ### Features
 
 - Add support for forge GitHub and Forgejo
-
-## 2.8.3-1 (2025-01-12)
-
-### Bugs
-
-- Update woodpecker-server to version 2.8.3
 
 ## 2.8.2-1 (2025-01-11)
 
