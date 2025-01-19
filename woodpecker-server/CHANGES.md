@@ -10,6 +10,13 @@ The headers are:
 - enhancements
 - features
 
+## 3.0.0-1 (2025-01-18)
+
+### Features
+
+- Update woodpecker-server to version 3.0.0
+- Add parameter WOODPECKER_AUTHENTICATE_PUBLIC_REPOS (--authenticate-public-repos)
+
 ## 2.8.3-2 (2025-01-14)
 
 ### Features
