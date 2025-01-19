@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [plugin-git](https://github.com/woodpecker-ci/plugin-git/releases/download/2.8.3/linux-amd64_plugin-git) `2.8.3`
+- [plugin-git](https://github.com/woodpecker-ci/plugin-git/releases/download/3.0.0/linux-amd64_plugin-git) `3.0.0`
 - [woodpecker-agent](https://github.com/woodpecker-ci/woodpecker/releases/download/v2.6.0/woodpecker-agent_linux_arm64.tar.gz) `2.6.0`
 
 #### Images
@@ -81,9 +81,11 @@ The following commands ought to be executed on the system running the container.
 - Create the directories for the persistant data:
 
     ```
+    sudo mkdir -p /opt/woodpecker-agent/certs
     sudo mkdir -p /opt/woodpecker-agent/tmp
     sudo chown woodpecker:woodpecker /opt/woodpecker-agent
     sudo chmod 0750 /opt/woodpecker-agent
+    sudo chown -R 29999:29999 /opt/woodpecker-agent/certs
     sudo chown -R 29999:29999 /opt/woodpecker-agent/tmp
     ```
 
@@ -129,6 +131,7 @@ The following commands ought to be executed on the system running the container.
     ```
     podman run --detach --name woodpecker-agent --network=host \
         --env WOODPECKER_AGENT_SECRET="Gt4B9bC-6gGM-pERLdD5" \
+        --volume /opt/woodpecker-agent/certs:/var/local/woodpecker-agent/certs \
         --volume /opt/woodpecker-agent/tmp:/var/local/woodpecker-agent/tmp \
         --volume /run/podman/podman.sock:/run/podman/podman.sock \
         woodpecker-agent:latest

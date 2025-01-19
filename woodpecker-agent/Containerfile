@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim as build
 
-ARG WOODPECKER_AGENT_VERSION="${WOODPECKER_AGENT_VERSION:-2.8.3}"
+ARG WOODPECKER_AGENT_VERSION="${WOODPECKER_AGENT_VERSION:-3.0.0}"
 ARG WOODPECKER_PLUGIN_GIT="${WOODPECKER_PLUGIN_GIT:-2.6.0}"
 
 # Set time zone
@@ -84,6 +84,7 @@ RUN groupadd --gid 10000 woodpecker && \
 
 # Create directories for variable data
 RUN install --directory --owner=root --group=root --mode=0755 /var/local/woodpecker-agent && \
+    install --directory --owner=woodpecker --group=woodpecker --mode=0750 /var/local/woodpecker-agent/certs && \
     install --directory --owner=woodpecker --group=woodpecker --mode=0750 /var/local/woodpecker-agent/tmp
 
 # Copy cmd.sh

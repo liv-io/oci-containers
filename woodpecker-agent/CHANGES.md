@@ -10,6 +10,13 @@ The headers are:
 - enhancements
 - features
 
+## 3.0.0-1 (2025-01-19)
+
+### Features
+
+- Update woodpecker-agent to version 3.0.0
+- Add mechanism to import self-signed CA certificates
+
 ## 2.8.3-2 (2025-01-15)
 
 ### Bugs
