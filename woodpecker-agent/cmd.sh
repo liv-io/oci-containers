@@ -29,26 +29,29 @@ import_ca_certificates() {
     source_dir="/var/local/woodpecker-agent/certs"
     destination_dir="/usr/local/share/ca-certificates"
 
-    if [ ! -z "$(ls ${source_dir}/)" ]; then
-        echo "* Importing CA certificate..."
+    if [ -n "$(ls ${source_dir}/)" ]; then
+        echo "* Importing CA certificates..."
 
+        # shellcheck disable=SC2045
         for cert in $(ls -1 ${source_dir}/*); do
+            # shellcheck disable=SC2091
             if $(openssl x509 -in "${cert}" -noout); then
-                echo "  Certificate: $(basename ${cert})"
+                # shellcheck disable=SC2086
+                echo "  File Name: $(basename ${cert})"
 
                 datetime_valid=$(openssl x509 -in "${cert}" -noout --enddate | sed 's@notAfter=@@g')
                 epoch_valid=$(date --date="${datetime_valid}" --utc +'%s')
                 epoch_now=$(date --utc +'%s')
 
+                ca_certificate_name=$(openssl x509 -in "${cert}" -noout -subject | awk -F 'CN = ' '{print $NF}' | cut -f1 -d',')
                 ca_certificate_fingerprint=$(openssl x509 -in "${cert}" -noout -fingerprint | sed 's@=@: @g')
-                ca_certificate_serial=$(openssl x509 -in "${cert}" -noout -serial | sed 's@serial=@Serial: @g')
                 ca_certificate_valid=$(openssl x509 -in "${cert}" -noout -enddate | sed 's@notAfter=@Valid Until: @g')
 
                 if [ "${epoch_valid}" -ge "${epoch_now}" ]; then
+                    echo "  Common Name: ${ca_certificate_name}"
                     echo "  ${ca_certificate_fingerprint}"
-                    echo "  ${ca_certificate_serial}"
                     echo "  ${ca_certificate_valid}"
-                    cp -f "${cert}" "/usr/local/share/ca-certificates/"
+                    cp -f "${cert}" "${destination_dir}"
                     update-ca-certificates
                     echo
                 else
