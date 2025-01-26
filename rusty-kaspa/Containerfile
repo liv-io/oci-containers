@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim as build
 
-ARG RUSTY_KASPA_VERSION="${RUSTY_KASPA_VERSION:-0.14.1}"
+ARG RUSTY_KASPA_VERSION="${RUSTY_KASPA_VERSION:-0.15.2}"
 
 # Set time zone
 ENV TZ="UTC"
@@ -20,11 +20,11 @@ RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/rus
 
 # Download rusty-kaspa archive
 RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/kaspanet/rusty-kaspa/releases/download/v${RUSTY_KASPA_VERSION}/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-gnu-amd64.zip \
-        --output /usr/local/src/rusty-kaspa/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-gnu-amd64.zip
+        --location https://github.com/kaspanet/rusty-kaspa/releases/download/v${RUSTY_KASPA_VERSION}/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-amd64.zip \
+        --output /usr/local/src/rusty-kaspa/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-amd64.zip
 
 # Unarchive rusty-kaspa archive
-RUN unzip /usr/local/src/rusty-kaspa/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-gnu-amd64.zip -d /usr/local/src/rusty-kaspa/
+RUN unzip /usr/local/src/rusty-kaspa/rusty-kaspa-v${RUSTY_KASPA_VERSION}-linux-amd64.zip -d /usr/local/src/rusty-kaspa/
 
 # Ensure rusty-kaspa is executable
 RUN chmod 0755 /usr/local/src/rusty-kaspa/bin/kaspad

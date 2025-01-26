@@ -90,6 +90,9 @@ assemble_command() {
     if [ "${UTXOINDEX,,}" = "true" ]; then
         cmd+=(--utxoindex)
     fi
+
+    # Answer yes to all interactive console questions
+    cmd+=(--yes)
 }
 
 # Establish run order
