@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim as build
 
-ARG RUSTY_KASPA_VERSION="${RUSTY_KASPA_VERSION:-0.15.2}"
+ARG RUSTY_KASPA_VERSION="${RUSTY_KASPA_VERSION:-0.16.0}"
 
 # Set time zone
 ENV TZ="UTC"

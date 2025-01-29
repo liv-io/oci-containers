@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [rusty-kaspa](https://github.com/kaspanet/rusty-kaspa/releases/download/v0.14.1/rusty-kaspa-v0.14.1-linux-gnu-amd64.zip) `0.14.1`
+- [rusty-kaspa](https://github.com/kaspanet/rusty-kaspa/releases/download/v0.16.0/rusty-kaspa-v0.16.0-linux-amd64.zip) `0.16.0`
 
 #### Images
 
