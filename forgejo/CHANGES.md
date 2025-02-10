@@ -10,7 +10,17 @@ The headers are:
 - enhancements
 - features
 
-## 10.0.0-1 (2025-01-07)
+## 10.0.1-1 (2025-02-10)
+
+### Bugs
+
+- Update `contact@forgejo.org` GPG public key
+
+### Features
+
+- Update forgejo to version 10.0.1
+
+## 10.0.0-1 (2025-02-07)
 
 ### Features
 
