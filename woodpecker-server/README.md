@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [woodpecker-server](https://github.com/woodpecker-ci/woodpecker/releases/download/v3.0.1/woodpecker-server_linux_amd64.tar.gz) `3.0.1`
+- [woodpecker-server](https://github.com/woodpecker-ci/woodpecker/releases/download/v3.1.0/woodpecker-server_linux_amd64.tar.gz) `3.1.0`
 
 #### Images
 
