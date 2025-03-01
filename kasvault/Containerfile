@@ -1,5 +1,6 @@
 FROM docker.io/debian:stable-slim as build
 
+ARG DOMAIN_NAME="${DOMAIN_NAME:-}"
 ARG KASVAULT_VERSION="${KASVAULT_VERSION:-ab0a74eff86d3ad9eee73940785c1b2b2b6afd99}"
 ARG NODEJS_MAJOR_VERSION="${NODEJS_MAJOR_VERSION:-23}"
 
@@ -30,6 +31,15 @@ WORKDIR /usr/local/share
 RUN git clone --depth 1 --branch main https://github.com/coderofstuff/kasvault.git
 WORKDIR /usr/local/share/kasvault
 RUN git reset --hard ${KASVAULT_VERSION}
+
+# Remove preview domain names from whitelist
+RUN sed -i -e "/preview\.kasvault\.io/d" \
+        -e "/privatepreview\.kasvault\.io/d" \
+        -e "/kasvault\.vercel\.app/d" \
+        "/usr/local/share/kasvault/src/app/page.tsx"
+
+# Update main domain name
+RUN if [ -n "${DOMAIN_NAME}" ]; then sed -i "s@kasvault\.io@${DOMAIN_NAME}@g" "/usr/local/share/kasvault/src/app/page.tsx"; fi
 
 # Install dependencies
 RUN npm install

@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## ab0a74eff86d3ad9eee73940785c1b2b2b6afd99-3 (2025-03-01)
+
+### Enhancements
+
+- Remove preview domain names from whitelist
+
+### Features
+
+- Add build argument `DOMAIN_NAME`
+
 ## ab0a74eff86d3ad9eee73940785c1b2b2b6afd99-2 (2025-03-01)
 
 ### Changes

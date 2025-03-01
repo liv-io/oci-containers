@@ -114,6 +114,12 @@ The following commands ought to be executed on the system running the container.
     podman build --ulimit=nofile=8192:8192 --tag $(basename ${PWD}):$(cat ./VERSION) .
     ```
 
+- Build the `kasvault` container with a custom domain name:
+
+    ```
+    podman build --build-arg=DOMAIN_NAME="kasvault.domain.tld" --ulimit=nofile=8192:8192 --tag $(basename ${PWD}):$(cat ./VERSION) .
+    ```
+
 - _Optional:_ Tag and push the image to a registry:
 
     ```
