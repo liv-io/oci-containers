@@ -78,7 +78,7 @@ The following commands ought to be executed on the system running the container.
 
 ### Storage
 
-- Create the directories for the persistant data:
+- Create the directories for the persistent data:
 
     ```
     sudo mkdir -p /opt/woodpecker-agent/certs
