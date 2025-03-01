@@ -1,0 +1,53 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG KASVAULT_VERSION="${KASVAULT_VERSION:-ab0a74eff86d3ad9eee73940785c1b2b2b6afd99}"
+ARG NODEJS_MAJOR_VERSION="${NODEJS_MAJOR_VERSION:-23}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        git \
+        procps
+
+# Add Node.js APT repository
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://deb.nodesource.com/setup_${NODEJS_MAJOR_VERSION}.x | bash -
+
+# Install Node.js
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        nodejs \
+        npm
+
+# Clone kasvault.git repository
+WORKDIR /usr/local/src
+RUN git clone --depth 1 --branch main https://github.com/coderofstuff/kasvault.git
+WORKDIR /usr/local/src/kasvault
+RUN git reset --hard ${KASVAULT_VERSION}
+
+# Install dependencies
+RUN npm install
+
+# Create kasvault group and user
+RUN groupadd --gid 10000 kasvault && \
+    useradd --comment 'kasvault' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 kasvault
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/kasvault && \
+    install --directory --owner=kasvault --group=kasvault --mode=0750 /usr/local/src/kasvault/node_modules/.cache
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER kasvault
+STOPSIGNAL SIGINT
+
+WORKDIR /usr/local/share/kasvault
+CMD ["/bin/bash", "/cmd.sh"]
