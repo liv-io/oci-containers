@@ -127,7 +127,7 @@ The following commands ought to be executed on the system running the container.
 
     ```
     podman run --detach --name kasvault --network=host \
-        --volume /opt/kasvault/cache:/usr/local/src/kasvault/node_modules/.cache \
+        --volume /opt/kasvault/cache:/usr/local/share/kasvault/node_modules/.cache \
         --volume /opt/kasvault/tmp:/tmp \
         kasvault:latest
     ```

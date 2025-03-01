@@ -26,9 +26,9 @@ RUN apt update && \
         npm
 
 # Clone kasvault.git repository
-WORKDIR /usr/local/src
+WORKDIR /usr/local/share
 RUN git clone --depth 1 --branch main https://github.com/coderofstuff/kasvault.git
-WORKDIR /usr/local/src/kasvault
+WORKDIR /usr/local/share/kasvault
 RUN git reset --hard ${KASVAULT_VERSION}
 
 # Install dependencies
@@ -40,7 +40,7 @@ RUN groupadd --gid 10000 kasvault && \
 
 # Create directories for variable data
 RUN install --directory --owner=root --group=root --mode=0755 /var/local/kasvault && \
-    install --directory --owner=kasvault --group=kasvault --mode=0750 /usr/local/src/kasvault/node_modules/.cache
+    install --directory --owner=kasvault --group=kasvault --mode=0750 /usr/local/share/kasvault/node_modules/.cache
 
 # Copy cmd.sh
 COPY --chown=root:root cmd.sh /
