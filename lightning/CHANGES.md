@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 25.02-1 (2025-03-08)
+
+### Features
+
+- Update lightning to version 25.02
+
 ## 24.11.1-1 (2025-01-13)
 
 ### Enhancements
