@@ -22,8 +22,8 @@ RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/lig
 
 # Download lightning archive
 RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/clightning-v${LIGHTNING_VERSION}-Ubuntu-24.04-amd64.tar.xz \
-        --output /usr/local/src/lightning/clightning-v${LIGHTNING_VERSION}-Ubuntu-24.04-amd64.tar.xz
+        --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/clightning-v${LIGHTNING_VERSION}-Ubuntu-22.04-amd64.tar.xz \
+        --output /usr/local/src/lightning/clightning-v${LIGHTNING_VERSION}-Ubuntu-22.04-amd64.tar.xz
 
 # Download lightning checksum
 RUN curl --proto '=https' --tlsv1.2 \
@@ -52,7 +52,7 @@ WORKDIR /usr/local/src/lightning
 RUN sha256sum --ignore-missing --check SHA256SUMS
 
 # Unarchive lightning tarball
-RUN tar --extract --xz --file=/usr/local/src/lightning/clightning-v${LIGHTNING_VERSION}-Ubuntu-24.04-amd64.tar.xz --directory=/usr/local/src/lightning
+RUN tar --extract --xz --file=/usr/local/src/lightning/clightning-v${LIGHTNING_VERSION}-Ubuntu-22.04-amd64.tar.xz --directory=/usr/local/src/lightning
 
 # Ensure binaries are executable
 RUN chmod 0755 /usr/local/src/lightning/usr/bin/lightning-cli \

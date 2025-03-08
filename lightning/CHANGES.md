@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 25.02-2 (2025-03-08)
+
+### Bugs
+
+- Ubuntu 24.04 release is incompatible with Debian 12, reverting to Ubuntu 22.04 release
+
 ## 25.02-1 (2025-03-08)
 
 ### Features
