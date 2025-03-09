@@ -1,0 +1,53 @@
+FROM docker.io/debian:stable-slim as build
+
+ARG KASPA_EXPLORER_VERSION="${KASPA_EXPLORER_VERSION:-b68585671577addcf6de48d84ea04d09503a9070}"
+ARG NODEJS_MAJOR_VERSION="${NODEJS_MAJOR_VERSION:-23}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        git \
+        procps
+
+# Add Node.js APT repository
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://deb.nodesource.com/setup_${NODEJS_MAJOR_VERSION}.x | bash -
+
+# Install Node.js
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        nodejs \
+        npm
+
+# Clone kaspa-explorer.git repository
+WORKDIR /usr/local/share
+RUN git clone --depth 1 --branch main https://github.com/lAmeR1/kaspa-explorer.git
+WORKDIR /usr/local/share/kaspa-explorer
+RUN git reset --hard ${KASPA_EXPLORER_VERSION}
+
+# Install dependencies
+RUN npm install
+
+# Create kaspa-explorer group and user
+RUN groupadd --gid 10000 kaspa-explorer && \
+    useradd --comment 'kaspa-explorer' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 kaspa-explorer
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/kaspa-explorer && \
+    install --directory --owner=kaspa-explorer --group=kaspa-explorer --mode=0750 /usr/local/share/kaspa-explorer/node_modules/.cache
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER kaspa-explorer
+STOPSIGNAL SIGINT
+
+WORKDIR /usr/local/share/kaspa-explorer
+CMD ["/bin/bash", "/cmd.sh"]
