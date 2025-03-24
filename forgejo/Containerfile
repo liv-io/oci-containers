@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim as build
 
-ARG FORGEJO_VERSION="${FORGEJO_VERSION:-10.0.2}"
+ARG FORGEJO_VERSION="${FORGEJO_VERSION:-10.0.3}"
 
 # Set time zone
 ENV TZ="UTC"
@@ -14,7 +14,7 @@ RUN apt update && \
         curl \
         gnupg
 
-# Create directories for upstream source files
+# Create forgejo source directory
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/forgejo
 
 # Download forgejo binary
@@ -47,11 +47,11 @@ RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src
 WORKDIR /usr/local/src/forgejo
 RUN sha256sum --ignore-missing --check forgejo-${FORGEJO_VERSION}-linux-amd64.sha256
 
-# Move binaries
-RUN mv /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64 /usr/local/bin/forgejo
+# Make forgejo executable
+RUN chmod 0755 /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
 
-# Ensure forgejo is executable
-RUN chmod 0755 /usr/local/bin/forgejo
+# Create forgejo symlink
+RUN ln -s /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64 /usr/local/bin/forgejo
 
 #---------------------------------------------------------------------
 

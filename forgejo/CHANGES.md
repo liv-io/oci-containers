@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 10.0.3-1 (2025-03-24)
+
+### Bugs
+
+- Update forgejo to version 10.0.3
+
+### Enhancements
+
+- Minor Containerfile improvements
+
 ## 10.0.2-1 (2025-03-22)
 
 ### Bugs
