@@ -1,4 +1,4 @@
-FROM docker.io/debian:stable-slim as build
+FROM docker.io/debian:stable-slim AS build
 
 ARG FORGEJO_VERSION="${FORGEJO_VERSION:-10.0.3}"
 
@@ -55,7 +55,7 @@ RUN ln -s /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64 /usr/loc
 
 #---------------------------------------------------------------------
 
-FROM docker.io/debian:stable-slim as main
+FROM docker.io/debian:stable-slim AS main
 
 # Set time zone
 ENV TZ="UTC"

@@ -1,4 +1,4 @@
-FROM docker.io/debian:stable-slim as build
+FROM docker.io/debian:stable-slim AS build
 
 ARG DOMAIN_NAME="${DOMAIN_NAME:-}"
 ARG KASVAULT_VERSION="${KASVAULT_VERSION:-ab0a74eff86d3ad9eee73940785c1b2b2b6afd99}"

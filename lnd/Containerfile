@@ -1,4 +1,4 @@
-FROM docker.io/debian:stable-slim as build
+FROM docker.io/debian:stable-slim AS build
 
 ARG LND_VERSION="${LND_VERSION:-0.18.5-beta}"
 
@@ -67,7 +67,7 @@ RUN chmod 0755 /usr/local/bin/lncli \
 
 #---------------------------------------------------------------------
 
-FROM docker.io/debian:stable-slim as main
+FROM docker.io/debian:stable-slim AS main
 
 # Set time zone
 ENV TZ="UTC"

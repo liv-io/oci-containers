@@ -1,4 +1,4 @@
-FROM docker.io/debian:stable-slim as build
+FROM docker.io/debian:stable-slim AS build
 
 ARG BLOCKBOOK_VERSION="${BLOCKBOOK_VERSION:-0.4.0}"
 ARG GO_CHECKSUM="${GO_CHECKSUM:-542d3c1705f1c6a1c5a80d5dc62e2e45171af291e755d591c5e6531ef63b454e}"
@@ -110,7 +110,7 @@ RUN go build -tags rocksdb_7_7
 
 #---------------------------------------------------------------------
 
-FROM docker.io/debian:stable-slim as main
+FROM docker.io/debian:stable-slim AS main
 
 # Set time zone
 ENV TZ="UTC"

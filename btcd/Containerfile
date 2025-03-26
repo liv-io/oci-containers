@@ -1,4 +1,4 @@
-FROM docker.io/debian:stable-slim as build
+FROM docker.io/debian:stable-slim AS build
 
 ARG BTCD_VERSION="${BTCD_VERSION:-0.24.2}"
 
@@ -61,7 +61,7 @@ RUN chmod 0755 /usr/local/bin/btcd \
 
 #---------------------------------------------------------------------
 
-FROM docker.io/debian:stable-slim as main
+FROM docker.io/debian:stable-slim AS main
 
 # Set time zone
 ENV TZ="UTC"
