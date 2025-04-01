@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 3254127d9e1346a0a2a4749cddb8aa6fc6aa2329-1 (2025-04-01)
+
+### Features
+
+- Update kaspa-explorer to version 3254127d9e1346a0a2a4749cddb8aa6fc6aa2329
+
 ## b68585671577addcf6de48d84ea04d09503a9070-1 (2025-03-09)
 
 ### Features
