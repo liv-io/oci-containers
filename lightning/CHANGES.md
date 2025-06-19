@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 25.05-1 (2025-06-19)
+
+### Enhancements
+
+- Update bitcoin-core to version 29.0
+
+### Features
+
+- Update lightning to version 25.05
+
 ## 25.02.2-1 (2025-04-26)
 
 ### Bugs
