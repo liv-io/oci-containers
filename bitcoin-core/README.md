@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [bitcoin-core](https://bitcoincore.org/bin/bitcoin-core-29.0/bitcoin-29.0-x86_64-linux-gnu.tar.gz) `29.0`
+- [bitcoin-core](https://bitcoincore.org/bin/bitcoin-core-29.1/bitcoin-29.1-x86_64-linux-gnu.tar.gz) `29.1`
 
 #### Images
 

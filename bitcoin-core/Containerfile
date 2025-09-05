@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-29.0}"
+ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-29.1}"
 
 # Set time zone
 ENV TZ="UTC"
