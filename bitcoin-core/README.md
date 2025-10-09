@@ -210,6 +210,16 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: "127.0.0.1" | "1.2.3.4" | "5.6.7.8:8333"
 
+`CHAIN`
+
+    Description: -chain
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "main"
+    Options    :
+      Examples: "main" | "testnet3" | "testnet4"
+
 `DATADIR`
 
     Description: -datadir
@@ -225,10 +235,10 @@ The following commands ought to be executed on the system running the container.
     Description: -dbcache
     Required   : False
     Value      : Arbitrary
-    Type       : String
-    Default    : "2048"
+    Type       : Integer
+    Default    : 2048
     Options    :
-      Examples: "4096"
+      Examples: 4096
 
 `EXTERNALIP`
 
@@ -246,10 +256,10 @@ The following commands ought to be executed on the system running the container.
     Description: -maxuploadtarget (MiB per day)
     Required   : False
     Value      : Arbitrary
-    Type       : String
+    Type       : Integer
     Default    : ""
     Options    :
-      Examples: "25787" | "103148" | "515738" | "1031475"
+      Examples: 25787 | 103148 | 515738 | 1031475
       None    : ""
 
 `ONLYNET`
@@ -267,10 +277,13 @@ The following commands ought to be executed on the system running the container.
     Description: -port
     Required   : False
     Value      : Arbitrary
-    Type       : String
-    Default    : "8333"
+    Type       : Integer
+    Default    :
+      main:     8333
+      testnet3: 18333
+      testnet4: 48333
     Options    :
-      Examples: "8333" | "18333"
+      Examples: 8333 | 18333 | 48333
 
 `REST`
 
@@ -321,19 +334,22 @@ The following commands ought to be executed on the system running the container.
     Required   : False
     Value      : Arbitrary
     Type       : String
-    Default    : "8332"
+    Default    :
+      main:     8332
+      testnet3: 18332
+      testnet4: 48332
     Options    :
-      Examples: "8332" | "18332"
+      Examples: 8332 | 18332 | 48332
 
 `RPCWORKQUEUE`
 
     Description: -rpcworkqueue
     Required   : False
     Value      : Arbitrary
-    Type       : String
-    Default    : "32"
+    Type       : Integer
+    Default    : 32
     Options    :
-      Examples: "16" | "32" | "64"
+      Examples: 16 | 32 | 64
 
 `ZMQPUBHASHBLOCK`
 
