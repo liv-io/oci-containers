@@ -10,7 +10,13 @@ The headers are:
 - enhancements
 - features
 
-## 0.19.2-beta-2 (2025-08-22)
+## 0.19.3-beta-2 (2025-10-09)
+
+### Features
+
+- Add support for `testnet3` and `testnet4`
+
+## 0.19.3-beta-1 (2025-08-22)
 
 ### Features
 
