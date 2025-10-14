@@ -10,11 +10,11 @@ The headers are:
 - enhancements
 - features
 
-## 30.0-1 (2025-10-13)
+## 29.2-1 (2025-10-14)
 
 ### Features
 
-- Update bitcoin-core to version 30.0
+- Update bitcoin-core to version 29.2
 
 ## 29.1-2 (2025-10-09)
 
