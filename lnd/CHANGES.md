@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 0.19.3-beta-3 (2025-10-14)
+
+### Changes
+
+- Update GPG key of `roasbeef`
+
+### Features
+
+- Add function to unlock an encrypted wallet at startup
+
 ## 0.19.3-beta-2 (2025-10-09)
 
 ### Features

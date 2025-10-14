@@ -340,6 +340,17 @@ The following commands ought to be executed on the system running the container.
       Examples: "127.0.0.1:10009" | "0.0.0.0:10009" | "[::1]:10009"
       None    : ""
 
+`WALLET_PASSWORD`
+
+    Description: lncli unlock --stdin
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : ""
+    Options    :
+      Examples: "51!bDsV=SQJbYt3mJarb+ZRYsEyJN,P3" | "VZ.kSMtb8Jea4bc,Ff2JM!a38mx3+l49"
+      None    : ""
+
 ## License
 
 See `LICENSE` file for more information.

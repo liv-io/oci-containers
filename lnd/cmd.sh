@@ -22,6 +22,7 @@ LISTEN="${LISTEN:-0.0.0.0:9735}"
 LNDDIR="${LNDDIR:-/var/local/lnd/data}"
 RESTLISTEN="${RESTLISTEN:-}"
 RPCLISTEN="${RPCLISTEN:-}"
+WALLET_PASSWORD="${WALLET_PASSWORD:-}"
 
 set_defaults() {
     if [ "${BITCOIN_NETWORK,,}" = "mainnet" ]; then
@@ -122,10 +123,29 @@ assemble_command() {
     fi
 }
 
+unlock_wallet() {
+    if [ -n "${WALLET_PASSWORD}" ]; then
+        sleep 5
+
+        cmd=(/usr/local/bin/lncli)
+
+        # LNDDIR
+        if [ -n "${LNDDIR}" ]; then
+            cmd+=(--lnddir="${LNDDIR}")
+        fi
+
+        cmd+=(unlock)
+        cmd+=(--stdin)
+
+        "${cmd[@]}" <<<"${WALLET_PASSWORD}"
+    fi
+}
+
 # Establish run order
 main() {
     set_defaults
     assemble_command
+    unlock_wallet &
     "${cmd[@]}"
 }
 
