@@ -9,29 +9,42 @@ PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 # Environment variables
 ADDNODE="${ADDNODE:-}"
 BIND="${BIND:-0.0.0.0}"
+CHAIN="${CHAIN:-main}"
 DATADIR="${DATADIR:-/var/local/bitcoin-core/db}"
 DBCACHE="${DBCACHE:-2048}"
 EXTERNALIP="${EXTERNALIP:-}"
 MAXUPLOADTARGET="${MAXUPLOADTARGET:-}"
 ONLYNET="${ONLYNET:-ipv4}"
-PORT="${PORT:-8333}"
+PORT="${PORT:-}"
 REST="${REST:-false}"
 RPCALLOWIP="${RPCALLOWIP:-127.0.0.0/8}"
 RPCAUTH="${RPCAUTH:-}"
 RPCBIND="${RPCBIND:-127.0.0.1}"
-RPCPORT="${RPCPORT:-8332}"
+RPCPORT="${RPCPORT:-}"
 RPCWORKQUEUE="${RPCWORKQUEUE:-32}"
 ZMQPUBHASHBLOCK="${ZMQPUBHASHBLOCK:-tcp://127.0.0.1:5555}"
 ZMQPUBHASHTX="${ZMQPUBHASHTX:-tcp://127.0.0.1:5556}"
 ZMQPUBRAWBLOCK="${ZMQPUBRAWBLOCK:-tcp://127.0.0.1:5557}"
 ZMQPUBRAWTX="${ZMQPUBRAWTX:-tcp://127.0.0.1:5558}"
 
+set_defaults() {
+    if [ "${CHAIN,,}" = "main" ]; then
+        PORT="${PORT:-8333}"
+        RPCPORT="${RPCPORT:-8332}"
+    elif [ "${CHAIN,,}" = "test" ] || [ "${CHAIN,,}" = "testnet3" ]; then
+        PORT="${PORT:-18333}"
+        RPCPORT="${RPCPORT:-18332}"
+    elif [ "${CHAIN,,}" = "testnet4" ]; then
+        PORT="${PORT:-48333}"
+        RPCPORT="${RPCPORT:-48332}"
+    fi
+}
+
 # shellcheck disable=SC2068
 assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/bitcoind)
     cmd+=(-assumevalid=0)
-    cmd+=(-chain=main)
     cmd+=(-disablewallet=1)
     cmd+=(-peerbloomfilters=0)
     cmd+=(-printtoconsole=1)
@@ -46,6 +59,15 @@ assemble_command() {
     # BIND
     if [ -n "${BIND}" ]; then
         cmd+=(-bind="${BIND}")
+    fi
+
+    # CHAIN
+    if [ "${CHAIN,,}" = "main" ]; then
+        cmd+=(-chain=main)
+    elif [ "${CHAIN,,}" = "test" ] || [ "${CHAIN,,}" = "testnet3" ]; then
+        cmd+=(-chain=test)
+    elif [ "${CHAIN,,}" = "testnet4" ]; then
+        cmd+=(-chain=testnet4)
     fi
 
     # DATADIR
@@ -133,6 +155,7 @@ assemble_command() {
 
 # Establish run order
 main() {
+    set_defaults
     assemble_command
     "${cmd[@]}"
 }

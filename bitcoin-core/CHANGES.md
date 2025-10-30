@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 28.3-1 (2025-10-30)
+
+### Enhancements
+
+- Update bitcoin-core to version 28.3
+
+### Features
+
+- Add support for `testnet3` and `testnet4`
+
 ## 28.2-1 (2025-06-26)
 
 ### Enhancements
