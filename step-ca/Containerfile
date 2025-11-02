@@ -1,0 +1,203 @@
+FROM docker.io/debian:stable-slim AS build
+
+ARG COSIGN_VERSION="${COSIGN_VERSION:-3.0.2}"
+ARG STEP_CA_VERSION="${STEP_CA_VERSION:-0.28.4}"
+ARG STEP_CLI_VERSION="${STEP_CLI_VERSION:-0.28.7}"
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in build stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg \
+        tar
+
+# Create cosign directory
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/cosign
+
+# Download cosign binary
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 \
+        --output /usr/local/src/cosign/cosign-linux-amd64
+
+# Download cosign signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64.sig \
+        --output /usr/local/src/cosign/cosign-linux-amd64.sig
+
+# Download cosign checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign_checksums.txt \
+        --output /usr/local/src/cosign/cosign_checksums.txt
+
+# Verify cosign checksum
+WORKDIR /usr/local/src/cosign
+RUN sha256sum --ignore-missing --check cosign_checksums.txt
+
+# Make cosign executable
+RUN chmod 0755 /usr/local/src/cosign/cosign-linux-amd64
+
+# Create cosign symlink
+RUN ln -s /usr/local/src/cosign/cosign-linux-amd64 /usr/local/bin/cosign
+
+# Create step-ca directory
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/step-ca
+
+# Download step-ca checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/checksums.txt \
+        --output /usr/local/src/step-ca/checksums.txt
+
+# Download step-ca checksum public key
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/checksums.txt.pem \
+        --output /usr/local/src/step-ca/checksums.txt.pem
+
+# Download step-ca checksum signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/checksums.txt.sig \
+        --output /usr/local/src/step-ca/checksums.txt.sig
+
+# Verify step-ca checksum signature
+RUN cosign verify-blob \
+        --certificate /usr/local/src/step-ca/checksums.txt.pem \
+        --signature /usr/local/src/step-ca/checksums.txt.sig \
+        --certificate-identity-regexp "https://github\.com/smallstep/workflows/.*" \
+        --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+        /usr/local/src/step-ca/checksums.txt
+
+# Download step-ca archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz \
+        --output /usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz
+
+# Download step-ca public key
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz.pem \
+        --output /usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz.pem
+
+# Download step-ca signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz.sig \
+        --output /usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz.sig
+
+# Verify step-ca signature
+RUN cosign verify-blob \
+        --certificate /usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz.pem \
+        --signature /usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz.sig \
+        --certificate-identity-regexp "https://github\.com/smallstep/workflows/.*" \
+        --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+        /usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz
+
+# Verify step-ca checksum
+WORKDIR /usr/local/src/step-ca
+RUN sha256sum --ignore-missing --check checksums.txt
+
+# Unarchive step-ca archive
+RUN tar --extract --gzip --file=/usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz --directory=/usr/local/src/step-ca
+
+# Create step-ca symlink
+RUN ln -s /usr/local/src/step-ca/step-ca /usr/local/bin/step-ca
+
+# Create step-cli directory
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/step-cli
+
+# Download step-cli checksum
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/checksums.txt \
+        --output /usr/local/src/step-cli/checksums.txt
+
+# Download step-cli checksum public key
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/checksums.txt.pem \
+        --output /usr/local/src/step-cli/checksums.txt.pem
+
+# Download step-cli checksum signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/checksums.txt.sig \
+        --output /usr/local/src/step-cli/checksums.txt.sig
+
+# Verify step-cli checksum signature
+RUN cosign verify-blob \
+        --certificate /usr/local/src/step-cli/checksums.txt.pem \
+        --signature /usr/local/src/step-cli/checksums.txt.sig \
+        --certificate-identity-regexp "https://github\.com/smallstep/workflows/.*" \
+        --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+        /usr/local/src/step-cli/checksums.txt
+
+# Download step-cli archive
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz \
+        --output /usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz
+
+# Download step-cli public key
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz.pem \
+        --output /usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz.pem
+
+# Download step-cli signature
+RUN curl --proto '=https' --tlsv1.2 \
+        --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz.sig \
+        --output /usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz.sig
+
+# Verify step-cli checksum signature
+RUN cosign verify-blob \
+        --certificate /usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz.pem \
+        --signature /usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz.sig \
+        --certificate-identity-regexp "https://github\.com/smallstep/workflows/.*" \
+        --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+        /usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz
+
+# Verify step-cli checksum
+WORKDIR /usr/local/src/step-cli
+RUN sha256sum --ignore-missing --check checksums.txt
+
+# Unarchive step-cli archive
+RUN tar --extract --gzip --file=/usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz --directory=/usr/local/src/step-cli
+
+# Create step-cli symlink
+RUN ln -s /usr/local/src/step-cli/step_${STEP_CLI_VERSION}/bin/step /usr/local/bin/step
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim AS main
+
+# Set time zone
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+# Install packages required in main stage
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        jq \
+        procps
+
+# Copy binary from build stage
+COPY --from=build --chown=root:root /usr/local/bin/step-ca /usr/local/bin/step-ca
+COPY --from=build --chown=root:root /usr/local/bin/step /usr/local/bin/step
+
+# Create step-ca group and user
+RUN groupadd --gid 10000 step-ca && \
+    useradd --comment 'step-ca' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 step-ca
+
+# Create directories for variable data
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/step-ca && \
+    install --directory --owner=step-ca --group=step-ca --mode=0700 /var/local/step-ca/data
+
+# Create .step symlink
+RUN ln -s /var/local/step-ca/data /home/step-ca/.step
+
+# Copy cmd.sh
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER step-ca
+STOPSIGNAL SIGINT
+
+CMD ["/bin/bash", "/cmd.sh"]
