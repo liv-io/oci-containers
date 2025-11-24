@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG LND_VERSION="${LND_VERSION:-0.19.3-beta}"
+ARG LND_VERSION="${LND_VERSION:-0.20.0-beta}"
 
 # Set time zone
 ENV TZ="UTC"
@@ -29,10 +29,10 @@ RUN curl --proto '=https' --tlsv1.2 \
         --output /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
 
 # Download lnd signature
+#RUN curl --proto '=https' --tlsv1.2 \
+#        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-guggero-v${LND_VERSION}.sig \
+#        --output /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig
 RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-guggero-v${LND_VERSION}.sig \
-        --output /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig &&\
-    curl --proto '=https' --tlsv1.2 \
         --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-roasbeef-v${LND_VERSION}.sig \
         --output /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig
 
@@ -45,8 +45,8 @@ RUN for key in /root/gpg/*; do \
     done
 
 # Verify checksum signature
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig /usr/local/src/lnd/manifest-v${LND_VERSION}.txt && \
-    gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
+#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
 
 # Verify lnd checksum
 WORKDIR /usr/local/src/lnd

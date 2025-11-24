@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 0.20.0-beta-1 (2025-11-24)
+
+### Changes
+
+- Missing signature from `guggero`, temporarily disable signature
+
+### Features
+
+- Update lnd to version 0.20.0-beta-1
+
 ## 0.19.3-beta-3 (2025-10-14)
 
 ### Changes
@@ -30,7 +40,7 @@ The headers are:
 
 ### Features
 
-- Update lnd to version lnd v0.19.3-beta
+- Update lnd to version 0.19.3-beta
 
 ## 0.19.2-beta-1 (2025-07-16)
 
@@ -64,7 +74,7 @@ The headers are:
 
 ### Changes
 
-- Missing signature from `roasbeef`, temporarily disable GPG check
+- Missing signature from `roasbeef`, temporarily disable signature
 
 ## 0.18.3-beta-1 (2024-09-16)
 
