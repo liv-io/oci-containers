@@ -10,6 +10,14 @@ The headers are:
 - enhancements
 - features
 
+## 25.09.3-2 (2025-12-03)
+
+### Features
+
+- Add support for parameter `CLNREST_HOST`
+- Add support for parameter `CLNREST_PORT`
+- Add support for parameter `CLNREST_PROTOCOL`
+
 ## 25.09.3-1 (2025-11-19)
 
 ### Bugs

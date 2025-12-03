@@ -20,6 +20,9 @@ BITCOIN_RPCCONNECT="${BITCOIN_RPCCONNECT:-127.0.0.1}"
 BITCOIN_RPCPASSWORD="${BITCOIN_RPCPASSWORD:-}"
 BITCOIN_RPCPORT="${BITCOIN_RPCPORT:-8332}"
 BITCOIN_RPCUSER="${BITCOIN_RPCUSER:-}"
+CLNREST_HOST="${CLNREST_HOST:-0.0.0.0}"
+CLNREST_PORT="${CLNREST_PORT:-3010}"
+CLNREST_PROTOCOL="${CLNREST_PROTOCOL:-HTTP}"
 LIGHTNING_DIR="${LIGHTNING_DIR:-/var/local/lightning/data}"
 LOG_LEVEL="${LOG_LEVEL:-info}"
 LOG_TIMESTAMPS="${LOG_TIMESTAMPS:-true}"
@@ -95,6 +98,21 @@ assemble_command() {
     # BITCOIN_RPCUSER
     if [ -n "${BITCOIN_RPCUSER}" ]; then
         cmd+=(--bitcoin-rpcuser "${BITCOIN_RPCUSER}")
+    fi
+
+    # CLNREST_HOST
+    if [ -n "${CLNREST_HOST}" ]; then
+        cmd+=(--clnrest-host "${CLNREST_HOST}")
+    fi
+
+    # CLNREST_PORT
+    if [ -n "${CLNREST_PORT}" ]; then
+        cmd+=(--clnrest-port "${CLNREST_PORT}")
+    fi
+
+    # CLNREST_PROTOCOL
+    if [ -n "${CLNREST_PROTOCOL}" ]; then
+        cmd+=(--clnrest-protocol "${CLNREST_PROTOCOL}")
     fi
 
     # LIGHTNING_DIR
