@@ -321,6 +321,38 @@ The following commands ought to be executed on the system running the container.
       Examples: "satoshi" | "hal" | "len" | "nick" | "adam" | "david"
       None    : ""
 
+`CLNREST_HOST`
+
+    Description: --clnrest-host
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "0.0.0.0"
+    Options    :
+      Examples: "1.2.3.4" | "5.6.7.8"
+      None    : ""
+
+`CLNREST_PORT`
+
+    Description: --clnrest-port
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "3010"
+    Options    :
+      Examples: "6020"
+
+`CLNREST_PROTOCOL`
+
+    Description: --clnrest-protocol
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "HTTP"
+    Options    :
+      Examples: "HTTP" | "HTTPS"
+      None    : ""
+
 `LIGHTNING_DIR`
 
     Description: --lightning-dir
