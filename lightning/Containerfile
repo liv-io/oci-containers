@@ -1,7 +1,7 @@
 FROM docker.io/debian:stable-slim AS build
 
 ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-29.2}"
-ARG LIGHTNING_VERSION="${LIGHTNING_VERSION:-25.09.3}"
+ARG LIGHTNING_VERSION="${LIGHTNING_VERSION:-25.12}"
 
 # Set time zone
 ENV TZ="UTC"
@@ -115,6 +115,7 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
 RUN apt update && \
     apt install -y --no-install-recommends \
         libpq5 \
+        libsodium23 \
         libsqlite3-0 \
         procps \
         python3
