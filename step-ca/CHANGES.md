@@ -10,6 +10,13 @@ The headers are:
 - enhancements
 - features
 
+## 0.29.0-1 (2025-12-05)
+
+### Features
+
+- Update step-ca to version 0.29.0
+- Update step-cli to version 0.29.0
+
 ## 0.28.4-1 (2025-11-02)
 
 ### Features
