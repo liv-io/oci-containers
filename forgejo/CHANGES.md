@@ -10,6 +10,17 @@ The headers are:
 - enhancements
 - features
 
+## 13.0.4-1 (2026-01-08)
+
+### Bugs
+
+- Update forgejo to version 13.0.4
+
+### Changes
+
+- Update Forgejo Releases GPG key (eb114f5e6c0dc2bcdd183550a4b61a2dc5923710)
+- Remove expired Forgejo Security GPG key (1b638bdf10969d627926b8d9f585d0f99e1fb56f)
+
 ## 13.0.3-1 (2025-11-22)
 
 ### Bugs

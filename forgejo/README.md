@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [forgejo](https://codeberg.org/forgejo/forgejo/releases/download/v13.0.3/forgejo-13.0.3-linux-amd64) `13.0.3`
+- [forgejo](https://codeberg.org/forgejo/forgejo/releases/download/v13.0.4/forgejo-13.0.4-linux-amd64) `13.0.4`
 
 #### Images
 
