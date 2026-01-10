@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 3.12.0-2 (2026-01-10)
+
+### Enhancements
+
+- Update plugin-git to version 2.8.0
+
 ## 3.12.0-1 (2025-11-28)
 
 ### Features
