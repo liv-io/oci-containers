@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG BTCD_VERSION="${BTCD_VERSION:-0.24.2}"
+ARG BTCD_VERSION="${BTCD_VERSION:-0.25.0}"
 
 # Set time zone
 ENV TZ="UTC"

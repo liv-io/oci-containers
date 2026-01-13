@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 0.25.0-1 (2026-01-13)
+
+### Changes
+
+- Update GPG key of `roasbeef` (a5b61896952d9fda83bc054cdc42612e89237182)
+
+### Features
+
+- Update btcd to version 0.25.0
+
 ## 0.24.2-1 (2024-06-26)
 
 ### Bugs
