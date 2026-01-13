@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 30.2-1 (2026-01-13)
+
+### Features
+
+- Update bitcoin-core to version 30.2
+
 ## 30.0-1 (2025-10-13)
 
 ### Features
