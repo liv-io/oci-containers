@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG FORGEJO_VERSION="${FORGEJO_VERSION:-13.0.4}"
+ARG FORGEJO_VERSION="${FORGEJO_VERSION:-14.0.0}"
 
 # Set time zone
 ENV TZ="UTC"
