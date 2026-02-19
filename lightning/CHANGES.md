@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 25.12.1-2 (2026-02-19)
+
+### Enhancements
+
+- Add package `jq` for simpler channel management
+
 ## 25.12.1-1 (2026-01-16)
 
 ### Bugs
