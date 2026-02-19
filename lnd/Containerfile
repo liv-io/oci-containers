@@ -75,6 +75,7 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
 # Install packages required in main stage
 RUN apt update && \
     apt install -y --no-install-recommends \
+        jq \
         procps
 
 # Copy binary from build stage
@@ -92,10 +93,6 @@ RUN install --directory --owner=root --group=root --mode=0755 /var/local/lnd && 
 # Copy cmd.sh
 COPY --chown=root:root cmd.sh /
 RUN chmod 0755 /cmd.sh
-
-RUN apt update && \
-    apt install -y --no-install-recommends \
-        vim
 
 USER lnd
 
