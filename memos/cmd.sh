@@ -8,8 +8,8 @@ PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
 # Environment variables
 DATA="${DATA:-/var/local/memos/db}"
-MODE="${MODE:-prod}"
-PORT="${PORT:-8080}"
+PORT="${PORT:-8081}"
+URL="${URL:-}"
 
 # shellcheck disable=SC2068
 assemble_command() {
@@ -18,17 +18,17 @@ assemble_command() {
 
     # DATA
     if [ -n "${DATA}" ]; then
-        cmd+=(-data="${DATA}")
-    fi
-
-    # MODE
-    if [ -n "${MODE}" ]; then
-        cmd+=(-mode="${MODE}")
+        cmd+=(--data "${DATA}")
     fi
 
     # PORT
     if [ -n "${PORT}" ]; then
-        cmd+=(-port="${PORT}")
+        cmd+=(--port "${PORT}")
+    fi
+
+    # URL
+    if [ -n "${URL}" ]; then
+        cmd+=(--instance-url "${URL}")
     fi
 }
 

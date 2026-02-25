@@ -137,8 +137,7 @@ The following commands ought to be executed on the system running the container.
 
     ```
     podman run --detach --name memos --network=host \
-        --env MODE="prod" \
-        --env PORT="8080" \
+        --env PORT="8081" \
         --volume /opt/memos/db:/var/local/memos/db \
         memos:latest
     ```
@@ -190,7 +189,7 @@ The following commands ought to be executed on the system running the container.
 
 `DATA`
 
-    Description: -data
+    Description: --data
     Required   : False
     Value      : Arbitrary
     Type       : String
@@ -198,24 +197,26 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: "/var/local/memos/db"
 
-`MODE`
-
-    Description: -mode
-    Required   : False
-    Value      : Predetermined
-    Type       : String
-    Default    : "prod"
-    Options    : "prod" | "dev"
-
 `PORT`
 
-    Description: -port
+    Description: --port
     Required   : False
     Value      : Arbitrary
     Type       : Integer
-    Default    : 8080
+    Default    : 8081
     Options    :
-      Examples: 8081
+      Examples: 8080
+
+`URL`
+
+    Description: --instance-url
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : ""
+    Options    :
+      Examples: "https://memos.example.com"
+      None    : ""
 
 ## License
 
