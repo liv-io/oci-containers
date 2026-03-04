@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 1.1.0-1 (2026-03-04)
+
+### Features
+
+- Update rusty-kaspa to version 1.1.0
+
 ## 1.0.1-1 (2025-07-01)
 
 ### Bugs

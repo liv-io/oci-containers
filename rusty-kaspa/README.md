@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [rusty-kaspa](https://github.com/kaspanet/rusty-kaspa/releases/download/v1.0.1/rusty-kaspa-v1.0.1-linux-amd64.zip) `1.0.1`
+- [rusty-kaspa](https://github.com/kaspanet/rusty-kaspa/releases/download/v1.1.0/rusty-kaspa-v1.1.0-linux-amd64.zip) `1.1.0`
 
 #### Images
 
@@ -193,7 +193,7 @@ The following commands ought to be executed on the system running the container.
     Required   : False
     Value      : Arbitrary
     Type       : String
-    Default    : "-/var/local/rusty-kaspa/data"
+    Default    : "/var/local/rusty-kaspa/data"
     Options    :
       Examples: "/mnt/data"
 
