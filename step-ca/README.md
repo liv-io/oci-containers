@@ -34,9 +34,9 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [cli](https://github.com/smallstep/cli/releases/download/v0.29.0/step_linux_0.29.0_amd64.tar.gz) `cli`
-- [cosign](https://github.com/sigstore/cosign/releases/download/v2.6.1/cosign-linux-amd64) `cosign`
-- [step-ca](https://github.com/smallstep/certificates/releases/download/v0.29.0/step-ca_linux_0.29.0_amd64.tar.gz) `step-ca`
+- [cli](https://github.com/smallstep/cli/releases/download/v0.30.1/step_linux_0.30.1_amd64.tar.gz) `cli`
+- [cosign](https://github.com/sigstore/cosign/releases/download/v3.0.5/cosign-linux-amd64) `cosign`
+- [step-ca](https://github.com/smallstep/certificates/releases/download/v0.30.1/step-ca_linux_0.30.1_amd64.tar.gz) `step-ca`
 
 #### Images
 

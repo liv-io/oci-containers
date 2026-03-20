@@ -10,6 +10,14 @@ The headers are:
 - enhancements
 - features
 
+## 0.30.1-1 (2026-03-19)
+
+### Features
+
+- Update cosign to version 3.0.5
+- Update step-ca to version 0.30.1
+- Update step-cli to version 0.30.1
+
 ## 0.29.0-1 (2025-12-05)
 
 ### Features
