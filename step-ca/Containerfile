@@ -1,8 +1,8 @@
 FROM docker.io/debian:stable-slim AS build
 
 ARG COSIGN_VERSION="${COSIGN_VERSION:-3.0.5}"
-ARG STEP_CA_VERSION="${STEP_CA_VERSION:-0.30.1}"
-ARG STEP_CLI_VERSION="${STEP_CLI_VERSION:-0.30.1}"
+ARG STEP_CA_VERSION="${STEP_CA_VERSION:-0.30.2}"
+ARG STEP_CLI_VERSION="${STEP_CLI_VERSION:-0.30.2}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
