@@ -36,7 +36,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [go](https://go.dev/dl/go1.25.7.linux-amd64.tar.gz) `1.25.7`
+- [go](https://go.dev/dl/go1.26.2.linux-amd64.tar.gz) `1.26.2`
 
 #### Git
 
