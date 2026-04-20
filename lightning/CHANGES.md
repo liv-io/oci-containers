@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 26.04-1 (2026-04-20)
+
+### Features
+
+- Update lightning to version 26.04
+
 ## 25.12.1-2 (2026-02-19)
 
 ### Enhancements
