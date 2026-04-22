@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.30.2-2 (2026-04-22)
+
+### Enhancements
+
+- Update cosign to version 3.0.6
+
 ## 0.30.2-1 (2026-03-23)
 
 ### Enhancements
