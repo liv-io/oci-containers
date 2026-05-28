@@ -10,6 +10,17 @@ The headers are:
 - enhancements
 - features
 
+## 0.29.0-1 (2026-05-28)
+
+### Enhancements
+
+- Update Go to version 1.26.3
+- Update npm to version latest-11
+
+### Features
+
+- Update Memos to version 0.29.0
+
 ## 0.28.0-1 (2026-04-27)
 
 ### Features
