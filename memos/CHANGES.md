@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 0.29.1-1 (2026-06-05)
+
+### Enhancements
+
+- Upgrade curl TLS version from 1.2 to 1.3
+
+### Bugs
+
+- Update Memos to version 0.29.1
+
 ## 0.29.0-1 (2026-05-28)
 
 ### Enhancements

@@ -6,7 +6,6 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
-# Environment variables
 DATA="${DATA:-/var/local/memos/db}"
 PORT="${PORT:-8081}"
 URL="${URL:-}"
