@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 26.06-2 (2026-06-05)
+
+### Bugs
+
+- Correct lightning version in Containerfile
+
 ## 26.06-1 (2026-06-03)
 
 ### Enhancements
