@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.21.0-beta-1 (2026-06-06)
+
+### Features
+
+- Update lnd to version 0.21.0-beta-1
+
 ## 0.20.1-beta-2 (2026-02-19)
 
 ### Enhancements

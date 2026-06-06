@@ -1,13 +1,11 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG LND_VERSION="${LND_VERSION:-0.20.1-beta}"
+ARG LND_VERSION="${LND_VERSION:-0.21.0-beta}"
 
-# Set time zone
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo ${TZ} > /etc/timezone
 
-# Install packages required in build stage
 RUN apt update && \
     apt install -y --no-install-recommends \
         ca-certificates \
@@ -15,51 +13,42 @@ RUN apt update && \
         gnupg \
         tar
 
-# Create directories for upstream source files
+# lnd
+
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/lnd
 
-# Download lnd archive
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/lnd-linux-amd64-v${LND_VERSION}.tar.gz \
         --output /usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}.tar.gz
 
-# Download lnd checksum
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-v${LND_VERSION}.txt \
         --output /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
 
-# Download lnd signature
-#RUN curl --proto '=https' --tlsv1.2 \
+#RUN curl --proto '=https' --tlsv1.3 \
 #        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-guggero-v${LND_VERSION}.sig \
 #        --output /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-roasbeef-v${LND_VERSION}.sig \
         --output /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig
 
-# Add keys to GPG keyring
 # https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
 COPY --chown=root:root gpg /root/gpg
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
 RUN for key in /root/gpg/*; do \
         gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
     done
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
 
-# Verify checksum signature
-#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
-
-# Verify lnd checksum
 WORKDIR /usr/local/src/lnd
+#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify manifest-guggero-v${LND_VERSION}.sig manifest-v${LND_VERSION}.txt
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify manifest-roasbeef-v${LND_VERSION}.sig manifest-v${LND_VERSION}.txt
 RUN sha256sum --ignore-missing --check manifest-v${LND_VERSION}.txt
 
-# Unarchive lnd tarball
 RUN tar --extract --gzip --file=/usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}.tar.gz --directory=/usr/local/src/lnd
 
-# Move binaries
 RUN mv /usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}/lncli /usr/local/bin/lncli && \
     mv /usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}/lnd /usr/local/bin/lnd
 
-# Ensure binaries are executable
 RUN chmod 0755 /usr/local/bin/lncli \
                /usr/local/bin/lnd
 
@@ -67,30 +56,28 @@ RUN chmod 0755 /usr/local/bin/lncli \
 
 FROM docker.io/debian:stable-slim AS main
 
-# Set time zone
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo ${TZ} > /etc/timezone
 
-# Install packages required in main stage
 RUN apt update && \
     apt install -y --no-install-recommends \
         jq \
         procps
 
-# Copy binary from build stage
+# lnd
+
 COPY --from=build --chown=root:root /usr/local/bin/lncli /usr/local/bin/lncli
 COPY --from=build --chown=root:root /usr/local/bin/lnd /usr/local/bin/lnd
 
-# Create lnd group and user
+# user and permissions
+
 RUN groupadd --gid 10000 lnd && \
     useradd --comment 'lnd' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 lnd
 
-# Create directories for variable data
 RUN install --directory --owner=root --group=root --mode=0755 /var/local/lnd && \
     install --directory --owner=lnd --group=lnd --mode=0750 /var/local/lnd/data
 
-# Copy cmd.sh
 COPY --chown=root:root cmd.sh /
 RUN chmod 0755 /cmd.sh
 
