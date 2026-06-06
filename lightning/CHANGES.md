@@ -10,6 +10,21 @@ The headers are:
 - enhancements
 - features
 
+## 26.06.1-1 (2026-06-06)
+
+### Bugs
+
+- Update lightning to version 26.06.1
+
+### Changes
+
+- Add GPG key of `nGoline` (a57656f8004f6fd68ed99c85be277a87802a6f08)
+
+### Enhancements
+
+- Improve GPG verify commands
+- Remove expired GPG keys
+
 ## 26.06-2 (2026-06-05)
 
 ### Bugs
