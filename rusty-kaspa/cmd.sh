@@ -6,7 +6,6 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
-# Environment variables
 ADDPEER="${ADDPEER:-}"
 APPDIR="${APPDIR:-/var/local/rusty-kaspa/data}"
 DISABLE_UPNP="${DISABLE_UPNP:-true}"
