@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG FORGEJO_VERSION="${FORGEJO_VERSION:-15.0.2}"
+ARG FORGEJO_VERSION="${FORGEJO_VERSION:-15.0.3}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -16,15 +16,15 @@ RUN apt update && \
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/forgejo
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64 \
         --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64.sha256 \
         --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.sha256
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64.asc \
         --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.asc
 

@@ -6,7 +6,6 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
-# Environment variables
 CONFIG="${CONFIG:-/var/local/forgejo/work/custom/conf/app.ini}"
 CUSTOM_PATH="${CUSTOM_PATH:-/var/local/forgejo/work/custom}"
 INSTALL_PORT="${INSTALL_PORT:-3000}"
