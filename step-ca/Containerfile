@@ -1,8 +1,8 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG COSIGN_VERSION="${COSIGN_VERSION:-3.0.6}"
+ARG COSIGN_VERSION="${COSIGN_VERSION:-3.1.1}"
 ARG STEP_CA_VERSION="${STEP_CA_VERSION:-0.30.2}"
-ARG STEP_CLI_VERSION="${STEP_CLI_VERSION:-0.30.2}"
+ARG STEP_CLI_VERSION="${STEP_CLI_VERSION:-0.30.4}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -20,11 +20,11 @@ RUN apt update && \
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/cosign
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 \
         --output /usr/local/src/cosign/cosign-linux-amd64
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json \
         --output /usr/local/src/cosign/cosign-linux-amd64.sigstore.json
 
@@ -38,11 +38,11 @@ RUN cosign verify-blob \
         --certificate-oidc-issuer https://accounts.google.com \
         /usr/local/src/cosign/cosign-linux-amd64
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign_checksums.txt \
         --output /usr/local/src/cosign/cosign_checksums.txt
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign_checksums.txt.sigstore.json \
         --output /usr/local/src/cosign/cosign_checksums.txt.sigstore.json
 
@@ -59,11 +59,11 @@ RUN sha256sum --ignore-missing --check cosign_checksums.txt
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/step-ca
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/checksums.txt \
         --output /usr/local/src/step-ca/checksums.txt
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/checksums.txt.sigstore.json \
         --output /usr/local/src/step-ca/checksums.txt.sigstore.json
 
@@ -73,11 +73,11 @@ RUN cosign verify-blob \
         --certificate-oidc-issuer https://token.actions.githubusercontent.com \
         /usr/local/src/step-ca/checksums.txt
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz \
         --output /usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/smallstep/certificates/releases/download/v${STEP_CA_VERSION}/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz.sigstore.json \
         --output /usr/local/src/step-ca/step-ca_linux_${STEP_CA_VERSION}_amd64.tar.gz.sigstore.json
 
@@ -98,11 +98,11 @@ RUN ln -s /usr/local/src/step-ca/step-ca /usr/local/bin/step-ca
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/step-cli
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/checksums.txt \
         --output /usr/local/src/step-cli/checksums.txt
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/checksums.txt.sigstore.json \
         --output /usr/local/src/step-cli/checksums.txt.sigstore.json
 
@@ -112,11 +112,11 @@ RUN cosign verify-blob \
         --certificate-oidc-issuer https://token.actions.githubusercontent.com \
         /usr/local/src/step-cli/checksums.txt
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz \
         --output /usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/smallstep/cli/releases/download/v${STEP_CLI_VERSION}/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz.sigstore.json \
         --output /usr/local/src/step-cli/step_linux_${STEP_CLI_VERSION}_amd64.tar.gz.sigstore.json
 
@@ -147,8 +147,15 @@ RUN apt update && \
         jq \
         procps
 
+# step-ca
+
 COPY --from=build --chown=root:root /usr/local/bin/step-ca /usr/local/bin/step-ca
+
+# step-cli
+
 COPY --from=build --chown=root:root /usr/local/bin/step /usr/local/bin/step
+
+# user and permissions
 
 RUN groupadd --gid 10000 step-ca && \
     useradd --comment 'step-ca' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 step-ca

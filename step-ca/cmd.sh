@@ -6,7 +6,6 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
-# Environment variables
 ADDRESS="${ADDRESS:-:1443}"
 ALLOW_DNS="${ALLOW_DNS:-}"
 ALLOW_EMAIL="${ALLOW_EMAIL:-}"
