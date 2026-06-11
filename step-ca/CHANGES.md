@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.30.2-4 (2026-06-11)
+
+### Enhancements
+
+- Update step-cli to version 0.30.6
+
 ## 0.30.2-3 (2026-06-10)
 
 ### Enhancements
