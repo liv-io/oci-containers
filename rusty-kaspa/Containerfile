@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG RUSTY_KASPA_VERSION="${RUSTY_KASPA_VERSION:-2.0.0}"
+ARG RUSTY_KASPA_VERSION="${RUSTY_KASPA_VERSION:-2.0.1}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
