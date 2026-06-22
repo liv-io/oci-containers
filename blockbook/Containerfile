@@ -1,16 +1,14 @@
 FROM docker.io/debian:stable-slim AS build
 
 ARG BLOCKBOOK_VERSION="${BLOCKBOOK_VERSION:-0.5.0}"
-ARG GO_CHECKSUM="${GO_CHECKSUM:-7716a0d940a0f6ae8e1f3b3f4f36299dc53e31b16840dbd171254312c41ca12e}"
-ARG GO_VERSION="${GO_VERSION:-1.25.1}"
+ARG GO_CHECKSUM="${GO_CHECKSUM:-1153d3d50e0ac764b447adfe05c2bcf08e889d42a02e0fe0259bd47f6733ad7f}"
+ARG GO_VERSION="${GO_VERSION:-1.26.4}"
 ARG ROCKSDB_VERSION="${ROCKSDB_VERSION:-9.10.0}"
 
-# Set time zone
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo ${TZ} > /etc/timezone
 
-# Install packages required in build stage
 RUN apt update && \
     apt install -y --no-install-recommends \
         autoconf \
@@ -31,26 +29,21 @@ RUN apt update && \
         tar \
         zlib1g-dev
 
-# GO
+# go
 
-# Set environment variables
 ENV PATH="${PATH}:/usr/local/share/go/bin"
 
-# Create directories for upstream source files
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/share/go \
     install --directory --owner=root --group=root --mode=0755 /usr/local/src/go
 
-# Download go archive
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
         --output /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz
 
-# Download go signature
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz.asc \
         --output /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc
 
-# Add keys to GPG keyring
 # https://dl.google.com/linux/linux_signing_key.pub
 COPY --chown=root:root gpg /root/gpg
 RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
@@ -58,53 +51,41 @@ RUN for key in /root/gpg/*; do \
         gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
     done
 
-# Verify go signature
 RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz
 
-# Create go checksum
 RUN echo "${GO_CHECKSUM}  go${GO_VERSION}.linux-amd64.tar.gz" >/usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.sha256
 
-# Verify go checksum
 WORKDIR /usr/local/src/go
 RUN sha256sum --ignore-missing --check go${GO_VERSION}.linux-amd64.tar.gz.sha256
 
-# Unarchive go tarball
 RUN tar --extract --gzip --file=/usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz --directory=/usr/local/share
 
-# ROCKSDB
+# rocksdb
 
-# Set environment variables
 ENV CGO_CFLAGS="-I/usr/local/include/rocksdb" \
     CGO_LDFLAGS="-L/usr/local/share/rocksdb -lrocksdb -lstdc++ -lm -lz -ldl -lbz2 -lsnappy -llz4"
 
-# Create directories for upstream source files
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/include/rocksdb \
     install --directory --owner=root --group=root --mode=0755 /usr/local/share/rocksdb \
     install --directory --owner=root --group=root --mode=0755 /usr/local/src/rocksdb
 
-# Clone rocksdb.git repository
 WORKDIR /usr/local/src
 RUN git clone --depth 1 --branch v${ROCKSDB_VERSION} https://github.com/facebook/rocksdb.git
 
-# Build rocksdb
 WORKDIR /usr/local/src/rocksdb
 RUN CFLAGS=-fPIC CXXFLAGS=-fPIC make -j 4 release
 
-# Install rocksdb
 RUN cp /usr/local/src/rocksdb/librock* /usr/local/share/rocksdb && \
     cp -r /usr/local/src/rocksdb/include/rocksdb/* /usr/local/include/rocksdb
 
-# BLOCKBOOK
+# blockbook
 
-# Create directories for upstream source files
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/share/blockbook \
     install --directory --owner=root --group=root --mode=0755 /usr/local/src/blockbook
 
-# Clone blockbook.git repository
 WORKDIR /usr/local/src
 RUN git clone --depth 1 --branch v${BLOCKBOOK_VERSION} https://github.com/trezor/blockbook.git
 
-# Build blockbook
 WORKDIR /usr/local/src/blockbook
 RUN go build -tags rocksdb_7_7
 
@@ -112,12 +93,10 @@ RUN go build -tags rocksdb_7_7
 
 FROM docker.io/debian:stable-slim AS main
 
-# Set time zone
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo ${TZ} > /etc/timezone
 
-# Install packages required in main stage
 RUN apt update && \
     apt install -y --no-install-recommends \
         jq \
@@ -125,24 +104,21 @@ RUN apt update && \
         libzmq3-dev \
         procps
 
-# Copy binary from build stage
-COPY --from=build --chown=root:root /usr/local/src/blockbook/blockbook /usr/local/bin/blockbook
+# blockbook
 
-# Copy static from build stage
+COPY --from=build --chown=root:root /usr/local/src/blockbook/blockbook /usr/local/bin/blockbook
 COPY --from=build --chown=root:root /usr/local/src/blockbook/static /usr/local/share/blockbook/static
 
-# Create blockbook group and user
+# user and permissions
+
 RUN groupadd --gid 10000 blockbook && \
     useradd --comment 'blockbook' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 blockbook
 
-# Create directories for variable data
 RUN install --directory --owner=root --group=root --mode=0755 /var/local/blockbook && \
     install --directory --owner=blockbook --group=blockbook --mode=0750 /var/local/blockbook/db
 
-# Create directory for variable config
 RUN install --directory --owner=blockbook --group=blockbook --mode=0750 /var/local/blockbook/config
 
-# Copy cmd.sh
 COPY --chown=root:root cmd.sh /
 RUN chmod 0755 /cmd.sh
 

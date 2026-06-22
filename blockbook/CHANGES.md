@@ -10,6 +10,13 @@ The headers are:
 - enhancements
 - features
 
+## 0.5.0-2 (2026-06-22)
+
+### Enhancements
+
+- Update Go GPG key
+- Update Go to version 1.26.4
+
 ## 0.5.0-1 (2025-09-19)
 
 ### Enhancements

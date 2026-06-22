@@ -6,7 +6,6 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
-# Environment variables
 BLOCK_ADDRESSES_TO_KEEP="${BLOCK_ADDRESSES_TO_KEEP:-300}"
 COIN_LABEL="${COIN_LABEL:-Bitcoin}"
 COIN_NAME="${COIN_NAME:-Bitcoin}"
@@ -19,28 +18,19 @@ RPC_URL="${RPC_URL:-}"
 RPC_USER="${RPC_USER:-}"
 PORT="${PORT:-}"
 
-# Configuration files
 CONFIG_DST="/var/local/blockbook/config"
 BLOCKBOOK_JSON="${CONFIG_DST}/blockbook.json"
-
-# Database path
 DB_PATH="/var/local/blockbook/db"
 
 # Implement sponge-like command without the need for binary nor TMPDIR environment variable
 write_file() {
-    # Create temporary file
     # shellcheck disable=SC2155
     local tmp_file="${1}_$(tr </dev/urandom -dc A-Za-z0-9 | head -c16)"
-
-    # Redirect the output to the temporary file
     cat >"${tmp_file}"
-
-    # Replace the original file
     mv --force "${tmp_file}" "${1}"
 }
 
 reset_configuration() {
-    # Reset existing configuration file
     echo "{}" >"${BLOCKBOOK_JSON}"
 }
 
