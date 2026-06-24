@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [btcd](https://github.com/btcsuite/btcd/releases/download/v0.25.0/btcd-linux-amd64-v0.25.0.tar.gz) `0.25.0`
+- [btcd](https://github.com/btcsuite/btcd/releases/download/v0.26.0/btcd-linux-amd64-v0.26.0.tar.gz) `0.26.0`
 
 #### Images
 

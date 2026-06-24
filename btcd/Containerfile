@@ -1,13 +1,11 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG BTCD_VERSION="${BTCD_VERSION:-0.25.0}"
+ARG BTCD_VERSION="${BTCD_VERSION:-0.26.0}"
 
-# Set time zone
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo ${TZ} > /etc/timezone
 
-# Install packages required in build stage
 RUN apt update && \
     apt install -y --no-install-recommends \
         ca-certificates \
@@ -15,79 +13,69 @@ RUN apt update && \
         gnupg \
         tar
 
-# Create directories for upstream source files
+# btcd
+
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/btcd
 
-# Download btcd archive
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz \
         --output /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz
 
-# Download btcd checksum
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-v${BTCD_VERSION}.txt \
         --output /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
 
-# Download btcd signature
-RUN curl --proto '=https' --tlsv1.2 \
-        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-v${BTCD_VERSION}.sig \
-        --output /usr/local/src/btcd/manifest-v${BTCD_VERSION}.sig
+#RUN curl --proto '=https' --tlsv1.3 \
+#        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-roasbeef-v${BTCD_VERSION}.sig \
+#        --output /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig
 
-# Add keys to GPG keyring
-# https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
-COPY --chown=root:root gpg /root/gpg
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
-RUN for key in /root/gpg/*; do \
-        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
-    done
+## https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
+#COPY --chown=root:root gpg /root/gpg
+#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
+#RUN for key in /root/gpg/*; do \
+#        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
+#    done
 
-# Verify checksum signature
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
+#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig.ots /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
 
-# Verify btcd checksum
 WORKDIR /usr/local/src/btcd
 RUN sha256sum --ignore-missing --check manifest-v${BTCD_VERSION}.txt
 
-# Unarchive btcd tarball
 RUN tar --extract --gzip --file=/usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz --directory=/usr/local/src/btcd
 
-# Move binaries
-RUN mv /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcd /usr/local/bin/btcd && \
-    mv /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcctl /usr/local/bin/btcctl
+RUN chmod 0755 /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcd \
+        /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcctl
 
-# Ensure binaries are executable
-RUN chmod 0755 /usr/local/bin/btcd \
-               /usr/local/bin/btcctl
+RUN ln -snf /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcd /usr/local/bin/btcd && \
+    ln -snf /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcctl /usr/local/bin/btcctl
 
 #---------------------------------------------------------------------
 
 FROM docker.io/debian:stable-slim AS main
 
-# Set time zone
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo ${TZ} > /etc/timezone
 
-# Install packages required in main stage
 RUN apt update && \
     apt install -y --no-install-recommends \
         procps
 
-# Copy binary from build stage
+# btcd
+
 COPY --from=build --chown=root:root /usr/local/bin/btcd /usr/local/bin/btcd
 COPY --from=build --chown=root:root /usr/local/bin/btcctl /usr/local/bin/btcctl
-
-# Create btcd group and user
-RUN groupadd --gid 10000 btcd && \
-    useradd --comment 'btcd' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 btcd
-
-# Create directories for variable data
-RUN install --directory --owner=btcd --group=btcd --mode=0750 /home/btcd/.btcd
 
 # Create symlink for dummy 'sample-btcd.conf' configuration file
 RUN ln -snf /dev/null /usr/local/bin/sample-btcd.conf
 
-# Copy cmd.sh
+# user and permissions
+
+RUN groupadd --gid 10000 btcd && \
+    useradd --comment 'btcd' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 btcd
+
+RUN install --directory --owner=btcd --group=btcd --mode=0750 /home/btcd/.btcd
+
 COPY --chown=root:root cmd.sh /
 RUN chmod 0755 /cmd.sh
 
