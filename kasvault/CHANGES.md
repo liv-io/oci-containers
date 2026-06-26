@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0fb8244202c5d3988d4967ab5ad01c21fe003465-1 (2026-06-26)
+
+### Features
+
+- Update kasvault to version 0fb8244202c5d3988d4967ab5ad01c21fe003465
+
 ## 6c8c5c19f6fef33436c8275e2ad1e7b782e2e7e9-1 (2025-05-18)
 
 ### Features

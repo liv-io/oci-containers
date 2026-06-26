@@ -1,58 +1,59 @@
 FROM docker.io/debian:stable-slim AS build
 
 ARG DOMAIN_NAME="${DOMAIN_NAME:-}"
-ARG KASVAULT_VERSION="${KASVAULT_VERSION:-6c8c5c19f6fef33436c8275e2ad1e7b782e2e7e9}"
-ARG NODEJS_MAJOR_VERSION="${NODEJS_MAJOR_VERSION:-23}"
+ARG KASVAULT_VERSION="${KASVAULT_VERSION:-0fb8244202c5d3988d4967ab5ad01c21fe003465}"
+ARG NODEJS_MAJOR_VERSION="${NODEJS_MAJOR_VERSION:-24}"
 
-# Set time zone
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo ${TZ} > /etc/timezone
 
-# Install packages required in build stage
 RUN apt update && \
     apt install -y --no-install-recommends \
         ca-certificates \
         git \
         procps
 
-# Add Node.js APT repository
-RUN curl --proto '=https' --tlsv1.2 \
-        --location https://deb.nodesource.com/setup_${NODEJS_MAJOR_VERSION}.x | bash -
+# Node.js
 
-# Install Node.js
 RUN apt update && \
     apt install -y --no-install-recommends \
-        nodejs \
+        nodejs
+
+# NOTE: Update SHA1 second-preimage resistance date for Sequoia GPG library
+RUN sed -i 's@sha1.second_preimage_resistance.*@sha1.second_preimage_resistance = 2027-01-01@g' /usr/share/apt/default-sequoia.config
+
+COPY --chown=root:root gpg/nodesource.gpg /etc/apt/trusted.gpg.d/nodesource.asc
+RUN echo "deb https://deb.nodesource.com/node_${NODEJS_MAJOR_VERSION}.x nodistro main" >/etc/apt/sources.list.d/nodesource.list
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
         npm
 
-# Clone kasvault.git repository
+# kasvault
+
 WORKDIR /usr/local/share
 RUN git clone --depth 1 --branch main https://github.com/coderofstuff/kasvault.git
 WORKDIR /usr/local/share/kasvault
 RUN git reset --hard ${KASVAULT_VERSION}
 
-# Remove preview domain names from whitelist
 RUN sed -i -e "/preview\.kasvault\.io/d" \
         -e "/privatepreview\.kasvault\.io/d" \
         -e "/kasvault\.vercel\.app/d" \
         "/usr/local/share/kasvault/src/app/page.tsx"
 
-# Update main domain name
 RUN if [ -n "${DOMAIN_NAME}" ]; then sed -i "s@kasvault\.io@${DOMAIN_NAME}@g" "/usr/local/share/kasvault/src/app/page.tsx"; fi
 
-# Install dependencies
 RUN npm install
 
-# Create kasvault group and user
+# user and permissions
+
 RUN groupadd --gid 10000 kasvault && \
     useradd --comment 'kasvault' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 kasvault
 
-# Create directories for variable data
 RUN install --directory --owner=root --group=root --mode=0755 /var/local/kasvault && \
     install --directory --owner=kasvault --group=kasvault --mode=0750 /usr/local/share/kasvault/node_modules/.cache
 
-# Copy cmd.sh
 COPY --chown=root:root cmd.sh /
 RUN chmod 0755 /cmd.sh
 
