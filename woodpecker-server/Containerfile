@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG WOODPECKER_SERVER_VERSION="${WOODPECKER_SERVER_VERSION:-3.15.0}"
+ARG WOODPECKER_SERVER_VERSION="${WOODPECKER_SERVER_VERSION:-3.16.0}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -16,11 +16,11 @@ RUN apt update && \
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/woodpecker-server
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/woodpecker-ci/woodpecker/releases/download/v${WOODPECKER_SERVER_VERSION}/woodpecker-server_linux_amd64.tar.gz \
         --output /usr/local/src/woodpecker-server/woodpecker-server_linux_amd64.tar.gz
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/woodpecker-ci/woodpecker/releases/download/v${WOODPECKER_SERVER_VERSION}/checksums.txt \
         --output /usr/local/src/woodpecker-server/checksums.txt
 

@@ -6,7 +6,6 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
-# Environment variables
 WOODPECKER_ADMIN="${WOODPECKER_ADMIN:-}"
 WOODPECKER_AGENT_SECRET="${WOODPECKER_AGENT_SECRET:-}"
 WOODPECKER_AUTHENTICATE_PUBLIC_REPOS="${WOODPECKER_AUTHENTICATE_PUBLIC_REPOS:-false}"
