@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG WOODPECKER_AGENT_VERSION="${WOODPECKER_AGENT_VERSION:-3.15.0}"
+ARG WOODPECKER_AGENT_VERSION="${WOODPECKER_AGENT_VERSION:-3.16.0}"
 ARG WOODPECKER_PLUGIN_GIT="${WOODPECKER_PLUGIN_GIT:-2.9.2}"
 
 ENV TZ="UTC"
@@ -17,11 +17,11 @@ RUN apt update && \
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/woodpecker-agent
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/woodpecker-ci/woodpecker/releases/download/v${WOODPECKER_AGENT_VERSION}/woodpecker-agent_linux_amd64.tar.gz \
         --output /usr/local/src/woodpecker-agent/woodpecker-agent_linux_amd64.tar.gz
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/woodpecker-ci/woodpecker/releases/download/v${WOODPECKER_AGENT_VERSION}/checksums.txt \
         --output /usr/local/src/woodpecker-agent/checksums.txt
 
@@ -36,11 +36,11 @@ RUN chmod 0755 /usr/local/src/woodpecker-agent/woodpecker-agent
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/plugin-git
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/woodpecker-ci/plugin-git/releases/download/${WOODPECKER_PLUGIN_GIT}/linux-amd64_plugin-git \
         --output /usr/local/src/plugin-git/linux-amd64_plugin-git
 
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/woodpecker-ci/plugin-git/releases/download/${WOODPECKER_PLUGIN_GIT}/checksums.txt \
         --output /usr/local/src/plugin-git/checksums.txt
 

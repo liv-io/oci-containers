@@ -6,7 +6,6 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
-# Environment variables
 WOODPECKER_AGENT_SECRET="${WOODPECKER_AGENT_SECRET:-}"
 WOODPECKER_BACKEND="${WOODPECKER_BACKEND:-docker}"
 WOODPECKER_BACKEND_DOCKER_API_VERSION="${WOODPECKER_BACKEND_DOCKER_API_VERSION:-}"
