@@ -6,7 +6,6 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
-# Environment variables
 ADDNODE="${ADDNODE:-}"
 BIND="${BIND:-0.0.0.0}"
 CHAIN="${CHAIN:-main}"

@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-31.0}"
+ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-31.1}"
 
 # Set time zone
 ENV TZ="UTC"
@@ -19,17 +19,17 @@ RUN apt update && \
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/bitcoin-core
 
 # Download bitcoin-core archive
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz \
         --output /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz
 
 # Download bitcoin-core checksum
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/SHA256SUMS \
         --output /usr/local/src/bitcoin-core/SHA256SUMS
 
 # Download bitcoin-core signature
-RUN curl --proto '=https' --tlsv1.2 \
+RUN curl --proto '=https' --tlsv1.3 \
         --location https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_CORE_VERSION}/SHA256SUMS.asc \
         --output /usr/local/src/bitcoin-core/SHA256SUMS.asc
 
@@ -53,8 +53,8 @@ RUN sha256sum --ignore-missing --check SHA256SUMS
 RUN tar --extract --gzip --file=/usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz --directory=/usr/local/src/bitcoin-core
 
 # Move binaries
-RUN mv /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoin-cli /usr/local/bin/bitcoin-cli && \
-    mv /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoind /usr/local/bin/bitcoind
+RUN ln -snf /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoin-cli /usr/local/bin/bitcoin-cli && \
+    ln -snf /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoind /usr/local/bin/bitcoind
 
 # Ensure binaries are executable
 RUN chmod 0755 /usr/local/bin/bitcoin-cli \
