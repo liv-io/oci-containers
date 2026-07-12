@@ -35,9 +35,9 @@ The following operating system-level virtualization technologies are supported:
 #### Archives
 
 - [cosign](https://github.com/sigstore/cosign/releases/download/v3.1.1/cosign-linux-amd64) `3.1.1`
-- [helm](https://get.helm.sh/helm-v4.2.2-linux-amd64.tar.gz) `4.2.2`
+- [helm](https://get.helm.sh/helm-v4.2.3-linux-amd64.tar.gz) `4.2.3`
 - [k0s](https://github.com/k0sproject/k0s/releases/download/v1.36.2%2Bk0s.0/k0s-v1.36.2+k0s.0-amd64) `1.36.2+k0s.0`
-- [k0sctl](https://github.com/k0sproject/k0sctl/releases/download/v0.32.0/k0sctl-linux-amd64) `0.32.0`
+- [k0sctl](https://github.com/k0sproject/k0sctl/releases/download/v0.32.1/k0sctl-linux-amd64) `0.32.1`
 - [kustomize](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.8.1/kustomize_v5.8.1_linux_amd64.tar.gz) `5.8.1`
 - [yq](https://github.com/mikefarah/yq/releases/download/v4.53.3/yq_linux_amd64.tar.gz) `4.53.3`
 
