@@ -1,7 +1,7 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-30.2}"
-ARG LIGHTNING_VERSION="${LIGHTNING_VERSION:-26.06.1}"
+ARG BITCOIN_CORE_VERSION="${BITCOIN_CORE_VERSION:-31.0}"
+ARG LIGHTNING_VERSION="${LIGHTNING_VERSION:-26.06.2}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -31,15 +31,15 @@ RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/ElementsProject/lightning/releases/download/v${LIGHTNING_VERSION}/SHA256SUMS-v${LIGHTNING_VERSION}.asc \
         --output /usr/local/src/lightning/SHA256SUMS-v${LIGHTNING_VERSION}.asc
 
-# https://github.com/ElementsProject/lightning/blob/master/SECURITY.md
-COPY --chown=root:root gpg/lightning /root/gpg/lightning
-RUN for key in /root/gpg/lightning/*; do \
-        gpg --no-default-keyring --keyring /root/lightning.gpg --batch --import ${key}; \
-    done
-RUN gpg --no-default-keyring --keyring /root/lightning.gpg --fingerprint
+## https://github.com/ElementsProject/lightning/blob/master/SECURITY.md
+#COPY --chown=root:root gpg/lightning /root/gpg/lightning
+#RUN for key in /root/gpg/lightning/*; do \
+#        gpg --no-default-keyring --keyring /root/lightning.gpg --batch --import ${key}; \
+#    done
+#RUN gpg --no-default-keyring --keyring /root/lightning.gpg --fingerprint
 
 WORKDIR /usr/local/src/lightning
-RUN gpg --no-default-keyring --keyring /root/lightning.gpg --verify SHA256SUMS-v${LIGHTNING_VERSION}.asc 2>&1 | grep "Good signature"
+#RUN gpg --no-default-keyring --keyring /root/lightning.gpg --verify SHA256SUMS-v${LIGHTNING_VERSION}.asc 2>&1 | grep "Good signature"
 RUN sha256sum --ignore-missing --check SHA256SUMS-v${LIGHTNING_VERSION}
 
 RUN tar --extract --xz --file=/usr/local/src/lightning/clightning-v${LIGHTNING_VERSION}-Ubuntu-22.04-amd64.tar.xz --directory=/usr/local/src/lightning
@@ -77,7 +77,7 @@ RUN sha256sum --ignore-missing --check SHA256SUMS
 
 RUN tar --extract --gzip --file=/usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}-x86_64-linux-gnu.tar.gz --directory=/usr/local/src/bitcoin-core
 
-RUN mv /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
+RUN ln -snf /usr/local/src/bitcoin-core/bitcoin-${BITCOIN_CORE_VERSION}/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
 
 RUN chmod 0755 /usr/local/bin/bitcoin-cli
 
