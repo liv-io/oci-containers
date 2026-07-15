@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.29.1-2 (2026-07-15)
+
+### Enhancements
+
+- Update Go to version 1.26.5
+
 ## 0.29.1-1 (2026-06-05)
 
 ### Enhancements
