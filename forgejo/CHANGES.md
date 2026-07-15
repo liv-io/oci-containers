@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 15.0.5-1 (2026-07-15)
+
+### Bugs
+
+- Update forgejo to version 15.0.5
+
 ## 15.0.4-1 (2026-07-10)
 
 ### Bugs
