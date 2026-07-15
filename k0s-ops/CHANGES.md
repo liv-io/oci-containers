@@ -10,14 +10,24 @@ The headers are:
 - enhancements
 - features
 
-## 1.36.2+k0s.0-2 (2026-07-12)
+## 1.36.2-k0s.0-3 (2026-07-15)
+
+### Changes
+
+- Turn CMD script into simple initialization wrapper
+
+### Enhancements
+
+- Remove plus character (`+`) from version
+
+## 1.36.2-k0s.0-2 (2026-07-12)
 
 ### Enhancements
 
 - Update helm version to 4.2.3
 - Update k0sctl version to 0.32.1
 
-## 1.36.2+k0s.0-1 (2026-07-04)
+## 1.36.2-k0s.0-1 (2026-07-04)
 
 ### Features
 

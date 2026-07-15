@@ -21,7 +21,7 @@ command_version() {
 
 assemble_command() {
     cmd=(exec)
-    cmd+=(/usr/bin/sleep 60)
+    cmd+=(${@})
 }
 
 # Establish run order
