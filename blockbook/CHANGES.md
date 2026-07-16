@@ -10,6 +10,17 @@ The headers are:
 - enhancements
 - features
 
+## 0.6.0-1 (2026-07-16)
+
+### Enhancements
+
+- Update Go to version 1.26.5
+- Update RocksDB to version 9.10.0
+
+### Features
+
+- Update blockbook to version 0.6.0
+
 ## 0.5.0-2 (2026-06-22)
 
 ### Enhancements
