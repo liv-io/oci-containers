@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG FORGEJO_VERSION="${FORGEJO_VERSION:-15.0.5}"
+ARG FORGEJO_VERSION="${FORGEJO_VERSION:-16.0.0}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -42,7 +42,7 @@ RUN sha256sum --ignore-missing --check forgejo-${FORGEJO_VERSION}-linux-amd64.sh
 
 RUN chmod 0755 /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
 
-RUN ln -s /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64 /usr/local/bin/forgejo
+RUN ln -snf /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64 /usr/local/bin/forgejo
 
 #---------------------------------------------------------------------
 
