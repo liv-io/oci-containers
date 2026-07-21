@@ -1,0 +1,88 @@
+FROM docker.io/debian:stable-slim AS build
+
+ARG GO_CHECKSUM="${GO_CHECKSUM:-5c2c3b16caefa1d968a94c1daca04a7ca301a496d9b086e17ad77bb81393f053}"
+ARG GO_VERSION="${GO_VERSION:-1.26.5}"
+ARG TINK_VERSION="${TINK_VERSION:-0.1.0}"
+
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        curl \
+        git \
+        gnupg
+
+# go
+
+ENV PATH="${PATH}:/usr/local/share/go/bin"
+
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/share/go \
+    install --directory --owner=root --group=root --mode=0755 /usr/local/src/go
+
+RUN curl --proto '=https' --tlsv1.3 \
+        --location https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
+        --output /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz
+
+RUN curl --proto '=https' --tlsv1.3 \
+        --location https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz.asc \
+        --output /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc
+
+# https://dl.google.com/linux/linux_signing_key.pub
+COPY --chown=root:root gpg/go /root/gpg/go
+RUN for key in /root/gpg/go/*; do \
+        gpg --no-default-keyring --keyring /root/go.gpg --batch --import ${key}; \
+    done
+RUN gpg --no-default-keyring --keyring /root/go.gpg --fingerprint
+
+RUN gpg --no-default-keyring --keyring /root/go.gpg --verify /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz
+
+RUN echo "${GO_CHECKSUM}  go${GO_VERSION}.linux-amd64.tar.gz" >/usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.sha256
+
+WORKDIR /usr/local/src/go
+RUN sha256sum --ignore-missing --check go${GO_VERSION}.linux-amd64.tar.gz.sha256
+
+RUN tar --extract --gzip --file=/usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz --directory=/usr/local/share
+
+# tink
+
+WORKDIR /usr/local/src
+RUN git clone --depth 1 --branch v${TINK_VERSION} https://github.com/liv-io/tink.git
+
+WORKDIR /usr/local/src/tink
+RUN go build .
+
+RUN chmod 0755 /usr/local/src/tink/tink
+
+RUN ln -snf /usr/local/src/tink/tink /usr/local/bin/tink
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim AS main
+
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        procps
+
+# tink
+
+COPY --from=build --chown=root:root /usr/local/bin/tink /usr/local/bin/tink
+
+# user and permissions
+
+RUN groupadd --gid 10000 tink && \
+    useradd --comment 'tink' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 tink
+
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER tink
+
+CMD ["/bin/bash", "/cmd.sh"]
