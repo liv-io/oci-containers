@@ -10,7 +10,15 @@ The headers are:
 - enhancements
 - features
 
+## 0.1.1-1 (2026-07-21)
+
+### Enhancements
+
+- Update tink to version 0.1.1
+
 ## 0.1.0-2 (2026-07-21)
+
+### Bugs
 
 - Add missing `ca-certificates` package to main image
 

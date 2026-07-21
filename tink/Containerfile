@@ -2,7 +2,7 @@ FROM docker.io/debian:stable-slim AS build
 
 ARG GO_CHECKSUM="${GO_CHECKSUM:-5c2c3b16caefa1d968a94c1daca04a7ca301a496d9b086e17ad77bb81393f053}"
 ARG GO_VERSION="${GO_VERSION:-1.26.5}"
-ARG TINK_VERSION="${TINK_VERSION:-0.1.0}"
+ARG TINK_VERSION="${TINK_VERSION:-0.1.1}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
