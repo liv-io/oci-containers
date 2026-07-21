@@ -69,6 +69,7 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
 
 RUN apt update && \
     apt install -y --no-install-recommends \
+        ca-certificates \
         procps
 
 # tink
