@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG FORGEJO_VERSION="${FORGEJO_VERSION:-16.0.0}"
+ARG FORGEJO_VERSION="${FORGEJO_VERSION:-16.0.1}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -30,10 +30,10 @@ RUN curl --proto '=https' --tlsv1.3 \
 
 # https://codeberg.org/forgejo/gitea_proof
 COPY --chown=root:root gpg /root/gpg
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
 RUN for key in /root/gpg/*; do \
         gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
     done
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
 
 RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.asc /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
 
