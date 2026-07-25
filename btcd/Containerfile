@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG BTCD_VERSION="${BTCD_VERSION:-0.26.0}"
+ARG BTCD_VERSION="${BTCD_VERSION:-0.26.2}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -25,18 +25,18 @@ RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-v${BTCD_VERSION}.txt \
         --output /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
 
-#RUN curl --proto '=https' --tlsv1.3 \
-#        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-roasbeef-v${BTCD_VERSION}.sig \
-#        --output /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig
+RUN curl --proto '=https' --tlsv1.3 \
+        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-roasbeef-v${BTCD_VERSION}.sig \
+        --output /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig
 
-## https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
-#COPY --chown=root:root gpg /root/gpg
-#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
-#RUN for key in /root/gpg/*; do \
-#        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
-#    done
+# https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
+COPY --chown=root:root gpg /root/gpg
+RUN for key in /root/gpg/*; do \
+        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
+    done
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
 
-#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig.ots /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
 
 WORKDIR /usr/local/src/btcd
 RUN sha256sum --ignore-missing --check manifest-v${BTCD_VERSION}.txt
