@@ -257,6 +257,28 @@ The following commands ought to be executed on the system running the container.
       Examples: "satoshi" | "hal" | "len" | "nick" | "adam" | "david"
       None    : ""
 
+`SIGCACHEMAXSIZE`
+
+    Description: --sigcachemaxsize
+    Required   : False
+    Value      : Arbitrary
+    Type       : Integer
+    Default    : ""
+    Options    :
+      Examples: 100000 | 200000
+      None    : ""
+
+`UTXOCACHEMAXSIZE`
+
+    Description: --utxocachemaxsize
+    Required   : False
+    Value      : Arbitrary
+    Type       : Integer
+    Default    : ""
+    Options    :
+      Examples: 250 | 500
+      None    : ""
+
 ## License
 
 See `LICENSE` file for more information.

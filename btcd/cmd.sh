@@ -13,6 +13,8 @@ LISTEN="${LISTEN:-0.0.0.0:8333}"
 RPCLISTEN="${RPCLISTEN:-127.0.0.1:8334}"
 RPCPASS="${RPCPASS:-}"
 RPCUSER="${RPCUSER:-}"
+SIGCACHEMAXSIZE="${SIGCACHEMAXSIZE:-}"
+UTXOCACHEMAXSIZE="${UTXOCACHEMAXSIZE:-}"
 
 # shellcheck disable=SC2068
 assemble_command() {
@@ -52,6 +54,16 @@ assemble_command() {
     # RPCUSER
     if [ -n "${RPCUSER}" ]; then
         cmd+=(--rpcuser="${RPCUSER}")
+    fi
+
+    # SIGCACHEMAXSIZE
+    if [ -n "${SIGCACHEMAXSIZE}" ]; then
+        cmd+=(--sigcachemaxsize="${SIGCACHEMAXSIZE}")
+    fi
+
+    # UTXOCACHEMAXSIZE
+    if [ -n "${UTXOCACHEMAXSIZE}" ]; then
+        cmd+=(--utxocachemaxsize="${UTXOCACHEMAXSIZE}")
     fi
 }
 

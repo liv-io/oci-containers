@@ -10,6 +10,13 @@ The headers are:
 - enhancements
 - features
 
+## 0.26.2-2 (2026-07-29)
+
+### Features
+
+- Add parameter `SIGCACHEMAXSIZE`
+- Add parameter `UTXOCACHEMAXSIZE`
+
 ## 0.26.2-1 (2026-07-25)
 
 ### Enhancements
