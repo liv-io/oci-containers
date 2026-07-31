@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG FORGEJO_VERSION="${FORGEJO_VERSION:-16.0.1}"
+ARG FORGEJO_VERSION="${FORGEJO_VERSION:-16.0.2}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -19,11 +19,9 @@ RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/for
 RUN curl --proto '=https' --tlsv1.3 \
         --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64 \
         --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
-
 RUN curl --proto '=https' --tlsv1.3 \
         --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64.sha256 \
         --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.sha256
-
 RUN curl --proto '=https' --tlsv1.3 \
         --location https://codeberg.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/forgejo-${FORGEJO_VERSION}-linux-amd64.asc \
         --output /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.asc
@@ -34,14 +32,11 @@ RUN for key in /root/gpg/*; do \
         gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
     done
 RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
-
 RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64.asc /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
-
 WORKDIR /usr/local/src/forgejo
 RUN sha256sum --ignore-missing --check forgejo-${FORGEJO_VERSION}-linux-amd64.sha256
 
 RUN chmod 0755 /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64
-
 RUN ln -snf /usr/local/src/forgejo/forgejo-${FORGEJO_VERSION}-linux-amd64 /usr/local/bin/forgejo
 
 #---------------------------------------------------------------------
