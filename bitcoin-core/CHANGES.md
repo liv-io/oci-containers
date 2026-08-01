@@ -10,65 +10,13 @@ The headers are:
 - enhancements
 - features
 
-## 31.1-1 (2026-07-11)
-
-### Enhancements
-
-- Update bitcoin-core to version 31.1
-
-## 31.0-1 (2026-04-20)
+## 27.2-1 (2026-08-01)
 
 ### Features
 
-- Update bitcoin-core to version 31.0
-
-## 30.2-1 (2026-01-13)
-
-### Features
-
-- Update bitcoin-core to version 30.2
-
-## 30.0-1 (2025-10-13)
-
-### Features
-
-- Update bitcoin-core to version 30.0
-
-## 29.1-2 (2025-10-09)
-
-### Features
-
+- Update bitcoin-core to version 27.2
 - Add support for `testnet3` and `testnet4`
-
-## 29.1-1 (2025-09-05)
-
-### Enhancements
-
-- Update bitcoin-core to version 29.1
-
-## 29.0-1 (2025-04-16)
-
-### Features
-
-- Update bitcoin-core to version 29.0
-
-## 28.1-1 (2025-01-15)
-
-### Enhancements
-
-- Update bitcoin-core to version 28.1
-
-## 28.0-2 (2024-10-17)
-
-### Features
-
 - Add parameter `RPCWORKQUEUE`
-
-## 28.0-1 (2024-10-05)
-
-### Features
-
-- Update bitcoin-core to version 28.0
 
 ## 27.1-1 (2024-06-18)
 
