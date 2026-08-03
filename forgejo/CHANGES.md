@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 16.0.2-2 (2026-08-03)
+
+### Enhancements
+
+- Add missing `ca-certificates` package to main image
+
 ## 16.0.2-1 (2026-07-31)
 
 ### Bugs
