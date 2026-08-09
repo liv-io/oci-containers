@@ -1,0 +1,87 @@
+FROM docker.io/debian:stable-slim AS build
+
+ARG GO_CHECKSUM="${GO_CHECKSUM:-5c2c3b16caefa1d968a94c1daca04a7ca301a496d9b086e17ad77bb81393f053}"
+ARG GO_VERSION="${GO_VERSION:-1.26.5}"
+ARG REST_SERVER_VERSION="${REST_SERVER_VERSION:-0.14.0}"
+
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        git \
+        gnupg
+
+# go
+
+ENV PATH="${PATH}:/usr/local/share/go/bin"
+
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/share/go \
+    install --directory --owner=root --group=root --mode=0755 /usr/local/src/go
+
+RUN curl --proto '=https' --tlsv1.3 \
+        --location https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
+        --output /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz
+RUN curl --proto '=https' --tlsv1.3 \
+        --location https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz.asc \
+        --output /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc
+
+# https://dl.google.com/linux/linux_signing_key.pub
+COPY --chown=root:root gpg/go /root/gpg/go
+RUN for key in /root/gpg/go/*; do \
+        gpg --no-default-keyring --keyring /root/go.gpg --batch --import ${key}; \
+    done
+RUN gpg --no-default-keyring --keyring /root/go.gpg --fingerprint
+RUN gpg --no-default-keyring --keyring /root/go.gpg --verify /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz
+RUN echo "${GO_CHECKSUM}  go${GO_VERSION}.linux-amd64.tar.gz" >/usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.sha256
+WORKDIR /usr/local/src/go
+RUN sha256sum --ignore-missing --check go${GO_VERSION}.linux-amd64.tar.gz.sha256
+
+RUN tar --extract --gzip --file=/usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz --directory=/usr/local/share
+
+# rest-server
+
+WORKDIR /usr/local/src
+RUN git clone --depth 1 --branch v${REST_SERVER_VERSION} https://github.com/restic/rest-server.git
+
+WORKDIR /usr/local/src/rest-server
+RUN CGO_ENABLED=0 go build -o rest-server ./cmd/rest-server
+
+RUN chmod 0755 /usr/local/src/rest-server/rest-server
+RUN ln -snf /usr/local/src/rest-server/rest-server /usr/local/bin/rest-server
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim AS main
+
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        apache2-utils \
+        procps
+
+# rest-server
+
+COPY --from=build --chown=root:root /usr/local/bin/rest-server /usr/local/bin/rest-server
+
+# user and permissions
+
+RUN groupadd --gid 10000 rest-server && \
+    useradd --comment 'rest-server' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 rest-server
+
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/rest-server && \
+    install --directory --owner=rest-server --group=rest-server --mode=0750 /var/local/rest-server/config && \
+    install --directory --owner=rest-server --group=rest-server --mode=0750 /var/local/rest-server/data
+
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER rest-server
+
+CMD ["/bin/bash", "/cmd.sh"]
