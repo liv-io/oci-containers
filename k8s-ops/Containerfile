@@ -1,6 +1,8 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG COSIGN_VERSION="${COSIGN_VERSION:-3.1.2}"
+ARG COSIGN_VERSION="${COSIGN_VERSION:-3.1.3}"
+ARG CRICTL_VERSION="${CRICTL_VERSION:-1.36.0}"
+ARG CTR_VERSION="${CTR_VERSION:-1.7.34}"
 ARG HELM_VERSION="${HELM_VERSION:-4.2.3}"
 ARG K0SCTL_VERSION="${K0SCTL_VERSION:-0.32.1}"
 ARG K0S_VERSION="${K0S_VERSION:-1.36.2+k0s.0}"
@@ -55,6 +57,42 @@ RUN cosign verify-blob \
 WORKDIR /usr/local/src/cosign/${COSIGN_VERSION}
 RUN sha256sum --ignore-missing --check cosign_checksums.txt
 
+# crictl
+
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/crictl/${CRICTL_VERSION}
+
+RUN curl --proto '=https' --tlsv1.3 \
+    --location https://github.com/kubernetes-sigs/cri-tools/releases/download/v${CRICTL_VERSION}/crictl-v${CRICTL_VERSION}-linux-amd64.tar.gz \
+    --output /usr/local/src/crictl/${CRICTL_VERSION}/crictl-v${CRICTL_VERSION}-linux-amd64.tar.gz
+RUN curl --proto '=https' --tlsv1.3 \
+    --location https://github.com/kubernetes-sigs/cri-tools/releases/download/v${CRICTL_VERSION}/crictl-v${CRICTL_VERSION}-linux-amd64.tar.gz.sha256 \
+    --output /usr/local/src/crictl/${CRICTL_VERSION}/crictl-v${CRICTL_VERSION}-linux-amd64.tar.gz.sha256
+
+WORKDIR /usr/local/src/crictl/${CRICTL_VERSION}
+RUN echo "$(cat crictl-v${CRICTL_VERSION}-linux-amd64.tar.gz.sha256)  crictl-v${CRICTL_VERSION}-linux-amd64.tar.gz" | sha256sum --check -
+
+RUN tar --extract --gzip --file=/usr/local/src/crictl/${CRICTL_VERSION}/crictl-v${CRICTL_VERSION}-linux-amd64.tar.gz --directory=/usr/local/src/crictl/${CRICTL_VERSION} --no-same-owner
+RUN chmod +x /usr/local/src/crictl/${CRICTL_VERSION}/crictl
+RUN ln -snf /usr/local/src/crictl/${CRICTL_VERSION}/crictl /usr/local/bin/crictl
+
+# ctr
+
+RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/ctr/${CTR_VERSION}
+
+RUN curl --proto '=https' --tlsv1.3 \
+    --location https://github.com/containerd/containerd/releases/download/v${CTR_VERSION}/containerd-${CTR_VERSION}-linux-amd64.tar.gz \
+    --output /usr/local/src/ctr/${CTR_VERSION}/containerd-${CTR_VERSION}-linux-amd64.tar.gz
+RUN curl --proto '=https' --tlsv1.3 \
+    --location https://github.com/containerd/containerd/releases/download/v${CTR_VERSION}/containerd-${CTR_VERSION}-linux-amd64.tar.gz.sha256sum \
+    --output /usr/local/src/ctr/${CTR_VERSION}/containerd-${CTR_VERSION}-linux-amd64.tar.gz.sha256sum
+
+WORKDIR /usr/local/src/ctr/${CTR_VERSION}
+RUN sha256sum --ignore-missing --check containerd-${CTR_VERSION}-linux-amd64.tar.gz.sha256sum
+
+RUN tar --extract --gzip --strip-components=1 --file=/usr/local/src/ctr/${CTR_VERSION}/containerd-${CTR_VERSION}-linux-amd64.tar.gz --directory=/usr/local/src/ctr/${CTR_VERSION} --no-same-owner
+RUN chmod +x /usr/local/src/ctr/${CTR_VERSION}/ctr
+RUN ln -snf /usr/local/src/ctr/${CTR_VERSION}/ctr /usr/local/bin/ctr
+
 # helm
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/helm/${HELM_VERSION}
@@ -97,11 +135,11 @@ RUN ln -snf /usr/local/src/helm/${HELM_VERSION}/linux-amd64/helm /usr/local/bin/
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/k0sctl/${K0SCTL_VERSION}
 
 RUN curl --proto '=https' --tlsv1.3 \
-    --location https://github.com/k0sproject/k0sctl/releases/download/v${K0SCTL_VERSION}/checksums.txt \
-    --output /usr/local/src/k0sctl/${K0SCTL_VERSION}/checksums.txt
-RUN curl --proto '=https' --tlsv1.3 \
     --location https://github.com/k0sproject/k0sctl/releases/download/v${K0SCTL_VERSION}/k0sctl-linux-amd64 \
     --output /usr/local/src/k0sctl/${K0SCTL_VERSION}/k0sctl-linux-amd64
+RUN curl --proto '=https' --tlsv1.3 \
+    --location https://github.com/k0sproject/k0sctl/releases/download/v${K0SCTL_VERSION}/checksums.txt \
+    --output /usr/local/src/k0sctl/${K0SCTL_VERSION}/checksums.txt
 
 WORKDIR /usr/local/src/k0sctl/${K0SCTL_VERSION}
 RUN sha256sum --ignore-missing --check checksums.txt
@@ -200,6 +238,14 @@ RUN apt update && \
         ca-certificates \
         curl \
         procps
+
+# crictl
+
+COPY --from=build --chown=root:root /usr/local/bin/crictl /usr/local/bin/crictl
+
+# ctr
+
+COPY --from=build --chown=root:root /usr/local/bin/ctr /usr/local/bin/ctr
 
 # helm
 

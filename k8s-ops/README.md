@@ -23,6 +23,8 @@
 ## About
 
 This OCI container contains the following Kubernetes GitOps tools:
+- crictl
+- ctr
 - helm
 - k0s
 - k0sctl
@@ -41,7 +43,9 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [cosign](https://github.com/sigstore/cosign/releases/download/v3.1.2/cosign-linux-amd64) `3.1.2`
+- [cosign](https://github.com/sigstore/cosign/releases/download/v3.1.3/cosign-linux-amd64) `3.1.3`
+- [crictl](https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.36.0/crictl-v1.36.0-linux-amd64.tar.gz) `1.36.0`
+- [ctr](https://github.com/containerd/containerd/releases/download/v1.7.34/containerd-1.7.34-linux-amd64.tar.gz) `1.7.34`
 - [helm](https://get.helm.sh/helm-v4.2.3-linux-amd64.tar.gz) `4.2.3`
 - [k0s](https://github.com/k0sproject/k0s/releases/download/v1.36.2%2Bk0s.0/k0s-v1.36.2+k0s.0-amd64) `1.36.2+k0s.0`
 - [k0sctl](https://github.com/k0sproject/k0sctl/releases/download/v0.32.1/k0sctl-linux-amd64) `0.32.1`
