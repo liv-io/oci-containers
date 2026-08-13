@@ -34,7 +34,7 @@ The following operating system-level virtualization technologies are supported:
 
 #### Archives
 
-- [lnd](https://github.com/lightningnetwork/lnd/releases/download/v0.21.1-beta/lnd-linux-amd64-v0.21.1-beta.tar.gz) `0.21.1-beta`
+- [lnd](https://github.com/lightningnetwork/lnd/releases/download/v0.21.2-beta/lnd-linux-amd64-v0.21.2-beta.tar.gz) `0.21.2-beta`
 
 #### Images
 
