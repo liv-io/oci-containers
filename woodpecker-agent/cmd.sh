@@ -6,8 +6,9 @@ set -o pipefail
 SHELL="/bin/bash"
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 
+WOODPECKER_AGENT_CONFIG_FILE="${WOODPECKER_AGENT_CONFIG_FILE:-/var/local/woodpecker-agent/config/agent.conf}"
 WOODPECKER_AGENT_SECRET="${WOODPECKER_AGENT_SECRET:-}"
-WOODPECKER_BACKEND="${WOODPECKER_BACKEND:-docker}"
+WOODPECKER_BACKEND="${WOODPECKER_BACKEND:-kubernetes}"
 WOODPECKER_BACKEND_DOCKER_API_VERSION="${WOODPECKER_BACKEND_DOCKER_API_VERSION:-}"
 WOODPECKER_BACKEND_DOCKER_CERT_PATH="${WOODPECKER_BACKEND_DOCKER_CERT_PATH:-}"
 WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6="${WOODPECKER_BACKEND_DOCKER_ENABLE_IPV6:-false}"
@@ -15,6 +16,14 @@ WOODPECKER_BACKEND_DOCKER_HOST="${WOODPECKER_BACKEND_DOCKER_HOST:-unix://run/pod
 WOODPECKER_BACKEND_DOCKER_NETWORK="${WOODPECKER_BACKEND_DOCKER_NETWORK:-}"
 WOODPECKER_BACKEND_DOCKER_TLS_VERIFY="${WOODPECKER_BACKEND_DOCKER_TLS_VERIFY:-true}"
 WOODPECKER_BACKEND_DOCKER_VOLUMES="${WOODPECKER_BACKEND_DOCKER_VOLUMES:-}"
+WOODPECKER_BACKEND_K8S_NAMESPACE="${WOODPECKER_BACKEND_K8S_NAMESPACE:-woodpecker-runtime}"
+WOODPECKER_BACKEND_K8S_NAMESPACE_PER_ORGANIZATION="${WOODPECKER_BACKEND_K8S_NAMESPACE_PER_ORGANIZATION:-false}"
+WOODPECKER_BACKEND_K8S_PERMISSION_INIT_IMAGE="${WOODPECKER_BACKEND_K8S_PERMISSION_INIT_IMAGE:-busybox:stable-musl}"
+WOODPECKER_BACKEND_K8S_POD_LABELS="${WOODPECKER_BACKEND_K8S_POD_LABELS:-"{\"app.kubernetes.io/managed-by\": \"woodpecker\"}"}"
+WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES="${WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES:-}"
+WOODPECKER_BACKEND_K8S_STORAGE_CLASS="${WOODPECKER_BACKEND_K8S_STORAGE_CLASS:-local-path}"
+WOODPECKER_BACKEND_K8S_STORAGE_RWX="${WOODPECKER_BACKEND_K8S_STORAGE_RWX:-false}"
+WOODPECKER_BACKEND_K8S_VOLUME_SIZE="${WOODPECKER_BACKEND_K8S_VOLUME_SIZE:-10G}"
 WOODPECKER_BACKEND_LOCAL_TEMP_DIR="${WOODPECKER_BACKEND_LOCAL_TEMP_DIR:-/var/local/woodpecker-agent/tmp}"
 WOODPECKER_GRPC_SECURE="${WOODPECKER_GRPC_SECURE:-false}"
 WOODPECKER_GRPC_VERIFY="${WOODPECKER_GRPC_VERIFY:-true}"
@@ -24,6 +33,7 @@ WOODPECKER_HOSTNAME="${WOODPECKER_HOSTNAME:-woodpecker-agent}"
 WOODPECKER_LOG_LEVEL="${WOODPECKER_LOG_LEVEL:-info}"
 WOODPECKER_SERVER="${WOODPECKER_SERVER:-}"
 
+# Only compatible with WOODPECKER_BACKEND="docker"
 import_ca_certificates() {
     source_dir="/var/local/woodpecker-agent/certs"
     destination_dir="/usr/local/share/ca-certificates"
@@ -68,6 +78,11 @@ assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/woodpecker-agent)
 
+    # WOODPECKER_AGENT_CONFIG_FILE
+    if [ -n "${WOODPECKER_AGENT_CONFIG_FILE}" ]; then
+        cmd+=(--agent-config="${WOODPECKER_AGENT_CONFIG_FILE}")
+    fi
+
     # WOODPECKER_AGENT_SECRET
     if [ -n "${WOODPECKER_AGENT_SECRET}" ]; then
         cmd+=(--grpc-token="${WOODPECKER_AGENT_SECRET}")
@@ -81,7 +96,8 @@ assemble_command() {
         if [ -n "${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}" ]; then
             cmd+=(--backend-local-temp-dir="${WOODPECKER_BACKEND_LOCAL_TEMP_DIR}")
         fi
-    else
+
+    elif [ "${WOODPECKER_BACKEND,,}" = "docker" ]; then
         cmd+=(--backend-engine=docker)
 
         # WOODPECKER_BACKEND_DOCKER_API_VERSION
@@ -121,6 +137,50 @@ assemble_command() {
         # WOODPECKER_BACKEND_DOCKER_VOLUMES
         if [ -n "${WOODPECKER_BACKEND_DOCKER_VOLUMES}" ]; then
             cmd+=(--backend-docker-volumes="${WOODPECKER_BACKEND_DOCKER_VOLUMES}")
+        fi
+    else
+        # WOODPECKER_BACKEND_K8S_NAMESPACE
+        if [ -n "${WOODPECKER_BACKEND_K8S_NAMESPACE}" ]; then
+            cmd+=(--backend-k8s-namespace="${WOODPECKER_BACKEND_K8S_NAMESPACE}")
+        fi
+
+        # WOODPECKER_BACKEND_K8S_NAMESPACE_PER_ORGANIZATION
+        if [ "${WOODPECKER_BACKEND_K8S_NAMESPACE_PER_ORGANIZATION,,}" = "true" ]; then
+            cmd+=(--backend-k8s-namespace-per-org=true)
+        else
+            cmd+=(--backend-k8s-namespace-per-org=false)
+        fi
+
+        # WOODPECKER_BACKEND_K8S_PERMISSION_INIT_IMAGE
+        if [ -n "${WOODPECKER_BACKEND_K8S_PERMISSION_INIT_IMAGE}" ]; then
+            cmd+=(--backend-k8s-permission-init-image="${WOODPECKER_BACKEND_K8S_PERMISSION_INIT_IMAGE}")
+        fi
+
+        # WOODPECKER_BACKEND_K8S_POD_LABELS
+        if [ -n "${WOODPECKER_BACKEND_K8S_POD_LABELS}" ]; then
+            cmd+=(--backend-k8s-pod-labels="${WOODPECKER_BACKEND_K8S_POD_LABELS}")
+        fi
+
+        # WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES
+        if [ -n "${WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES}" ]; then
+            cmd+=(--backend-k8s-pod-image-pull-secret-names="${WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES}")
+        fi
+
+        # WOODPECKER_BACKEND_K8S_STORAGE_CLASS
+        if [ -n "${WOODPECKER_BACKEND_K8S_STORAGE_CLASS}" ]; then
+            cmd+=(--backend-k8s-storage-class="${WOODPECKER_BACKEND_K8S_STORAGE_CLASS}")
+        fi
+
+        # WOODPECKER_BACKEND_K8S_STORAGE_RWX
+        if [ "${WOODPECKER_BACKEND_K8S_STORAGE_RWX,,}" = "true" ]; then
+            cmd+=(--backend-k8s-storage-rwx=true)
+        else
+            cmd+=(--backend-k8s-storage-rwx=false)
+        fi
+
+        # WOODPECKER_BACKEND_K8S_VOLUME_SIZE
+        if [ -n "${WOODPECKER_BACKEND_K8S_VOLUME_SIZE}" ]; then
+            cmd+=(--backend-k8s-volume-size="${WOODPECKER_BACKEND_K8S_VOLUME_SIZE}")
         fi
     fi
 
@@ -168,7 +228,9 @@ assemble_command() {
 
 # Establish run order
 main() {
-    import_ca_certificates
+    if [ "${WOODPECKER_BACKEND,,}" = "docker" ]; then
+        import_ca_certificates
+    fi
     assemble_command
     "${cmd[@]}"
 }

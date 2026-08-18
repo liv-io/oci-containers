@@ -81,12 +81,10 @@ The following commands ought to be executed on the system running the container.
 - Create the directories for the persistent data:
 
     ```
-    sudo mkdir -p /opt/woodpecker-agent/certs
-    sudo mkdir -p /opt/woodpecker-agent/tmp
+    sudo mkdir -p /opt/woodpecker-agent/{certs,config,tmp}
     sudo chown woodpecker:woodpecker /opt/woodpecker-agent
     sudo chmod 0750 /opt/woodpecker-agent
-    sudo chown -R 29999:29999 /opt/woodpecker-agent/certs
-    sudo chown -R 29999:29999 /opt/woodpecker-agent/tmp
+    sudo chown -R 29999:29999 /opt/woodpecker-agent/{certs,config,tmp}
     ```
 
 ### Container
@@ -132,6 +130,7 @@ The following commands ought to be executed on the system running the container.
     podman run --detach --name woodpecker-agent --network=host \
         --env WOODPECKER_AGENT_SECRET="Gt4B9bC-6gGM-pERLdD5" \
         --volume /opt/woodpecker-agent/certs:/var/local/woodpecker-agent/certs \
+        --volume /opt/woodpecker-agent/config:/var/local/woodpecker-agent/config \
         --volume /opt/woodpecker-agent/tmp:/var/local/woodpecker-agent/tmp \
         --volume /run/podman/podman.sock:/run/podman/podman.sock \
         woodpecker-agent:latest
@@ -187,6 +186,8 @@ The following commands ought to be executed on the system running the container.
     ```
 
 ## Parameters
+
+`WOODPECKER_AGENT_CONFIG_FILE`
 
 `WOODPECKER_AGENT_SECRET`
 
@@ -334,6 +335,95 @@ The following commands ought to be executed on the system running the container.
     Default    : "woodpecker-agent"
     Options    :
       Examples: "host" | "hostname"
+
+`WOODPECKER_AGENT_CONFIG_FILE`
+
+    Description:
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "/var/local/woodpecker-agent/config/agent.conf"
+    Options    :
+      Examples: ""
+
+`WOODPECKER_BACKEND_K8S_NAMESPACE`
+
+    Description:
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "woodpecker-runtime"
+    Options    :
+      Examples: "" | ""
+
+`WOODPECKER_BACKEND_K8S_NAMESPACE_PER_ORGANIZATION`
+
+    Description:
+    Required   : False
+    Value      : Predetermined
+    Type       : Boolean
+    Default    : false
+    Options    : true | false
+
+`WOODPECKER_BACKEND_K8S_PERMISSION_INIT_IMAGE`
+
+    Description:
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "busybox:stable-musl"
+    Options    :
+      Examples: "busybox:stable-musl"
+
+`WOODPECKER_BACKEND_K8S_POD_LABELS`
+
+    Description:
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "{\"app.kubernetes.io/managed-by\": \"woodpecker\"}"
+    Options    :
+      Examples: "{\"app.kubernetes.io/managed-by\": \"woodpecker\"}"
+
+`WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES`
+
+    Description:
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : ""
+    Options    :
+      Examples: ""
+      None    : ""
+
+`WOODPECKER_BACKEND_K8S_STORAGE_CLASS`
+
+    Description:
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "local-path"
+    Options    :
+      Examples: ""
+
+`WOODPECKER_BACKEND_K8S_STORAGE_RWX`
+
+    Description:
+    Required   : False
+    Value      : Predetermined
+    Type       : Boolean
+    Default    : false
+    Options    : true | false
+
+`WOODPECKER_BACKEND_K8S_VOLUME_SIZE`
+
+    Description:
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "10G"
+    Options    :
+      Examples: ""
 
 `WOODPECKER_LOG_LEVEL`
 

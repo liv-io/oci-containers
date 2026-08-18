@@ -10,6 +10,24 @@ The headers are:
 - enhancements
 - features
 
+## 3.17.0-3 (2026-08-18)
+
+### Changes
+
+- Change default `WOODPECKER_BACKEND` to kubernetes
+
+### Features
+
+- Add parameter `WOODPECKER_AGENT_CONFIG_FILE`
+- Add parameter `WOODPECKER_BACKEND_K8S_NAMESPACE`
+- Add parameter `WOODPECKER_BACKEND_K8S_NAMESPACE_PER_ORGANIZATION`
+- Add parameter `WOODPECKER_BACKEND_K8S_PERMISSION_INIT_IMAGE`
+- Add parameter `WOODPECKER_BACKEND_K8S_POD_LABELS`
+- Add parameter `WOODPECKER_BACKEND_K8S_PULL_SECRET_NAMES`
+- Add parameter `WOODPECKER_BACKEND_K8S_STORAGE_CLASS`
+- Add parameter `WOODPECKER_BACKEND_K8S_STORAGE_RWX`
+- Add parameter `WOODPECKER_BACKEND_K8S_VOLUME_SIZE`
+
 ## 3.17.0-2 (2026-08-06)
 
 ### Bugs

@@ -77,6 +77,7 @@ RUN groupadd --gid 10000 woodpecker && \
 
 RUN install --directory --owner=root --group=root --mode=0755 /var/local/woodpecker-agent && \
     install --directory --owner=woodpecker --group=woodpecker --mode=0750 /var/local/woodpecker-agent/certs && \
+    install --directory --owner=woodpecker --group=woodpecker --mode=0750 /var/local/woodpecker-agent/config && \
     install --directory --owner=woodpecker --group=woodpecker --mode=0750 /var/local/woodpecker-agent/tmp
 
 COPY --chown=root:root cmd.sh /
