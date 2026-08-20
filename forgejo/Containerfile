@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG FORGEJO_VERSION="${FORGEJO_VERSION:-16.0.2}"
+ARG FORGEJO_VERSION="${FORGEJO_VERSION:-16.0.3}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
