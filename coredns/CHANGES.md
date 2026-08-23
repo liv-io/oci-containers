@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 1.14.6-2 (2026-08-23)
+
+### Changes
+
+- Remove argument `COREDNS_PLUGINS`
+
+### Bugs
+
+- Ensure custom `plugin.cfg` is applied at compilation
+
 ## 1.14.6-1 (2026-08-20)
 
 ### Features

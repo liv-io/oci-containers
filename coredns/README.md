@@ -273,3 +273,4 @@ See `CREDITS.md` file for more information.
 ## Appendix
 
 - [coredns](https://coredns.io)
+- [Plugins](https://github.com/coredns/coredns/tree/master/plugin)
