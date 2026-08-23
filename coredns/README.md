@@ -211,6 +211,17 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: "/var/local/coredns/config/corefile"
 
+`FORWARD`
+
+    Description: forward
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : ""
+    Options    :
+      Examples: "10.1.11.1"
+      None    : ""
+
 `HEALTH`
 
     Description: health

@@ -9,11 +9,18 @@ PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 BIND="${BIND:-0.0.0.0 ::}"
 CACHE="${CACHE:-60}"
 CONF="${CONF:-/var/local/coredns/config/corefile}"
+FORWARD="${FORWARD:-}"
 HEALTH="${HEALTH:-:8080}"
 LOG="${LOG:-log,errors}"
 PORT="${PORT:-1053}"
 RELOAD="${RELOAD:-30s}"
 ROOT="${ROOT:-/var/local/coredns/zones}"
+
+forward() {
+    if [ -n "${FORWARD}" ]; then
+        echo "forward . ${FORWARD}"
+    fi
+}
 
 assemble_corefile() {
     cat <<EOF >"${CONF}"
@@ -35,6 +42,7 @@ $(
         directory .
         reload ${RELOAD}
     }
+    $(forward)
 }
 EOF
 }

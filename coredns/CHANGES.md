@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 1.14.6-3 (2026-08-23)
+
+### Features
+
+- Add parameter `FORWARD`
+
 ## 1.14.6-2 (2026-08-23)
 
 ### Changes
