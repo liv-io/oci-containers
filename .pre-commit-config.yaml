@@ -19,13 +19,3 @@ repos:
       - id: pretty-format-json
         args: ['--autofix']
       - id: trailing-whitespace
-
-  - repo: 'https://github.com/scop/pre-commit-shfmt'
-    rev: v3.13.1-1
-    hooks:
-      - id: shfmt
-
-  - repo: 'https://github.com/syntaqx/git-hooks'
-    rev: v0.0.18
-    hooks:
-      - id: shellcheck
