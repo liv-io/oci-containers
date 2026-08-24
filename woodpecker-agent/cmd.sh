@@ -41,11 +41,8 @@ import_ca_certificates() {
     if [ -n "$(ls ${source_dir}/)" ]; then
         echo "* Importing CA certificates..."
 
-        # shellcheck disable=SC2045
         for cert in $(ls -1 ${source_dir}/*); do
-            # shellcheck disable=SC2091
             if $(openssl x509 -in "${cert}" -noout); then
-                # shellcheck disable=SC2086
                 echo "  File Name: $(basename ${cert})"
 
                 datetime_valid=$(openssl x509 -in "${cert}" -noout --enddate | sed 's@notAfter=@@g')
