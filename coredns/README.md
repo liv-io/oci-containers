@@ -181,16 +181,6 @@ The following commands ought to be executed on the system running the container.
 
 ## Parameters
 
-`BIND`
-
-    Description: bind
-    Required   : False
-    Value      : Arbitrary
-    Type       : String
-    Default    : "0.0.0.0 ::"
-    Options    :
-      Examples: "0.0.0.0"
-
 `CACHE`
 
     Description: cache

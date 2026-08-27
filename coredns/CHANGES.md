@@ -10,6 +10,22 @@ The headers are:
 - enhancements
 - features
 
+## 1.14.6-4 (2026-08-26)
+
+### Bugs
+
+- Replace `auto` directive to prevent hidden Kubernetes ConfigMap timestamp directories from causing duplicate zone file collisions
+- Correct default value for `LOG` parameter
+
+### Changes
+
+- Remove parameter `BIND`
+
+#### Features
+
+- Enable plugin `template`
+- Return REFUSED for unhandled queries when forwarding is disabled
+
 ## 1.14.6-3 (2026-08-23)
 
 ### Features
