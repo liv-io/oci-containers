@@ -18,16 +18,9 @@ KEY="${KEY:-/home/step-ca/.step/secrets/intermediate_ca_key}"
 PASSWORD_TXT="${PASSWORD_TXT:-/home/step-ca/.step/password.txt}"
 ROOT="${ROOT:-/home/step-ca/.step/certs/root_ca.crt}"
 
-# Implement sponge-like command without the need for binary nor TMPDIR environment variable
 write_file() {
-    # Create temporary file
-    # shellcheck disable=SC2155
     local tmp_file="${1}_$(tr </dev/urandom -dc A-Za-z0-9 | head -c16)"
-
-    # Redirect the output to the temporary file
     cat >"${tmp_file}"
-
-    # Replace the original file
     mv --force "${tmp_file}" "${1}"
 }
 
