@@ -12,6 +12,7 @@ repos:
       - id: check-shebang-scripts-are-executable
       - id: check-symlinks
       - id: check-yaml
+        args: ['--allow-multiple-documents']
       - id: destroyed-symlinks
       - id: detect-private-key
       - id: end-of-file-fixer
