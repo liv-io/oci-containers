@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 1.14.7-1 (2026-09-09)
+
+### Bugs
+
+- Update CoreDNS to version 1.14.7
+
+### Enhancements
+
+- Update Go to version 1.27.1
+
 ## 1.14.6-4 (2026-08-26)
 
 ### Bugs

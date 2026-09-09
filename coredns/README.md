@@ -3,183 +3,49 @@
 ## Index
 
 - [About](#about)
-  - [Support](#support)
-  - [Dependencies](#dependencies)
-    - [Archives](#archives)
-    - [Git](#git)
-    - [Images](#images)
-- [Setup](#setup)
-  - [Podman](#podman)
-  - [User](#user)
-  - [Storage](#storage)
-  - [Container](#container)
-    - [Build](#build)
-    - [Run](#run)
-    - [Troubleshoot](#troubleshoot)
-- [Parameters](#parameters)
+- [Dependencies](#dependencies)
+  - [Build](#build)
+    - [Resources](#resources)
+  - [Runtime](#runtime)
+    - [Ports](#ports)
+    - [Volumes](#volumes)
+    - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
 - [Appendix](#appendix)
 
 ## About
 
-This OCI container contains `coredns`.
+OCI container for `coredns`.
 
-### Support
+## Dependencies
 
-The following operating system-level virtualization technologies are supported:
-- Docker `>= 20.0.0`
-- Podman `>= 3.0.0`
+### Build
 
-### Dependencies
+|Name|Type|Version|
+|:---|:---|:---|
+|[Debian](https://docker.io/debian)|Image|`stable-slim`|
+|[Go](https://go.dev/dl)|Archive|`1.27.1`|
+|[coredns](https://github.com/coredns/coredns.git)|Git|`main`|
 
-#### Archives
+### Runtime
 
-- [go](https://go.dev/dl/go1.26.6.linux-amd64.tar.gz) `1.26.6`
+#### Ports
 
-#### Git
+|Port|Protocol|Service|Description|
+|:---|:---|:---|:---|
+|`8080`|`tcp`|HTTP|Web API|
+|`1053`|`tcp`|DNS|DNS over TCP|
+|`1053`|`udp`|DNS|DNS over UDP|
 
-- [coredns](https://github.com/coredns/coredns.git) `main`
+#### Volumes
 
-#### Images
+|Mount Path|Type|Mode|Size|Description|
+|:---|:---|:---|:---|:---|
+|`/var/local/coredns/config`|`emptyDir`|`rw`|`4Mi`|Configuration files|
+|`/var/local/coredns/zones`|`configMap`, `hostPath`, `pvc`|`rw`|-|Zone files (prefixed with `db.`)|
 
-- [Debian](docker.io/debian) `stable-slim`
-
-## Setup
-
-### Podman
-
-Please refer to the [README.md](../README.md) file in the root directory of this Git repository.
-
-### User
-
-The following commands ought to be executed on the system running the container.
-
-- Enable rootless mode for the respective user:
-
-    ```
-    echo "coredns:20000:65534" | sudo tee --append /etc/subgid
-    echo "coredns:20000:65534" | sudo tee --append /etc/subuid
-    ```
-
-- Create the user running the container:
-
-    ```
-    sudo useradd --uid 10000 --user-group --comment 'coredns' --create-home --password '!' --shell '/bin/bash' coredns
-    ```
-
-- Allow the user to run long-running services
-
-    ```
-    sudo loginctl enable-linger coredns
-    ```
-
-- Add the user to the `systemd-journal` group
-
-    ```
-    sudo usermod -a -G systemd-journal coredns
-    ```
-
-### Storage
-
-- Create the directories for the persistent data:
-
-    ```
-    install --directory --owner=root --group=root --mode=0750 /opt/coredns
-    install --directory --owner=29999 --group=29999 --mode=0750 /opt/coredns/config
-    install --directory --owner=29999 --group=29999 --mode=0750 /opt/coredns/zones
-    ```
-
-### Container
-
-#### Build
-
-- Switch to the user running the container:
-
-    ```
-    sudo su - coredns
-    ```
-
-- Clone the `oci-containers` Git repository:
-
-    ```
-    git clone https://github.com/liv-io/oci-containers.git
-    ```
-
-- Change to the `coredns` container directory:
-
-    ```
-    cd ./oci-containers/coredns/
-    ```
-
-- Build the `coredns` container:
-
-    ```
-    podman build --tag $(basename ${PWD}):$(cat ./VERSION) .
-    ```
-
-- _Optional:_ Tag and push the image to a registry:
-
-    ```
-    podman build --tag registry.example.com/$(basename ${PWD}):$(cat ./VERSION) .
-    podman push registry.example.com/$(basename ${PWD}):$(cat ./VERSION)
-    ```
-
-#### Run
-
-- Start the container with custom parameters:
-
-    ```
-    podman run --detach --name coredns --network=host \
-        --volume /opt/coredns/config:/var/local/coredns/config \
-        --volume /opt/coredns/zones:/var/local/coredns/zones \
-        coredns:latest
-    ```
-
-#### Troubleshoot
-
-- Show the running container:
-
-    ```
-    podman ps --all
-    podman container ls --all
-    ```
-
-- Show and follow the logs:
-
-    ```
-    podman logs --follow coredns
-    ```
-
-- Start, stop, remove a container:
-
-    ```
-    podman container start coredns
-    podman container stop coredns
-    podman container rm coredns
-    ```
-
-- Inspect a running container:
-
-    ```
-    podman inspect coredns
-    ```
-
-- Debug a running container:
-
-    ```
-    podman exec --user root -ti coredns /bin/bash
-    podman exec --user coredns -ti coredns /bin/bash
-    ```
-
-- Debug a crashing image:
-
-    ```
-    podman run --user root -ti <checksum> /bin/bash
-    podman run --user root -ti registry.example.com/coredns:latest /bin/bash
-    ```
-
-## Parameters
+#### Environment Variables
 
 `CACHE`
 
@@ -273,5 +139,5 @@ See `CREDITS.md` file for more information.
 
 ## Appendix
 
-- [coredns](https://coredns.io)
+- [CoreDNS](https://coredns.io)
 - [Plugins](https://github.com/coredns/coredns/tree/master/plugin)

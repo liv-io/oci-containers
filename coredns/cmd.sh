@@ -65,12 +65,12 @@ assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/coredns)
 
-    # CONF
+    # -conf
     if [ -n "${CONF}" ]; then
         cmd+=(-conf "${CONF}")
     fi
 
-    # PORT
+    # -dns.port
     if [ -n "${PORT}" ]; then
         cmd+=(-dns.port "${PORT}")
     fi
