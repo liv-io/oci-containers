@@ -9,7 +9,7 @@
   - [Runtime](#runtime)
     - [Ports](#ports)
     - [Volumes](#volumes)
-    - [WorkingDir](#WorkingDir)
+    - [WorkingDir](#workingdir)
     - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
@@ -34,19 +34,19 @@ This OCI container contains the following Kubernetes GitOps tools:
 
 #### Resources
 
-|Name                                                     |Type   |Version       |
-|:---                                                     |:---   |:---          |
-|[Debian](https://docker.io/debian)                       |Image  |`stable-slim` |
-|[cosign](https://github.com/sigstore/cosign)             |Binary |`3.1.3`       |
-|[crictl](https://github.com/kubernetes-sigs/cri-tools)   |Archive|`1.37.0`      |
-|[ctr](https://github.com/containerd/containerd)          |Archive|`1.7.35`      |
-|[helm](https://get.helm.sh)                              |Archive|`4.3.0`       |
-|[k0s](https://github.com/k0sproject/k0s)                 |Binary |`1.36.4+k0s.0`|
-|[k0sctl](https://github.com/k0sproject/k0sctl)           |Binary |`0.32.2`      |
-|[kubectl](https://dl.k8s.io)                             |Binary |`1.37.0`      |
-|[kubesoloctl](https://github.com/portainer/kubesolo)     |Binary |`1.2.0`       |
-|[kustomize](https://github.com/kubernetes-sigs/kustomize)|Archive|`5.8.1`       |
-|[yq](https://github.com/mikefarah/yq)                    |Archive|`4.53.6`      |
+|Name                                                     |Version       |Type   |
+|:---                                                     |:---          |:---   |
+|[Debian](https://docker.io/debian)                       |`stable-slim` |Image  |
+|[cosign](https://github.com/sigstore/cosign)             |`3.1.3`       |Binary |
+|[crictl](https://github.com/kubernetes-sigs/cri-tools)   |`1.37.0`      |Archive|
+|[ctr](https://github.com/containerd/containerd)          |`1.7.35`      |Archive|
+|[helm](https://get.helm.sh)                              |`4.3.0`       |Archive|
+|[k0s](https://github.com/k0sproject/k0s)                 |`1.36.4+k0s.0`|Binary |
+|[k0sctl](https://github.com/k0sproject/k0sctl)           |`0.32.2`      |Binary |
+|[kubectl](https://dl.k8s.io)                             |`1.37.0`      |Binary |
+|[kubesoloctl](https://github.com/portainer/kubesolo)     |`1.2.0`       |Binary |
+|[kustomize](https://github.com/kubernetes-sigs/kustomize)|`5.8.1`       |Archive|
+|[yq](https://github.com/mikefarah/yq)                    |`4.53.6`      |Archive|
 
 ### Runtime
 

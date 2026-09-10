@@ -9,7 +9,7 @@
   - [Runtime](#runtime)
     - [Ports](#ports)
     - [Volumes](#volumes)
-    - [WorkingDir](#WorkingDir)
+    - [WorkingDir](#workingdir)
     - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
@@ -25,11 +25,11 @@ OCI container for `coredns`.
 
 #### Resources
 
-|Name                                             |Type   |Version      |
-|:---                                             |:---   |:---         |
-|[Debian](https://docker.io/debian)               |Image  |`stable-slim`|
-|[Go](https://go.dev/dl)                          |Archive|`1.27.1`     |
-|[coredns](https://github.com/coredns/coredns.git)|Git    |`main`       |
+|Name                                             |Version      |Type   |
+|:---                                             |:---         |:---   |
+|[Debian](https://docker.io/debian)               |`stable-slim`|Image  |
+|[Go](https://go.dev/dl)                          |`1.27.1`     |Archive|
+|[coredns](https://github.com/coredns/coredns.git)|`main`       |Git    |
 
 ### Runtime
 
