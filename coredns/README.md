@@ -9,6 +9,7 @@
   - [Runtime](#runtime)
     - [Ports](#ports)
     - [Volumes](#volumes)
+    - [WorkingDir](#WorkingDir)
     - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
@@ -22,28 +23,36 @@ OCI container for `coredns`.
 
 ### Build
 
-|Name|Type|Version|
-|:---|:---|:---|
-|[Debian](https://docker.io/debian)|Image|`stable-slim`|
-|[Go](https://go.dev/dl)|Archive|`1.27.1`|
-|[coredns](https://github.com/coredns/coredns.git)|Git|`main`|
+#### Resources
+
+|Name                                             |Type   |Version      |
+|:---                                             |:---   |:---         |
+|[Debian](https://docker.io/debian)               |Image  |`stable-slim`|
+|[Go](https://go.dev/dl)                          |Archive|`1.27.1`     |
+|[coredns](https://github.com/coredns/coredns.git)|Git    |`main`       |
 
 ### Runtime
 
 #### Ports
 
-|Port|Protocol|Service|Description|
-|:---|:---|:---|:---|
-|`8080`|`tcp`|HTTP|Web API|
-|`1053`|`tcp`|DNS|DNS over TCP|
-|`1053`|`udp`|DNS|DNS over UDP|
+|Port  |Protocol|Service|Description |
+|:---  |:---    |:---   |:---        |
+|`8080`|`tcp`   |HTTP   |API         |
+|`1053`|`tcp`   |DNS    |DNS over TCP|
+|`1053`|`udp`   |DNS    |DNS over UDP|
 
 #### Volumes
 
-|Mount Path|Type|Mode|Size|Description|
-|:---|:---|:---|:---|:---|
-|`/var/local/coredns/config`|`emptyDir`|`rw`|`4Mi`|Configuration files|
-|`/var/local/coredns/zones`|`configMap`, `hostPath`, `pvc`|`rw`|-|Zone files (prefixed with `db.`)|
+|Mount Path                 |Type                          |Mode|Size |Description                     |
+|:---                       |:---                          |:---|:--- |:---                            |
+|`/var/local/coredns/config`|`emptyDir`                    |`rw`|`4Mi`|Configuration files             |
+|`/var/local/coredns/zones` |`configMap`, `hostPath`, `pvc`|`rw`|`-`  |Zone files (prefixed with `db.`)|
+
+#### WorkingDir
+
+|Directory|Description   |
+|:---     |:---          |
+|`/`      |root directory|
 
 #### Environment Variables
 
