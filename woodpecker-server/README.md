@@ -3,198 +3,56 @@
 ## Index
 
 - [About](#about)
-  - [Support](#support)
-  - [Dependencies](#dependencies)
-    - [Archives](#archives)
-    - [Images](#images)
-- [Setup](#setup)
-  - [Podman](#podman)
-  - [User](#user)
-  - [Storage](#storage)
-  - [Container](#container)
-    - [Build](#build)
-    - [Run](#run)
-    - [Troubleshoot](#troubleshoot)
-- [Parameters](#parameters)
+- [Dependencies](#dependencies)
+  - [Build](#build)
+    - [Resources](#resources)
+  - [Runtime](#runtime)
+    - [Ports](#ports)
+    - [Volumes](#volumes)
+    - [WorkingDir](#workingdir)
+    - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
 - [Appendix](#appendix)
 
 ## About
 
-This OCI container contains the `woodpecker-server`.
+OCI container for `woodpecker-server`.
 
-### Support
+## Dependencies
 
-The following operating system-level virtualization technologies are supported:
-- Docker `>= 20.0.0`
-- Podman `>= 3.0.0`
+### Build
 
-### Dependencies
+#### Resources
 
-#### Archives
+|Name                                                            |Type   |Version      |
+|:---                                                            |:---   |:---         |
+|[Debian](https://docker.io/debian)                              |Image  |`stable-slim`|
+|[woodpecker-server](https://github.com/woodpecker-ci/woodpecker)|Archive|`3.18.0`     |
 
-- [woodpecker-server](https://github.com/woodpecker-ci/woodpecker/releases/download/v3.18.0/woodpecker-server_linux_amd64.tar.gz) `3.18.0`
+### Runtime
 
-#### Images
+#### Ports
 
-- [Debian](docker.io/debian) `stable-slim`
+|Port  |Protocol|Service|Description |
+|:---  |:---    |:---   |:---        |
+|`8000`|`tcp`   |HTTP   |Web, API    |
+|`9000`|`tcp`   |GRPC   |RPC         |
+|`9001`|`tcp`   |HTTP   |Metrics     |
 
-## Setup
+#### Volumes
 
-### Podman
+|Mount Path                       |Type                          |Mode|Size|Description    |
+|:---                             |:---                          |:---|:---|:---           |
+|`/var/local/woodpecker-server/db`|`configMap`, `hostPath`, `pvc`|`rw`|`-` |SQLite Database|
 
-Please refer to the [README.md](../README.md) file in the root directory of this Git repository.
+#### WorkingDir
 
-### User
+|Directory|Description   |
+|:---     |:---          |
+|`/`      |root directory|
 
-The following commands ought to be executed on the system running the container.
-
-- Enable rootless mode for the respective user:
-
-    ```
-    echo "woodpecker:20000:65534" | sudo tee --append /etc/subgid
-    echo "woodpecker:20000:65534" | sudo tee --append /etc/subuid
-    ```
-
-- Create the user running the container:
-
-    ```
-    sudo useradd --uid 10000 --user-group --comment 'woodpecker' --create-home --password '!' --shell '/bin/bash' woodpecker
-    ```
-
-- Allow the user to run long-running services
-
-    ```
-    sudo loginctl enable-linger woodpecker
-    ```
-
-- Add the user to the `systemd-journal` group
-
-    ```
-    sudo usermod -a -G systemd-journal woodpecker
-    ```
-
-### Storage
-
-- Create the directories for the persistent data:
-
-    ```
-    sudo mkdir -p /opt/woodpecker-server/db
-    sudo chown woodpecker:woodpecker /opt/woodpecker-server
-    sudo chmod 0750 /opt/woodpecker-server
-    sudo chown -R 29999:29999 /opt/woodpecker-server/db
-    ```
-
-### Container
-
-#### Build
-
-- Switch to the user running the container:
-
-    ```
-    sudo su - woodpecker
-    ```
-
-- Clone the `oci-containers` Git repository:
-
-    ```
-    git clone https://github.com/liv-io/oci-containers.git
-    ```
-
-- Change to the `woodpecker-server` container directory:
-
-    ```
-    cd ./oci-containers/woodpecker-server/
-    ```
-
-- Build the `woodpecker-server` container:
-
-    ```
-    podman build --tag $(basename ${PWD}):$(cat ./VERSION) .
-    ```
-
-- _Optional:_ Tag and push the image to a registry:
-
-    ```
-    podman build --tag registry.example.com/$(basename ${PWD}):$(cat ./VERSION) .
-    podman push registry.example.com/$(basename ${PWD}):$(cat ./VERSION)
-    ```
-
-#### Run
-
-- Start the container with custom parameters:
-
-    ```
-    podman run --detach --name woodpecker-server --network=host \
-        --env WOODPECKER_AGENT_SECRET="Gt4B9bC-6gGM-pERLdD5" \
-        --env WOODPECKER_GITHUB="true" \
-        --env WOODPECKER_GITHUB_CLIENT="e21f97e5071061bf381d" \
-        --env WOODPECKER_GITHUB_SECRET="6776f63f08408073838172059f412df2b4b95a5a" \
-        --env WOODPECKER_GITHUB_URL="https://github.com" \
-        --env WOODPECKER_GRPC_SECRET="aH62whm-mTHCq8c-439e" \
-        --env WOODPECKER_HOST="https://ci.example.com" \
-        --env WOODPECKER_OPEN="true" \
-        --volume /opt/woodpecker-server/db:/var/local/woodpecker-server/db \
-        woodpecker-server:latest
-    ```
-
-#### Troubleshoot
-
-- Show the running container:
-
-    ```
-    podman ps --all
-    podman container ls --all
-    ```
-
-- Show and follow the logs:
-
-    ```
-    podman logs --follow woodpecker-server
-    ```
-
-- Start, stop, remove a container:
-
-    ```
-    podman container start woodpecker-server
-    podman container stop woodpecker-server
-    podman container rm woodpecker-server
-    ```
-
-- Inspect a running container:
-
-    ```
-    podman inspect woodpecker-server
-    ```
-
-- Debug a running container:
-
-    ```
-    podman exec --user root -ti woodpecker-server /bin/bash
-    podman exec --user woodpecker -ti woodpecker-server /bin/bash
-    ```
-
-- Debug a crashing image:
-
-    ```
-    podman run --user root -ti <checksum> /bin/bash
-    podman run --user root -ti registry.example.com/woodpecker-server:latest /bin/bash
-    ```
-
-- Get woodpecker-server health:
-
-    ```
-    curl --silent --request GET --location http://localhost:8000/healthz
-    ```
-
-- Get woodpecker-server metrics:
-
-    ```
-    curl --silent --request GET --location http://localhost:9001/metrics
-    ```
-
-## Parameters
+#### Environment Variables
 
 `WOODPECKER_ADMIN`
 
