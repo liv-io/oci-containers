@@ -3,191 +3,68 @@
 ## Index
 
 - [About](#about)
-  - [Support](#support)
-  - [Dependencies](#dependencies)
-    - [Archives](#archives)
-    - [Images](#images)
-- [Setup](#setup)
-  - [Podman](#podman)
-  - [User](#user)
-  - [Storage](#storage)
-  - [Container](#container)
-    - [Build](#build)
-    - [Run](#run)
-    - [Troubleshoot](#troubleshoot)
-- [Parameters](#parameters)
+- [Dependencies](#dependencies)
+  - [Build](#build)
+    - [Resources](#resources)
+  - [Runtime](#runtime)
+    - [Ports](#ports)
+    - [Volumes](#volumes)
+    - [WorkingDir](#workingdir)
+    - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
 - [Appendix](#appendix)
 
 ## About
 
-This OCI container contains the `woodpecker-agent`.
+OCI container for `woodpecker-agent`.
 
-### Support
+## Dependencies
 
-The following operating system-level virtualization technologies are supported:
-- Docker `>= 20.0.0`
-- Podman `>= 3.0.0`
+### Build
 
-### Dependencies
+#### Resources
 
-#### Archives
+|Name                                                           |Type   |Version      |
+|:---                                                           |:---   |:---         |
+|[Debian](https://docker.io/debian)                             |Image  |`stable-slim`|
+|[plugin-git](https://github.com/woodpecker-ci/plugin-git)      |Binary |`3.18.0`     |
+|[woodpecker-agent](https://github.com/woodpecker-ci/woodpecker)|Archive|`2.10.0`     |
 
-- [plugin-git](https://github.com/woodpecker-ci/plugin-git/releases/download/3.18.0/linux-amd64_plugin-git) `3.18.0`
-- [woodpecker-agent](https://github.com/woodpecker-ci/woodpecker/releases/download/v2.10.0/woodpecker-agent_linux_arm64.tar.gz) `2.10.0`
+### Runtime
 
-#### Images
+#### Ports
 
-- [Debian](docker.io/debian) `stable-slim`
+|Port  |Protocol|Service|Description|
+|:---  |:---    |:---   |:---       |
+|`3000`|`tcp`   |HTTP   |API        |
 
-## Setup
+#### Volumes
 
-### Podman
+|Mount Path                          |Type      |Mode|Size   |Description                                           |
+|:---                                |:---      |:---|:---   |:---                                                  |
+|`/var/local/woodpecker-agent/certs` |`volume`  |`rw`|`-`    |Volume containing CA certificates for "docker" backend|
+|`/var/local/woodpecker-agent/config`|`emptyDir`|`rw`|`4Mi`  |Configuration files                                   |
+|`/var/local/woodpecker-agent/tmp`   |`emptyDir`|`rw`|`128Mi`|Temporary files                                       |
+|`/run/podman/podman.sock`           |`bind`    |`rw`|`-`    |Podman socket for "docker" backend                    |
 
-Please refer to the [README.md](../README.md) file in the root directory of this Git repository.
+#### WorkingDir
 
-### User
+|Directory|Description   |
+|:---     |:---          |
+|`/`      |root directory|
 
-The following commands ought to be executed on the system running the container.
-
-- Enable rootless mode for the respective user:
-
-    ```
-    echo "woodpecker:20000:65534" | sudo tee --append /etc/subgid
-    echo "woodpecker:20000:65534" | sudo tee --append /etc/subuid
-    ```
-
-- Create the user running the container:
-
-    ```
-    sudo useradd --uid 10000 --user-group --comment 'woodpecker' --create-home --password '!' --shell '/bin/bash' woodpecker
-    ```
-
-- Allow the user to run long-running services
-
-    ```
-    sudo loginctl enable-linger woodpecker
-    ```
-
-- Add the user to the `systemd-journal` group
-
-    ```
-    sudo usermod -a -G systemd-journal woodpecker
-    ```
-
-### Storage
-
-- Create the directories for the persistent data:
-
-    ```
-    sudo mkdir -p /opt/woodpecker-agent/{certs,config,tmp}
-    sudo chown woodpecker:woodpecker /opt/woodpecker-agent
-    sudo chmod 0750 /opt/woodpecker-agent
-    sudo chown -R 29999:29999 /opt/woodpecker-agent/{certs,config,tmp}
-    ```
-
-### Container
-
-#### Build
-
-- Switch to the user running the container:
-
-    ```
-    sudo su - woodpecker
-    ```
-
-- Clone the `oci-containers` Git repository:
-
-    ```
-    git clone https://github.com/liv-io/oci-containers.git
-    ```
-
-- Change to the `woodpecker-agent` container directory:
-
-    ```
-    cd ./oci-containers/woodpecker-agent/
-    ```
-
-- Build the `woodpecker-agent` container:
-
-    ```
-    podman build --tag $(basename ${PWD}):$(cat ./VERSION) .
-    ```
-
-- _Optional:_ Tag and push the image to a registry:
-
-    ```
-    podman build --tag registry.example.com/$(basename ${PWD}):$(cat ./VERSION) .
-    podman push registry.example.com/$(basename ${PWD}):$(cat ./VERSION)
-    ```
-
-#### Run
-
-- Start the container with custom parameters:
-
-    ```
-    podman run --detach --name woodpecker-agent --network=host \
-        --env WOODPECKER_AGENT_SECRET="Gt4B9bC-6gGM-pERLdD5" \
-        --volume /opt/woodpecker-agent/certs:/var/local/woodpecker-agent/certs \
-        --volume /opt/woodpecker-agent/config:/var/local/woodpecker-agent/config \
-        --volume /opt/woodpecker-agent/tmp:/var/local/woodpecker-agent/tmp \
-        --volume /run/podman/podman.sock:/run/podman/podman.sock \
-        woodpecker-agent:latest
-    ```
-
-#### Troubleshoot
-
-- Show the running container:
-
-    ```
-    podman ps --all
-    podman container ls --all
-    ```
-
-- Show and follow the logs:
-
-    ```
-    podman logs --follow woodpecker-agent
-    ```
-
-- Start, stop, remove a container:
-
-    ```
-    podman container start woodpecker-agent
-    podman container stop woodpecker-agent
-    podman container rm woodpecker-agent
-    ```
-
-- Inspect a running container:
-
-    ```
-    podman inspect woodpecker-agent
-    ```
-
-- Debug a running container:
-
-    ```
-    podman exec --user root -ti woodpecker-agent /bin/bash
-    podman exec --user woodpecker -ti woodpecker-agent /bin/bash
-    ```
-
-- Debug a crashing image:
-
-    ```
-    podman run --user root -ti <checksum> /bin/bash
-    podman run --user root -ti registry.example.com/woodpecker-agent:latest /bin/bash
-    ```
-
-- Get woodpecker-agent health:
-
-    ```
-    curl --silent --request GET --location http://localhost:3000/healthz
-    ```
-
-## Parameters
+#### Environment Variables
 
 `WOODPECKER_AGENT_CONFIG_FILE`
+
+    Description:
+    Required   : False
+    Value      : Arbitrary
+    Type       : String
+    Default    : "/var/local/woodpecker-agent/config/agent.conf"
+    Options    :
+      Examples: ""
 
 `WOODPECKER_AGENT_SECRET`
 
@@ -336,16 +213,6 @@ The following commands ought to be executed on the system running the container.
     Options    :
       Examples: "host" | "hostname"
 
-`WOODPECKER_AGENT_CONFIG_FILE`
-
-    Description:
-    Required   : False
-    Value      : Arbitrary
-    Type       : String
-    Default    : "/var/local/woodpecker-agent/config/agent.conf"
-    Options    :
-      Examples: ""
-
 `WOODPECKER_BACKEND_K8S_NAMESPACE`
 
     Description:
@@ -456,4 +323,3 @@ See `CREDITS.md` file for more information.
 ## Appendix
 
 - [Woodpecker CI](https://woodpecker-ci.org)
-- [SQLite](https://sqlite.org)
