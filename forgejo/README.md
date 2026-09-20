@@ -28,7 +28,7 @@ OCI container for `forgejo`.
 |Name                                           |Version      |Type  |
 |:---                                           |:---         |:---  |
 |[Debian](https://docker.io/debian)             |`stable-slim`|Image |
-|[forgejo](https://codeberg.org/forgejo/forgejo)|`16.0.4`     |Binary|
+|[forgejo](https://codeberg.org/forgejo/forgejo)|`16.0.5`     |Binary|
 
 ### Runtime
 
