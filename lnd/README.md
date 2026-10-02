@@ -3,187 +3,54 @@
 ## Index
 
 - [About](#about)
-  - [Support](#support)
-  - [Dependencies](#dependencies)
-    - [Archives](#archives)
-    - [Images](#images)
-- [Setup](#setup)
-  - [Podman](#podman)
-  - [User](#user)
-  - [Storage](#storage)
-  - [Container](#container)
-    - [Build](#build)
-    - [Run](#run)
-    - [Troubleshoot](#troubleshoot)
-- [Parameters](#parameters)
+- [Dependencies](#dependencies)
+  - [Build](#build)
+    - [Resources](#resources)
+  - [Runtime](#runtime)
+    - [Ports](#ports)
+    - [Volumes](#volumes)
+    - [WorkingDir](#workingdir)
+    - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
 - [Appendix](#appendix)
 
 ## About
 
-This OCI container contains `lnd`.
+OCI container for `lnd`.
 
-### Support
+## Dependencies
 
-The following operating system-level virtualization technologies are supported:
-- Docker `>= 20.0.0`
-- Podman `>= 3.0.0`
+### Build
 
-### Dependencies
+#### Resources
 
-#### Archives
+|Name                                                   |Version      |Type   |
+|:---                                                   |:---         |:---   |
+|[Debian](https://docker.io/debian)                     |`stable-slim`|Image  |
+|[lnd](https://github.com/lightningnetwork/lnd/releases)|`0.21.4-beta`|Archive|
 
-- [lnd](https://github.com/lightningnetwork/lnd/releases/download/v0.21.3-beta/lnd-linux-amd64-v0.21.3-beta.tar.gz) `0.21.3-beta`
+### Runtime
 
-#### Images
+#### Ports
 
-- [Debian](docker.io/debian) `stable-slim`
+|Port  |Protocol|Service|Description              |
+|:---  |:---    |:---   |:---                     |
+|`9735`|`tcp`   |p2p    |Bitcoin Lightning Network|
 
-## Setup
+#### Volumes
 
-### Podman
+|Mount Path           |Type                          |Mode|Size |Description|
+|:---                 |:---                          |:---|:--- |:---       |
+|`/var/local/lnd/data`|`configMap`, `hostPath`, `pvc`|`rw`|`-`  |data       |
 
-Please refer to the [README.md](../README.md) file in the root directory of this Git repository.
+#### WorkingDir
 
-### User
+|Directory|Description   |
+|:---     |:---          |
+|`/`      |root directory|
 
-The following commands ought to be executed on the system running the container.
-
-- Enable rootless mode for the respective user:
-
-    ```
-    echo "lnd:20000:65534" | sudo tee --append /etc/subgid
-    echo "lnd:20000:65534" | sudo tee --append /etc/subuid
-    ```
-
-- Create the user running the container:
-
-    ```
-    sudo useradd --uid 10000 --user-group --comment 'lnd' --create-home --password '!' --shell '/bin/bash' lnd
-    ```
-
-- Allow the user to run long-running services
-
-    ```
-    sudo loginctl enable-linger lnd
-    ```
-
-- Add the user to the `systemd-journal` group
-
-    ```
-    sudo usermod -a -G systemd-journal lnd
-    ```
-
-### Storage
-
-- Create the directories for the persistent data:
-
-    ```
-    sudo mkdir -p /opt/lnd/data
-    sudo chown lnd:lnd /opt/lnd
-    sudo chmod 0750 /opt/lnd
-    sudo chown -R 29999:29999 /opt/lnd/data
-    ```
-
-### Container
-
-#### Build
-
-- Switch to the user running the container:
-
-    ```
-    sudo su - lnd
-    ```
-
-- Clone the `oci-containers` Git repository:
-
-    ```
-    git clone https://github.com/liv-io/oci-containers.git
-    ```
-
-- Change to the `lnd` container directory:
-
-    ```
-    cd ./oci-containers/lnd/
-    ```
-
-- Build the `lnd` container:
-
-    ```
-    podman build --tag $(basename ${PWD}):$(cat ./VERSION) .
-    ```
-
-- _Optional:_ Tag and push the image to a registry:
-
-    ```
-    podman build --tag registry.example.com/$(basename ${PWD}):$(cat ./VERSION) .
-    podman push registry.example.com/$(basename ${PWD}):$(cat ./VERSION)
-    ```
-
-#### Run
-
-- Start the container with custom parameters:
-
-    ```
-    podman run --detach --name lnd --network=host \
-        --env ALIAS="example.com" \
-        --env BITCOIND_RPCHOST="1.2.3.4:8332" \
-        --env BITCOIND_RPCPASS="3cF83a6puhQ4HqJr8f0re28dKPB8HQw5" \
-        --env BITCOIND_RPCUSER="satoshi" \
-        --env BITCOIND_ZMQPUBRAWBLOCK="tcp://1.2.3.4:5557" \
-        --env BITCOIND_ZMQPUBRAWTX="tcp://1.2.3.4:5558" \
-        --env COLOR="#f2a900" \
-        --env EXTERNALIP="5.6.7.8" \
-        --env LISTEN="0.0.0.0:9735" \
-        --volume /opt/lnd/data:/var/local/lnd/data \
-        lnd:latest
-    ```
-
-#### Troubleshoot
-
-- Show the running container:
-
-    ```
-    podman ps --all
-    podman container ls --all
-    ```
-
-- Show and follow the logs:
-
-    ```
-    podman logs --follow lnd
-    ```
-
-- Start, stop, remove a container:
-
-    ```
-    podman container start lnd
-    podman container stop lnd
-    podman container rm lnd
-    ```
-
-- Inspect a running container:
-
-    ```
-    podman inspect lnd
-    ```
-
-- Debug a running container:
-
-    ```
-    podman exec --user root -ti lnd /bin/bash
-    podman exec --user lnd -ti lnd /bin/bash
-    ```
-
-- Debug a crashing image:
-
-    ```
-    podman run --user root -ti <checksum> /bin/bash
-    podman run --user root -ti registry.example.com/lnd:latest /bin/bash
-    ```
-
-## Parameters
+#### Environment Variables
 
 `ALIAS`
 
@@ -361,4 +228,4 @@ See `CREDITS.md` file for more information.
 
 ## Appendix
 
-- [lnd](https://github.com/lightningnetwork/lnd)
+- [lnd](https://lightning.engineering)
