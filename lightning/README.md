@@ -3,188 +3,55 @@
 ## Index
 
 - [About](#about)
-  - [Support](#support)
-  - [Dependencies](#dependencies)
-    - [Archives](#archives)
-    - [Images](#images)
-- [Setup](#setup)
-  - [Podman](#podman)
-  - [User](#user)
-  - [Storage](#storage)
-  - [Container](#container)
-    - [Build](#build)
-    - [Run](#run)
-    - [Troubleshoot](#troubleshoot)
-- [Parameters](#parameters)
+- [Dependencies](#dependencies)
+  - [Build](#build)
+    - [Resources](#resources)
+  - [Runtime](#runtime)
+    - [Ports](#ports)
+    - [Volumes](#volumes)
+    - [WorkingDir](#workingdir)
+    - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
 - [Appendix](#appendix)
 
 ## About
 
-This OCI container contains `lightning`.
+OCI container for `lightning`.
 
-### Support
+## Dependencies
 
-The following operating system-level virtualization technologies are supported:
-- Docker `>= 20.0.0`
-- Podman `>= 3.0.0`
+### Build
 
-### Dependencies
+#### Resources
 
-#### Archives
+|Name                                                     |Version      |Type   |
+|:---                                                     |:---         |:---   |
+|[Debian](https://docker.io/debian)                       |`stable-slim`|Image  |
+|[bitcoin-core](https://bitcoincore.org/bin)              |`31.1`       |Archive|
+|[lightning](https://github.com/ElementsProject/lightning)|`26.06.8`    |Archive|
 
-- [bitcoin-core](https://bitcoincore.org/bin/bitcoin-core-31.1/bitcoin-31.1-x86_64-linux-gnu.tar.gz) `31.1`
-- [lightning](https://github.com/ElementsProject/lightning/releases/download/v26.06.7/clightning-v26.06.7-Ubuntu-22.04-amd64.tar.xz) `26.06.7`
+### Runtime
 
-#### Images
+#### Ports
 
-- [Debian](docker.io/debian) `stable-slim`
+|Port  |Protocol|Service|Description              |
+|:---  |:---    |:---   |:---                     |
+|`9735`|`tcp`   |p2p    |Bitcoin Lightning Network|
 
-## Setup
+#### Volumes
 
-### Podman
+|Mount Path                 |Type                          |Mode|Size |Description|
+|:---                       |:---                          |:---|:--- |:---       |
+|`/var/local/lightning/data`|`configMap`, `hostPath`, `pvc`|`rw`|`-`  |data       |
 
-Please refer to the [README.md](../README.md) file in the root directory of this Git repository.
+#### WorkingDir
 
-### User
+|Directory|Description   |
+|:---     |:---          |
+|`/`      |root directory|
 
-The following commands ought to be executed on the system running the container.
-
-- Enable rootless mode for the respective user:
-
-    ```
-    echo "lightning:20000:65534" | sudo tee --append /etc/subgid
-    echo "lightning:20000:65534" | sudo tee --append /etc/subuid
-    ```
-
-- Create the user running the container:
-
-    ```
-    sudo useradd --uid 10000 --user-group --comment 'lightning' --create-home --password '!' --shell '/bin/bash' lightning
-    ```
-
-- Allow the user to run long-running services
-
-    ```
-    sudo loginctl enable-linger lightning
-    ```
-
-- Add the user to the `systemd-journal` group
-
-    ```
-    sudo usermod -a -G systemd-journal lightning
-    ```
-
-### Storage
-
-- Create the directories for the persistent data:
-
-    ```
-    sudo mkdir -p /opt/lightning/data
-    sudo chown lightning:lightning /opt/lightning
-    sudo chmod 0750 /opt/lightning
-    sudo chown -R 29999:29999 /opt/lightning/data
-    ```
-
-### Container
-
-#### Build
-
-- Switch to the user running the container:
-
-    ```
-    sudo su - lightning
-    ```
-
-- Clone the `oci-containers` Git repository:
-
-    ```
-    git clone https://github.com/liv-io/oci-containers.git
-    ```
-
-- Change to the `lightning` container directory:
-
-    ```
-    cd ./oci-containers/lightning/
-    ```
-
-- Build the `lightning` container:
-
-    ```
-    podman build --tag $(basename ${PWD}):$(cat ./VERSION) .
-    ```
-
-- _Optional:_ Tag and push the image to a registry:
-
-    ```
-    podman build --tag registry.example.com/$(basename ${PWD}):$(cat ./VERSION) .
-    podman push registry.example.com/$(basename ${PWD}):$(cat ./VERSION)
-    ```
-
-#### Run
-
-- Start the container with custom parameters:
-
-    ```
-    podman run --detach --name lightning --network=host \
-        --env ALIAS="example.com" \
-        --env ANNOUNCE_ADDR="5.6.7.8" \
-        --env ANNOUNCE_ADDR_DISCOVERED_PORT="9735" \
-        --env BIND_ADDR="0.0.0.0" \
-        --env BITCOIN_RPCCONNECT=""1.2.3.4" \
-        --env BITCOIN_RPCPASSWORD="3cF83a6puhQ4HqJr8f0re28dKPB8HQw5" \
-        --env BITCOIN_RPCPORT="8332" \
-        --env BITCOIN_RPCUSER="satoshi" \
-        --env RGB="f2a900" \
-        --volume /opt/lightning/data:/var/local/lightning/data \
-        lightning:latest
-    ```
-
-#### Troubleshoot
-
-- Show the running container:
-
-    ```
-    podman ps --all
-    podman container ls --all
-    ```
-
-- Show and follow the logs:
-
-    ```
-    podman logs --follow lightning
-    ```
-
-- Start, stop, remove a container:
-
-    ```
-    podman container start lightning
-    podman container stop lightning
-    podman container rm lightning
-    ```
-
-- Inspect a running container:
-
-    ```
-    podman inspect lightning
-    ```
-
-- Debug a running container:
-
-    ```
-    podman exec --user root -ti lightning /bin/bash
-    podman exec --user lightning -ti lightning /bin/bash
-    ```
-
-- Debug a crashing image:
-
-    ```
-    podman run --user root -ti <checksum> /bin/bash
-    podman run --user root -ti registry.example.com/lightning:latest /bin/bash
-    ```
-
-## Parameters
+#### Environment Variables
 
 `ADDR`
 
@@ -411,4 +278,4 @@ See `CREDITS.md` file for more information.
 
 ## Appendix
 
-- [lightning](https://github.com/lightningnetwork/lightning)
+- [lightning](https://corelightning.org)
