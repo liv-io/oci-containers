@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.1.3-1 (2026-10-04)
+
+### Bugs
+
+- Update tink to version 0.1.3
+
 ## 0.1.2-1 (2026-07-29)
 
 ### Bugs
