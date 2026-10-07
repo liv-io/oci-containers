@@ -29,7 +29,7 @@ OCI container for `lightning`.
 |:---                                                     |:---         |:---   |
 |[Debian](https://docker.io/debian)                       |`stable-slim`|Image  |
 |[bitcoin-core](https://bitcoincore.org/bin)              |`31.1`       |Archive|
-|[lightning](https://github.com/ElementsProject/lightning)|`26.06.8`    |Archive|
+|[lightning](https://github.com/ElementsProject/lightning)|`26.06.9`    |Archive|
 
 ### Runtime
 
