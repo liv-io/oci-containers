@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 3.19.0-1 (2026-10-08)
+
+### Features
+
+- Update woodpecker-server to version 3.19.0
+
 ## 3.18.1-1 (2026-09-10)
 
 ### Bugs

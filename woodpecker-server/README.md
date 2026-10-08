@@ -28,7 +28,7 @@ OCI container for `woodpecker-server`.
 |Name                                                            |Version      |Type   |
 |:---                                                            |:---         |:---   |
 |[Debian](https://docker.io/debian)                              |`stable-slim`|Image  |
-|[woodpecker-server](https://github.com/woodpecker-ci/woodpecker)|`3.18.0`     |Archive|
+|[woodpecker-server](https://github.com/woodpecker-ci/woodpecker)|`3.19.0`     |Archive|
 
 ### Runtime
 
