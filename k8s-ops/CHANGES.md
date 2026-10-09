@@ -12,7 +12,18 @@ The headers are:
 
 ## 1.37.0-1 (2026-09-10)
 
-### Features
+### Enhancements
+
+- Update ctr to version 1.7.36
+- Update helm to version 4.3.0
+- Update k0s to version 1.36.4+k0s.1
+- Update k0sctl to version 0.33.1
+- Update kubesoloctl to version 1.2.1
+- Update yq to version 4.54.1
+
+## 1.37.0-1 (2026-09-10)
+
+### Enhancements
 
 - Update crictl to version 1.37.0
 - Update ctr to version 1.7.35

@@ -39,14 +39,14 @@ This OCI container contains the following Kubernetes GitOps tools:
 |[Debian](https://docker.io/debian)                       |`stable-slim` |Image  |
 |[cosign](https://github.com/sigstore/cosign)             |`3.1.3`       |Binary |
 |[crictl](https://github.com/kubernetes-sigs/cri-tools)   |`1.37.0`      |Archive|
-|[ctr](https://github.com/containerd/containerd)          |`1.7.35`      |Archive|
+|[ctr](https://github.com/containerd/containerd)          |`1.7.36`      |Archive|
 |[helm](https://get.helm.sh)                              |`4.3.0`       |Archive|
-|[k0s](https://github.com/k0sproject/k0s)                 |`1.36.4+k0s.0`|Binary |
-|[k0sctl](https://github.com/k0sproject/k0sctl)           |`0.32.2`      |Binary |
+|[k0s](https://github.com/k0sproject/k0s)                 |`1.36.4+k0s.1`|Binary |
+|[k0sctl](https://github.com/k0sproject/k0sctl)           |`0.33.1`      |Binary |
 |[kubectl](https://dl.k8s.io)                             |`1.37.0`      |Binary |
-|[kubesoloctl](https://github.com/portainer/kubesolo)     |`1.2.0`       |Binary |
-|[kustomize](https://github.com/kubernetes-sigs/kustomize)|`5.8.1`       |Archive|
-|[yq](https://github.com/mikefarah/yq)                    |`4.53.6`      |Archive|
+|[kubesoloctl](https://github.com/portainer/kubesolo)     |`1.2.1`       |Binary |
+|[kustomize](https://github.com/kubernetes-sigs/kustomize)|`5.8.3`       |Archive|
+|[yq](https://github.com/mikefarah/yq)                    |`4.54.1`      |Archive|
 
 ### Runtime
 
