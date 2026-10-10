@@ -10,7 +10,13 @@ The headers are:
 - enhancements
 - features
 
-## 1.37.0-1 (2026-09-10)
+## 1.37.0-3 (2026-09-10)
+
+### Features
+
+- Add command `git`
+
+## 1.37.0-2 (2026-09-10)
 
 ### Enhancements
 

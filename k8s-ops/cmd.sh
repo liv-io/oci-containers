@@ -30,6 +30,7 @@ main() {
     command_version "curl" "--version"
     command_version "crictl" "--version"
     command_version "ctr" "--version"
+    command_version "git" "--version"
     command_version "helm"
     command_version "k0s"
     command_version "k0sctl"

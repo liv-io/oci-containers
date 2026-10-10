@@ -20,6 +20,7 @@
 This OCI container contains the following Kubernetes GitOps tools:
 - crictl
 - ctr
+- git
 - helm
 - k0s
 - k0sctl
@@ -40,6 +41,7 @@ This OCI container contains the following Kubernetes GitOps tools:
 |[cosign](https://github.com/sigstore/cosign)             |`3.1.3`       |Binary |
 |[crictl](https://github.com/kubernetes-sigs/cri-tools)   |`1.37.0`      |Archive|
 |[ctr](https://github.com/containerd/containerd)          |`1.7.36`      |Archive|
+|[git](https://git-scm.com)                               |`2.x.x`       |Package|
 |[helm](https://get.helm.sh)                              |`4.3.0`       |Archive|
 |[k0s](https://github.com/k0sproject/k0s)                 |`1.36.4+k0s.1`|Binary |
 |[k0sctl](https://github.com/k0sproject/k0sctl)           |`0.33.1`      |Binary |
