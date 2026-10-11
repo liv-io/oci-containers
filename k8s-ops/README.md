@@ -27,6 +27,7 @@ This OCI container contains the following Kubernetes GitOps tools:
 - kubectl
 - kubesoloctl
 - kustomize
+- ssh
 - yq
 
 ## Dependencies
@@ -48,6 +49,7 @@ This OCI container contains the following Kubernetes GitOps tools:
 |[kubectl](https://dl.k8s.io)                             |`1.37.0`      |Binary |
 |[kubesoloctl](https://github.com/portainer/kubesolo)     |`1.2.1`       |Binary |
 |[kustomize](https://github.com/kubernetes-sigs/kustomize)|`5.8.3`       |Archive|
+|[ssh](https://openssh.org)                               |`10.x`        |Package|
 |[yq](https://github.com/mikefarah/yq)                    |`4.54.1`      |Archive|
 
 ### Runtime

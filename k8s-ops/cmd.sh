@@ -38,6 +38,7 @@ main() {
     command_version "kubesoloctl"
     command_version "kustomize"
     command_version "openssl" "--version"
+    command_version "ssh" "-V"
     command_version "yq" "--version"
     assemble_command
     "${cmd[@]}"

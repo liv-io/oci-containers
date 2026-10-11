@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 1.37.1-1 (2026-09-10)
+
+### Enhancements
+
+- Update kubectl to version 1.37.1
+
+### Features
+
+- Add command `ssh`
+
 ## 1.37.0-3 (2026-09-10)
 
 ### Features
