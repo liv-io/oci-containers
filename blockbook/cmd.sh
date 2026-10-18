@@ -22,9 +22,7 @@ CONFIG_DST="/var/local/blockbook/config"
 BLOCKBOOK_JSON="${CONFIG_DST}/blockbook.json"
 DB_PATH="/var/local/blockbook/db"
 
-# Implement sponge-like command without the need for binary nor TMPDIR environment variable
 write_file() {
-    # shellcheck disable=SC2155
     local tmp_file="${1}_$(tr </dev/urandom -dc A-Za-z0-9 | head -c16)"
     cat >"${tmp_file}"
     mv --force "${tmp_file}" "${1}"
@@ -98,7 +96,6 @@ config_blockbook_json() {
     fi
 }
 
-# shellcheck disable=SC2206
 assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/blockbook)

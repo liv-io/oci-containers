@@ -1,8 +1,8 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG BLOCKBOOK_VERSION="${BLOCKBOOK_VERSION:-0.6.0}"
-ARG GO_CHECKSUM="${GO_CHECKSUM:-5c2c3b16caefa1d968a94c1daca04a7ca301a496d9b086e17ad77bb81393f053}"
-ARG GO_VERSION="${GO_VERSION:-1.26.5}"
+ARG BLOCKBOOK_VERSION="${BLOCKBOOK_VERSION:-c6d8d181fb7645a15c655c5371bb7205af5f9086}"
+ARG GO_CHECKSUM="${GO_CHECKSUM:-ecbadb99091a3f46e31f5f934b068b1864eafa7995211b39eaddf76996045fe5}"
+ARG GO_VERSION="${GO_VERSION:-1.27.2}"
 ARG ROCKSDB_VERSION="${ROCKSDB_VERSION:-9.10.0}"
 
 ENV TZ="UTC"
@@ -63,7 +63,9 @@ RUN tar --extract --gzip --file=/usr/local/src/go/go${GO_VERSION}.linux-amd64.ta
 # rocksdb
 
 ENV CGO_CFLAGS="-I/usr/local/include/rocksdb" \
-    CGO_LDFLAGS="-L/usr/local/share/rocksdb -lrocksdb -lstdc++ -lm -lz -ldl -lbz2 -lsnappy -llz4"
+    CGO_LDFLAGS="-L/usr/local/share/rocksdb -lrocksdb -lstdc++ -lm -lz -ldl -lbz2 -lsnappy -llz4" \
+    GOAMD64=v1 \
+    PORTABLE=1
 
 RUN install --directory --owner=root --group=root --mode=0755 /usr/local/include/rocksdb \
     install --directory --owner=root --group=root --mode=0755 /usr/local/share/rocksdb \
@@ -84,9 +86,10 @@ RUN install --directory --owner=root --group=root --mode=0755 /usr/local/share/b
     install --directory --owner=root --group=root --mode=0755 /usr/local/src/blockbook
 
 WORKDIR /usr/local/src
-RUN git clone --depth 1 --branch v${BLOCKBOOK_VERSION} https://github.com/trezor/blockbook.git
+RUN git clone --branch master https://github.com/trezor/blockbook.git
 
 WORKDIR /usr/local/src/blockbook
+RUN git checkout ${BLOCKBOOK_VERSION}
 RUN go build -tags rocksdb_7_7
 
 #---------------------------------------------------------------------

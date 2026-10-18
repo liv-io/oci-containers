@@ -10,12 +10,19 @@ The headers are:
 - enhancements
 - features
 
+## c6d8d181fb7645a15c655c5371bb7205af5f9086-1 (2026-10-18)
+
+### Enhancements
+
+- Update blockbook to commit c6d8d181fb7645a15c655c5371bb7205af5f9086
+- Update Go to version 1.27.2
+- Build RocksDB in portable mode to prevent illegal instruction crash
+
 ## 0.6.0-1 (2026-07-16)
 
 ### Enhancements
 
 - Update Go to version 1.26.5
-- Update RocksDB to version 9.10.0
 
 ### Features
 
