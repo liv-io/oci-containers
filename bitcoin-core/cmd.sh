@@ -39,7 +39,6 @@ set_defaults() {
     fi
 }
 
-# shellcheck disable=SC2068
 assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/bitcoind)
