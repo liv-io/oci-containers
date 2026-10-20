@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 31.1-2 (2026-10-20)
+
+### Enhancements
+
+- Minor cosmetic syntax improvements
+
 ## 31.1-1 (2026-07-11)
 
 ### Enhancements

@@ -3,191 +3,59 @@
 ## Index
 
 - [About](#about)
-  - [Support](#support)
-  - [Dependencies](#dependencies)
-    - [Archives](#archives)
-    - [Images](#images)
-- [Setup](#setup)
-  - [Podman](#podman)
-  - [User](#user)
-  - [Storage](#storage)
-  - [Container](#container)
-    - [Build](#build)
-    - [Run](#run)
-    - [Troubleshoot](#troubleshoot)
-- [Parameters](#parameters)
+- [Dependencies](#dependencies)
+  - [Build](#build)
+    - [Resources](#resources)
+  - [Runtime](#runtime)
+    - [Ports](#ports)
+    - [Volumes](#volumes)
+    - [WorkingDir](#workingdir)
+    - [Environment Variables](#environment-variables)
 - [License](#license)
 - [Credits](#credits)
 - [Appendix](#appendix)
 
 ## About
 
-This OCI container contains `bitcoin-core`.
+OCI container for `bitcoin-core`.
 
-### Support
+## Dependencies
 
-The following operating system-level virtualization technologies are supported:
-- Docker `>= 20.0.0`
-- Podman `>= 3.0.0`
+### Build
 
-### Dependencies
+#### Resources
 
-#### Archives
+|Name                                       |Version      |Type   |
+|:---                                       |:---         |:---   |
+|[Debian](https://docker.io/debian)         |`stable-slim`|Image  |
+|[bitcoin-core](https://bitcoincore.org/bin)|`29.4`       |Archive|
 
-- [bitcoin-core](https://bitcoincore.org/bin/bitcoin-core-31.1/bitcoin-31.1-x86_64-linux-gnu.tar.gz) `31.1`
+### Runtime
 
-#### Images
+#### Ports
 
-- [Debian](docker.io/debian) `stable-slim`
+|Port  |Protocol|Service|Description |
+|:---  |:---    |:---   |:---        |
+|`5555`|`tcp`   |ZeroMQ |PubHashBlock|
+|`5556`|`tcp`   |ZeroMQ |PubHashTx   |
+|`5557`|`tcp`   |ZeroMQ |PubRawBlock |
+|`5558`|`tcp`   |ZeroMQ |PubRawTx    |
+|`8332`|`tcp`   |RPC    |RPC         |
+|`8333`|`tcp`   |Network|Peer to peer|
 
-## Setup
+#### Volumes
 
-### Podman
+|Mount Path                  |Type             |Mode|Size |Description|
+|:---                        |:---             |:---|:--- |:---       |
+|`/var/local/bitcoin-core/db`|`hostPath`, `pvc`|`rw`|-    |Database   |
 
-Please refer to the [README.md](../README.md) file in the root directory of this Git repository.
+#### WorkingDir
 
-### User
+|Directory|Description   |
+|:---     |:---          |
+|`/`      |root directory|
 
-The following commands ought to be executed on the system running the container.
-
-- Enable rootless mode for the respective user:
-
-    ```
-    echo "bitcoin-core:20000:65534" | sudo tee --append /etc/subgid
-    echo "bitcoin-core:20000:65534" | sudo tee --append /etc/subuid
-    ```
-
-- Create the user running the container:
-
-    ```
-    sudo useradd --uid 10000 --user-group --comment 'bitcoin-core' --create-home --password '!' --shell '/bin/bash' bitcoin-core
-    ```
-
-- Allow the user to run long-running services
-
-    ```
-    sudo loginctl enable-linger bitcoin-core
-    ```
-
-- Add the user to the `systemd-journal` group
-
-    ```
-    sudo usermod -a -G systemd-journal bitcoin-core
-    ```
-
-### Storage
-
-- Create the directories for the persistent data:
-
-    ```
-    sudo mkdir -p /opt/bitcoin-core/db
-    sudo chown bitcoin-core:bitcoin-core /opt/bitcoin-core
-    sudo chmod 0750 /opt/bitcoin-core
-    sudo chown -R 29999:29999 /opt/bitcoin-core/db
-    ```
-
-### Container
-
-#### Build
-
-- Switch to the user running the container:
-
-    ```
-    sudo su - bitcoin-core
-    ```
-
-- Clone the `oci-containers` Git repository:
-
-    ```
-    git clone https://github.com/liv-io/oci-containers.git
-    ```
-
-- Change to the `bitcoin-core` container directory:
-
-    ```
-    cd ./oci-containers/bitcoin-core/
-    ```
-
-- Build the `bitcoin-core` container:
-
-    ```
-    podman build --tag $(basename ${PWD}):$(cat ./VERSION) .
-    ```
-
-- _Optional:_ Tag and push the image to a registry:
-
-    ```
-    podman build --tag registry.example.com/$(basename ${PWD}):$(cat ./VERSION) .
-    podman push registry.example.com/$(basename ${PWD}):$(cat ./VERSION)
-    ```
-
-#### Run
-
-- Start the container with custom parameters:
-
-    ```
-    podman run --detach --name bitcoin-core --network=host \
-        --env ADDNODE="btc.example.com:8333 btc.example.org:8333" \
-        --env BIND="0.0.0.0" \
-        --env EXTERNALIP="1.2.3.4" \
-        --env PORT="8333" \
-        --env REST="true" \
-        --env RPCALLOWIP="0.0.0.0/0" \
-        --env RPCAUTH="satoshi:d7316644b50aa7ea8792daf5c6b897e4$54194677335fcb771aa39533ddc2833927de9626b0d8fcb7940a7f56aa8a9569" \
-        --env RPCBIND="0.0.0.0" \
-        --env RPCPORT="8332" \
-        --env ZMQPUBHASHBLOCK="tcp://0.0.0.0:5555" \
-        --env ZMQPUBHASHTX="tcp://0.0.0.0:5556" \
-        --env ZMQPUBRAWBLOCK="tcp://0.0.0.0:5557" \
-        --env ZMQPUBRAWTX="tcp://0.0.0.0:5558" \
-        --volume /opt/bitcoin-core/db:/var/local/bitcoin-core/db \
-        bitcoin-core:latest
-    ```
-
-#### Troubleshoot
-
-- Show the running container:
-
-    ```
-    podman ps --all
-    podman container ls --all
-    ```
-
-- Show and follow the logs:
-
-    ```
-    podman logs --follow bitcoin-core
-    ```
-
-- Start, stop, remove a container:
-
-    ```
-    podman container start bitcoin-core
-    podman container stop bitcoin-core
-    podman container rm bitcoin-core
-    ```
-
-- Inspect a running container:
-
-    ```
-    podman inspect bitcoin-core
-    ```
-
-- Debug a running container:
-
-    ```
-    podman exec --user root -ti bitcoin-core /bin/bash
-    podman exec --user bitcoin-core -ti bitcoin-core /bin/bash
-    ```
-
-- Debug a crashing image:
-
-    ```
-    podman run --user root -ti <checksum> /bin/bash
-    podman run --user root -ti registry.example.com/bitcoin-core:latest /bin/bash
-    ```
-
-## Parameters
+#### Environment Variables
 
 `ADDNODE`
 
@@ -405,4 +273,4 @@ See `CREDITS.md` file for more information.
 
 ## Appendix
 
-- [bitcoin-core](https://github.com/btcsuite/bitcoin-core)
+- [bitcoin-core](https://bitcoincore.org)
