@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 3.19.0-2 (2026-10-22)
+
+### Bugs
+
+- Bump version for latest `ca-certificates` package (20250419+deb13u1)
+
 ## 3.19.0-1 (2026-10-08)
 
 ### Features

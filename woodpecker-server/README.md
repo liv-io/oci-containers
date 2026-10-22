@@ -34,11 +34,11 @@ OCI container for `woodpecker-server`.
 
 #### Ports
 
-|Port  |Protocol|Service|Description |
-|:---  |:---    |:---   |:---        |
-|`8000`|`tcp`   |HTTP   |Web, API    |
-|`9000`|`tcp`   |GRPC   |RPC         |
-|`9001`|`tcp`   |HTTP   |Metrics     |
+|Port  |Protocol|Service|Description|
+|:---  |:---    |:---   |:---       |
+|`8000`|`tcp`   |HTTP   |Web, API   |
+|`9000`|`tcp`   |GRPC   |RPC        |
+|`9001`|`tcp`   |HTTP   |Metrics    |
 
 #### Volumes
 
