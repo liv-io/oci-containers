@@ -12,6 +12,12 @@ The headers are:
 
 ## 0.14.0-1 (2026-08-09)
 
+### Bugs
+
+- Update Go to version 1.27.3
+
+## 0.14.0-1 (2026-08-09)
+
 ### Features
 
 - Initial release
