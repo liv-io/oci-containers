@@ -28,7 +28,7 @@ OCI container for `coredns`.
 |Name                                             |Version      |Type   |
 |:---                                             |:---         |:---   |
 |[Debian](https://docker.io/debian)               |`stable-slim`|Image  |
-|[Go](https://go.dev/dl)                          |`1.27.1`     |Archive|
+|[Go](https://go.dev/dl)                          |`1.27.3`     |Archive|
 |[coredns](https://github.com/coredns/coredns.git)|`main`       |Git    |
 
 ### Runtime
