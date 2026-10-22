@@ -1,8 +1,8 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG GO_CHECKSUM="${GO_CHECKSUM:-5c2c3b16caefa1d968a94c1daca04a7ca301a496d9b086e17ad77bb81393f053}"
-ARG GO_VERSION="${GO_VERSION:-1.26.5}"
-ARG MEMOS_VERSION="${MEMOS_VERSION:-0.30.0}"
+ARG GO_CHECKSUM="${GO_CHECKSUM:-65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40}"
+ARG GO_VERSION="${GO_VERSION:-1.27.3}"
+ARG MEMOS_VERSION="${MEMOS_VERSION:-0.31.0}"
 ARG NODEJS_MAJOR_VERSION="${NODEJS_MAJOR_VERSION:-24}"
 ARG PNPM_VERSION="${PNPM_VERSION:-latest-11}"
 
@@ -36,19 +36,19 @@ RUN curl --proto '=https' --tlsv1.3 \
         --output /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc
 
 # https://dl.google.com/linux/linux_signing_key.pub
-COPY --chown=root:root gpg /root/gpg
-RUN for key in /root/gpg/*; do \
-        gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
+COPY --chown=root:root gpg/go /root/gpg/go
+RUN for key in /root/gpg/go/*; do \
+        gpg --no-default-keyring --keyring /root/go.gpg --batch --import ${key}; \
     done
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz
+RUN gpg --no-default-keyring --keyring /root/go.gpg --fingerprint
+RUN gpg --no-default-keyring --keyring /root/go.gpg --verify /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.asc /usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz
 RUN echo "${GO_CHECKSUM}  go${GO_VERSION}.linux-amd64.tar.gz" >/usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz.sha256
 WORKDIR /usr/local/src/go
 RUN sha256sum --ignore-missing --check go${GO_VERSION}.linux-amd64.tar.gz.sha256
 
 RUN tar --extract --gzip --file=/usr/local/src/go/go${GO_VERSION}.linux-amd64.tar.gz --directory=/usr/local/share
 
-# npm
+# nodejs
 
 RUN apt update && \
     apt install -y --no-install-recommends \
@@ -56,7 +56,7 @@ RUN apt update && \
 
 # NOTE: Update SHA1 second-preimage resistance date for Sequoia GPG library
 RUN sed -i 's@sha1.second_preimage_resistance.*@sha1.second_preimage_resistance = 2027-01-01@g' /usr/share/apt/default-sequoia.config
-COPY --chown=root:root gpg/nodesource.gpg /etc/apt/trusted.gpg.d/nodesource.asc
+COPY --chown=root:root gpg/nodejs/nodesource.gpg /etc/apt/trusted.gpg.d/nodesource.asc
 RUN echo "deb https://deb.nodesource.com/node_${NODEJS_MAJOR_VERSION}.x nodistro main" >/etc/apt/sources.list.d/nodesource.list
 RUN apt update && \
     apt install -y --no-install-recommends \
@@ -75,11 +75,10 @@ WORKDIR /usr/local/src
 RUN git clone --depth 1 --branch v${MEMOS_VERSION} https://github.com/usememos/memos.git
 
 WORKDIR /usr/local/src/memos/web
-RUN pnpm add -D vite
-RUN pnpm build
+RUN pnpm install --frozen-lockfile
+RUN pnpm release
 
 WORKDIR /usr/local/src/memos
-RUN cp -rp /usr/local/src/memos/web/dist /usr/local/src/memos/server/router/frontend
 RUN go build -o memos ./cmd/memos
 
 RUN chmod 0755 /usr/local/src/memos/memos
