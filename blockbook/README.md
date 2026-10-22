@@ -28,7 +28,7 @@ OCI container for `blockbook`.
 |Name                                                |Version      |Type   |
 |:---                                                |:---         |:---   |
 |[Debian](https://docker.io/debian)                  |`stable-slim`|Image  |
-|[Go](https://go.dev/dl)                             |`1.27.2`     |Archive|
+|[Go](https://go.dev/dl)                             |`1.27.3`     |Archive|
 |[blockbook](https://github.com/trezor/blockbook.git)|`master`     |Git    |
 
 ### Runtime

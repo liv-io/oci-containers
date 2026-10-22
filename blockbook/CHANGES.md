@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## c6d8d181fb7645a15c655c5371bb7205af5f9086-2 (2026-10-22)
+
+### Bugs
+
+- Update Go to version 1.27.3
+
 ## c6d8d181fb7645a15c655c5371bb7205af5f9086-1 (2026-10-18)
 
 ### Enhancements
