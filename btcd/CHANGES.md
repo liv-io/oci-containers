@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 0.27.0-1 (2026-10-22)
+
+### Bugs
+
+- Update btcd to version 0.27.0
+
 ## 0.26.2-2 (2026-07-29)
 
 ### Features

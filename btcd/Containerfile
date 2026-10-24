@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG BTCD_VERSION="${BTCD_VERSION:-0.26.2}"
+ARG BTCD_VERSION="${BTCD_VERSION:-0.27.0}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -20,14 +20,12 @@ RUN install --directory --owner=root --group=root --mode=0755 /usr/local/src/btc
 RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz \
         --output /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz
-
+RUN curl --proto '=https' --tlsv1.3 \
+        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-v${BTCD_VERSION}.txt.sig \
+        --output /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt.sig
 RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-v${BTCD_VERSION}.txt \
         --output /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
-
-RUN curl --proto '=https' --tlsv1.3 \
-        --location https://github.com/btcsuite/btcd/releases/download/v${BTCD_VERSION}/manifest-roasbeef-v${BTCD_VERSION}.sig \
-        --output /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig
 
 # https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
 COPY --chown=root:root gpg /root/gpg
@@ -35,17 +33,13 @@ RUN for key in /root/gpg/*; do \
         gpg --no-default-keyring --keyring /root/keyring.gpg --batch --import ${key}; \
     done
 RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
-
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-roasbeef-v${BTCD_VERSION}.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
-
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt.sig /usr/local/src/btcd/manifest-v${BTCD_VERSION}.txt
 WORKDIR /usr/local/src/btcd
 RUN sha256sum --ignore-missing --check manifest-v${BTCD_VERSION}.txt
 
 RUN tar --extract --gzip --file=/usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}.tar.gz --directory=/usr/local/src/btcd
-
 RUN chmod 0755 /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcd \
         /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcctl
-
 RUN ln -snf /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcd /usr/local/bin/btcd && \
     ln -snf /usr/local/src/btcd/btcd-linux-amd64-v${BTCD_VERSION}/btcctl /usr/local/bin/btcctl
 

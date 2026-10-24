@@ -16,7 +16,6 @@ RPCUSER="${RPCUSER:-}"
 SIGCACHEMAXSIZE="${SIGCACHEMAXSIZE:-}"
 UTXOCACHEMAXSIZE="${UTXOCACHEMAXSIZE:-}"
 
-# shellcheck disable=SC2068
 assemble_command() {
     cmd=(exec)
     cmd+=(/usr/local/bin/btcd)
