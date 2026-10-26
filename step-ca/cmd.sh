@@ -101,32 +101,33 @@ config_ca_json() {
     # .authority.policy.ssh.host.allow.dns
     # .authority.policy.ssh.user.allow.email
     # .authority.policy.x509.allow.dns
-    jq ".authority.policy = {
-      \"x509\": {
-        \"allow\": {
-          \"dns\": [
-            \"${ALLOW_DNS}\"
-          ]
+    jq \
+        --arg raw_dns "$ALLOW_DNS" \
+        --arg raw_email "$ALLOW_EMAIL" \
+    '
+    # commas and/or whitespace separated array
+    ($raw_dns   | [splits("[,\\s]+")] | map(select(length > 0))) as $dns |
+    ($raw_email | [splits("[,\\s]+")] | map(select(length > 0))) as $email |
+    .authority.policy = {
+      "x509": {
+        "allow": {
+          "dns": $dns
         },
-        \"allowWildcardNames\": false
+        "allowWildcardNames": false
       },
-      \"ssh\": {
-        \"user\": {
-          \"allow\": {
-            \"email\": [
-              \"${ALLOW_EMAIL}\"
-            ]
+      "ssh": {
+        "user": {
+          "allow": {
+            "email": $email
           }
         },
-        \"host\": {
-          \"allow\": {
-            \"dns\": [
-              \"${ALLOW_DNS}\"
-            ]
+        "host": {
+          "allow": {
+            "dns": $dns
           }
         }
       }
-    }" "${CA_JSON}" | write_file "${CA_JSON}"
+    }' "${CA_JSON}" | write_file "${CA_JSON}"
 
     # .authority.provisioners
     jq '.authority.provisioners |= map(

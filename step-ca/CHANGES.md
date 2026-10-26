@@ -10,6 +10,18 @@ The headers are:
 - enhancements
 - features
 
+## 0.30.2-6 (2026-10-26)
+
+### Enhancements
+
+- Update cosign to version 3.1.4
+- Update step-cli to version 0.31.0
+
+### Features
+
+- Convert environment variable `ALLOW_DNS` into array
+- Convert environment variable `ALLOW_EMAIL` into array
+
 ## 0.30.2-5 (2026-09-07)
 
 ### Enhancements
