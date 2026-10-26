@@ -10,6 +10,14 @@ The headers are:
 - enhancements
 - features
 
+## 0.1.4-1 (2026-10-25)
+
+### Bugs
+
+- Update tink to version 0.1.4
+- Update go to version 1.27.3
+- Bump version for latest `ca-certificates` package (20250419+deb13u1)
+
 ## 0.1.3-1 (2026-10-04)
 
 ### Bugs

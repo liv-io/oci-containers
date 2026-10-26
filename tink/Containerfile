@@ -1,8 +1,8 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG GO_CHECKSUM="${GO_CHECKSUM:-63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445}"
-ARG GO_VERSION="${GO_VERSION:-1.27.1}"
-ARG TINK_VERSION="${TINK_VERSION:-0.1.3}"
+ARG GO_CHECKSUM="${GO_CHECKSUM:-65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40}"
+ARG GO_VERSION="${GO_VERSION:-1.27.3}"
+ARG TINK_VERSION="${TINK_VERSION:-0.1.4}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -52,7 +52,6 @@ WORKDIR /usr/local/src/tink
 RUN go build .
 
 RUN chmod 0755 /usr/local/src/tink/tink
-
 RUN ln -snf /usr/local/src/tink/tink /usr/local/bin/tink
 
 #---------------------------------------------------------------------

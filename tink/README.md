@@ -28,7 +28,7 @@ OCI container for `tink`.
 |Name                                      |Version      |Type   |
 |:---                                      |:---         |:---   |
 |[Debian](https://docker.io/debian)        |`stable-slim`|Image  |
-|[Go](https://go.dev/dl)                   |`1.27.1`     |Archive|
+|[Go](https://go.dev/dl)                   |`1.27.3`     |Archive|
 |[tink](https://github.com/liv-io/tink.git)|`main`       |Git    |
 
 ### Runtime
