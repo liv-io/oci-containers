@@ -28,7 +28,7 @@ OCI container for `bitcoin-core`.
 |Name                                       |Version      |Type   |
 |:---                                       |:---         |:---   |
 |[Debian](https://docker.io/debian)         |`stable-slim`|Image  |
-|[bitcoin-core](https://bitcoincore.org/bin)|`29.4`       |Archive|
+|[bitcoin-core](https://bitcoincore.org/bin)|`29.5`       |Archive|
 
 ### Runtime
 
