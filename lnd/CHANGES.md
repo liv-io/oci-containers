@@ -10,6 +10,17 @@ The headers are:
 - enhancements
 - features
 
+## 0.21.5-beta-1 (2026-10-27)
+
+### Bugs
+
+- Update lnd to version 0.21.5-beta
+
+### Changes
+
+- Temporarily disable signature verification for `roasbeef` (signature missing)
+- Add PGP public key for `bhandras` (https://github.com/bhandras)
+
 ## 0.21.4-beta-1 (2026-10-02)
 
 ### Bugs
