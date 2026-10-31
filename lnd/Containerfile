@@ -1,6 +1,6 @@
 FROM docker.io/debian:stable-slim AS build
 
-ARG LND_VERSION="${LND_VERSION:-0.21.5-beta}"
+ARG LND_VERSION="${LND_VERSION:-0.21.6-beta}"
 
 ENV TZ="UTC"
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
@@ -23,15 +23,15 @@ RUN curl --proto '=https' --tlsv1.3 \
 RUN curl --proto '=https' --tlsv1.3 \
         --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-v${LND_VERSION}.txt \
         --output /usr/local/src/lnd/manifest-v${LND_VERSION}.txt
-RUN curl --proto '=https' --tlsv1.3 \
-        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-bhandras-v${LND_VERSION}.sig \
-        --output /usr/local/src/lnd/manifest-bhandras-v${LND_VERSION}.sig
+#RUN curl --proto '=https' --tlsv1.3 \
+#        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-bhandras-v${LND_VERSION}.sig \
+#        --output /usr/local/src/lnd/manifest-bhandras-v${LND_VERSION}.sig
 #RUN curl --proto '=https' --tlsv1.3 \
 #        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-guggero-v${LND_VERSION}.sig \
 #        --output /usr/local/src/lnd/manifest-guggero-v${LND_VERSION}.sig
-#RUN curl --proto '=https' --tlsv1.3 \
-#        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-roasbeef-v${LND_VERSION}.sig \
-#        --output /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig
+RUN curl --proto '=https' --tlsv1.3 \
+        --location https://github.com/lightningnetwork/lnd/releases/download/v${LND_VERSION}/manifest-roasbeef-v${LND_VERSION}.sig \
+        --output /usr/local/src/lnd/manifest-roasbeef-v${LND_VERSION}.sig
 
 # https://github.com/lightningnetwork/lnd/blob/master/scripts/keys
 COPY --chown=root:root gpg /root/gpg
@@ -40,9 +40,9 @@ RUN for key in /root/gpg/*; do \
     done
 RUN gpg --no-default-keyring --keyring /root/keyring.gpg --fingerprint
 WORKDIR /usr/local/src/lnd
-RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify manifest-bhandras-v${LND_VERSION}.sig manifest-v${LND_VERSION}.txt
+#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify manifest-bhandras-v${LND_VERSION}.sig manifest-v${LND_VERSION}.txt
 #RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify manifest-guggero-v${LND_VERSION}.sig manifest-v${LND_VERSION}.txt
-#RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify manifest-roasbeef-v${LND_VERSION}.sig manifest-v${LND_VERSION}.txt
+RUN gpg --no-default-keyring --keyring /root/keyring.gpg --verify manifest-roasbeef-v${LND_VERSION}.sig manifest-v${LND_VERSION}.txt
 RUN sha256sum --ignore-missing --check manifest-v${LND_VERSION}.txt
 
 RUN tar --extract --gzip --file=/usr/local/src/lnd/lnd-linux-amd64-v${LND_VERSION}.tar.gz --directory=/usr/local/src/lnd

@@ -10,6 +10,17 @@ The headers are:
 - enhancements
 - features
 
+## 0.21.6-beta-1 (2026-10-31)
+
+### Changes
+
+- Enable signature verification for `roasbeef`
+- Temporarily disable signature verification for `bhandras` (signature missing)
+
+### Bugs
+
+- Update lnd to version 0.21.6-beta
+
 ## 0.21.5-beta-1 (2026-10-27)
 
 ### Bugs

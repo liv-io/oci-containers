@@ -28,7 +28,7 @@ OCI container for `lnd`.
 |Name                                                   |Version      |Type   |
 |:---                                                   |:---         |:---   |
 |[Debian](https://docker.io/debian)                     |`stable-slim`|Image  |
-|[lnd](https://github.com/lightningnetwork/lnd/releases)|`0.21.5-beta`|Archive|
+|[lnd](https://github.com/lightningnetwork/lnd/releases)|`0.21.6-beta`|Archive|
 
 ### Runtime
 
