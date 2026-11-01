@@ -2,7 +2,7 @@ FROM docker.io/debian:stable-slim AS build
 
 ARG GO_CHECKSUM="${GO_CHECKSUM:-65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40}"
 ARG GO_VERSION="${GO_VERSION:-1.27.3}"
-ARG MEMOS_VERSION="${MEMOS_VERSION:-0.31.0}"
+ARG MEMOS_VERSION="${MEMOS_VERSION:-26.10.0}"
 ARG NODEJS_MAJOR_VERSION="${NODEJS_MAJOR_VERSION:-24}"
 ARG PNPM_VERSION="${PNPM_VERSION:-latest-11}"
 
@@ -72,7 +72,7 @@ RUN npm install -g pnpm@${PNPM_VERSION}
 # memos
 
 WORKDIR /usr/local/src
-RUN git clone --depth 1 --branch v${MEMOS_VERSION} https://github.com/usememos/memos.git
+RUN git clone --depth 1 --branch ${MEMOS_VERSION} https://github.com/usememos/memos.git
 
 WORKDIR /usr/local/src/memos/web
 RUN pnpm install --frozen-lockfile

@@ -10,6 +10,12 @@ The headers are:
 - enhancements
 - features
 
+## 26.10.0-1 (2026-11-01)
+
+### Changes
+
+- Update Memos to version 26.10.0-1
+
 ## 0.31.0-1 (2026-10-22)
 
 ### Bugs
