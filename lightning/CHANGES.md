@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 26.06.10-1 (2026-11-04)
+
+### Bugs
+
+- Update lightning to version 26.06.10
+
+### Enhancements
+
+- Update bitcoin-core to version 32.1
+
 ## 26.06.9-1 (2026-10-07)
 
 ### Bugs
