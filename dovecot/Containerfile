@@ -1,0 +1,90 @@
+FROM docker.io/debian:stable-slim AS build
+
+ARG DOVECOT_VERSION="${DOVECOT_VERSION:-2.4.5}"
+
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        autoconf \
+        automake \
+        bison \
+        build-essential \
+        ca-certificates \
+        curl \
+        flex \
+        gettext \
+        git \
+        gnupg \
+        libcap-dev \
+        libssl-dev \
+        libtool \
+        make \
+        pkg-config \
+        python3 \
+        wget
+
+# dovecot
+
+WORKDIR /usr/local/src
+RUN git clone --branch main https://github.com/dovecot/core.git
+WORKDIR /usr/local/src/core
+RUN git checkout ${DOVECOT_VERSION}
+
+RUN ./autogen.sh && \
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --with-ssldir=/etc/ssl \
+        --with-libcap && \
+        --without-zlib \
+        --without-zstd
+    make DESTDIR=/install install
+
+# Remove build artifacts, headers, and autotool files
+RUN find /install/ -type f -name "*.a" -delete && \
+    find /install/ -type f -name "*.la" -delete
+
+#---------------------------------------------------------------------
+
+FROM docker.io/debian:stable-slim AS main
+
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        ca-certificates \
+        libcap2 \
+        libssl3 \
+        procps
+
+# dovecot
+
+COPY --from=build --chown=root:root /install/etc/dovecot/dovecot.conf /install/install/usr/share/dovecot/dovecot.conf
+COPY --from=build --chown=root:root /install/usr/include/dovecot/ /usr/include/dovecot/
+COPY --from=build --chown=root:root /install/usr/lib/ /install/usr/lib/
+COPY --from=build --chown=root:root /install/usr/libexec/ /usr/libexec/
+COPY --from=build --chown=root:root /install/usr/sbin/dovecot/ /usr/sbin/dovecot/
+
+RUN echo "/usr/local/lib/dovecot" > /etc/ld.so.conf.d/dovecot.conf && ldconfig
+
+# user and permissions
+
+RUN groupadd --gid 10000 dovecot && \
+    useradd --comment 'dovecot' --create-home --gid 10000 --password '!' --shell '/bin/bash' --uid 10000 dovecot
+
+RUN install --directory --owner=root --group=root --mode=0755 /var/local/dovecot && \
+    install --directory --owner=dovecot --group=dovecot --mode=0750 /var/local/dovecot/config && \
+    install --directory --owner=dovecot --group=dovecot --mode=0750 /var/local/dovecot/data
+
+COPY --chown=root:root cmd.sh /
+RUN chmod 0755 /cmd.sh
+
+USER dovecot
+
+CMD ["/bin/bash", "/cmd.sh"]
