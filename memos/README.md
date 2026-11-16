@@ -28,7 +28,7 @@ OCI container for `memos`.
 |Name                                          |Version      |Type   |
 |:---                                          |:---         |:---   |
 |[Debian](https://docker.io/debian)            |`stable-slim`|Image  |
-|[Go](https://go.dev/dl)                       |`1.27.3`     |Archive|
+|[Go](https://go.dev/dl)                       |`1.27.4`     |Archive|
 |[memos](https://github.com/usememos/memos.git)|`main`       |Git    |
 |[nodejs](https://deb.nodesource.com/node_24.x)|`24.x`       |Package|
 
