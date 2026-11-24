@@ -10,6 +10,16 @@ The headers are:
 - enhancements
 - features
 
+## 0.15.0-1 (2026-11-24)
+
+### Enhancements
+
+- Update Go to version 1.27.4
+
+### Features
+
+- Update rest-server to version 0.15.0
+
 ## 0.14.0-1 (2026-08-09)
 
 ### Bugs

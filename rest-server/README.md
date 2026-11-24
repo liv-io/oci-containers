@@ -28,7 +28,7 @@ OCI container for `rest-server`.
 |Name                                                    |Version      |Type   |
 |:---                                                    |:---         |:---   |
 |[Debian](https://docker.io/debian)                      |`stable-slim`|Image  |
-|[Go](https://go.dev/dl)                                 |`1.27.3`     |Archive|
+|[Go](https://go.dev/dl)                                 |`1.27.4`     |Archive|
 |[rest-server](https://github.com/restic/rest-server.git)|`main`       |Git    |
 
 ### Runtime
