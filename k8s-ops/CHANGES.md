@@ -10,6 +10,18 @@ The headers are:
 - enhancements
 - features
 
+## 1.37.2-1 (2026-11-26)
+
+### Enhancements
+
+- Update cosign to version 3.1.6
+- Update ctr to version 2.4.2
+- Update helm to version 4.3.2
+- Update k0s to version 1.37.2+k0s.1
+- Update kubectl to version 1.37.2
+- Update kubesoloctl to version 1.3.1
+- Update yq to version 4.54.3
+
 ## 1.37.1-1 (2026-09-10)
 
 ### Enhancements

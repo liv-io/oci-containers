@@ -39,18 +39,18 @@ This OCI container contains the following Kubernetes GitOps tools:
 |Name                                                     |Version       |Type   |
 |:---                                                     |:---          |:---   |
 |[Debian](https://docker.io/debian)                       |`stable-slim` |Image  |
-|[cosign](https://github.com/sigstore/cosign)             |`3.1.3`       |Binary |
+|[cosign](https://github.com/sigstore/cosign)             |`3.1.6`       |Binary |
 |[crictl](https://github.com/kubernetes-sigs/cri-tools)   |`1.37.0`      |Archive|
-|[ctr](https://github.com/containerd/containerd)          |`1.7.36`      |Archive|
+|[ctr](https://github.com/containerd/containerd)          |`2.4.2`       |Archive|
 |[git](https://git-scm.com)                               |`2.x.x`       |Package|
-|[helm](https://get.helm.sh)                              |`4.3.0`       |Archive|
-|[k0s](https://github.com/k0sproject/k0s)                 |`1.36.4+k0s.1`|Binary |
+|[helm](https://get.helm.sh)                              |`4.3.2`       |Archive|
+|[k0s](https://github.com/k0sproject/k0s)                 |`1.37.2+k0s.1`|Binary |
 |[k0sctl](https://github.com/k0sproject/k0sctl)           |`0.33.1`      |Binary |
-|[kubectl](https://dl.k8s.io)                             |`1.37.0`      |Binary |
-|[kubesoloctl](https://github.com/portainer/kubesolo)     |`1.2.1`       |Binary |
+|[kubectl](https://dl.k8s.io)                             |`1.37.2`      |Binary |
+|[kubesoloctl](https://github.com/portainer/kubesolo)     |`1.3.1`       |Binary |
 |[kustomize](https://github.com/kubernetes-sigs/kustomize)|`5.8.3`       |Archive|
 |[ssh](https://openssh.org)                               |`10.x`        |Package|
-|[yq](https://github.com/mikefarah/yq)                    |`4.54.1`      |Archive|
+|[yq](https://github.com/mikefarah/yq)                    |`4.54.3`      |Archive|
 
 ### Runtime
 
