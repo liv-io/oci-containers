@@ -28,7 +28,7 @@ OCI container for `woodpecker-agent`.
 |Name                                                           |Version      |Type   |
 |:---                                                           |:---         |:---   |
 |[Debian](https://docker.io/debian)                             |`stable-slim`|Image  |
-|[plugin-git](https://github.com/woodpecker-ci/plugin-git)      |`3.20.1`     |Binary |
+|[plugin-git](https://github.com/woodpecker-ci/plugin-git)      |`3.21.0`     |Binary |
 |[woodpecker-agent](https://github.com/woodpecker-ci/woodpecker)|`2.12.1`     |Archive|
 
 ### Runtime
